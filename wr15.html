@@ -231,10 +231,17 @@
           );
 
           if (!response.ok) {
+            // 解析 Google 伺服器回傳的真實錯誤訊息
+            let googleErrMsg = "";
+            try {
+              const errJson = await response.json();
+              googleErrMsg = errJson.error ? errJson.error.message : "未知原因";
+            } catch(e) {}
+
             if (response.status === 429) throw new Error('ERROR_429');
-            if (response.status === 400) throw new Error('API 金鑰無效或格式錯誤 (400)');
-            if (response.status === 401 || response.status === 403) throw new Error('AUTH_EXPIRED'); 
-            throw new Error(`API 錯誤狀態碼: ${response.status}`);
+            if (response.status === 400) throw new Error('ERROR_400|' + googleErrMsg);
+            if (response.status === 401 || response.status === 403) throw new Error('ERROR_AUTH|' + googleErrMsg); 
+            throw new Error(`API 錯誤狀態碼: ${response.status}|${googleErrMsg}`);
           }
           
           const result = await response.json();
@@ -253,7 +260,7 @@
           }
           
         } catch (error) {
-          if (error.message === 'AUTH_EXPIRED' || error.message === 'ERROR_429' || error.message === 'MISSING_KEY' || error.message.includes('400')) {
+          if (error.message.startsWith('ERROR_AUTH') || error.message.startsWith('ERROR_400') || error.message === 'ERROR_429' || error.message === 'MISSING_KEY') {
             throw error;
           }
           if (retryCount < maxRetries) {
@@ -289,10 +296,16 @@
           setPredictionData(aiResult);
           setShowResults(true);
         } catch (error) {
-          if (error.message === 'AUTH_EXPIRED' || error.message.includes('400')) {
-             setErrorMsg('API 金鑰無效或已失效。請檢查右上角設定中的 Google API Key 是否輸入正確。');
+          if (error.message.startsWith('ERROR_AUTH')) {
+             const detail = error.message.split('|')[1] || "無詳細訊息";
+             setErrorMsg(`金鑰已被拒絕或註銷 (401/403)。請確認您貼上的是「全新申請」的金鑰，且沒有貼到舊的！(Google 原廠訊息: ${detail})`);
+             setShowApiSettings(true);
+          } else if (error.message.startsWith('ERROR_400')) {
+             const detail = error.message.split('|')[1] || "無詳細訊息";
+             setErrorMsg(`API 金鑰格式錯誤 (400)。請確認複製過程中沒有遺漏字元。(Google 原廠訊息: ${detail})`);
+             setShowApiSettings(true);
           } else if (error.message === 'ERROR_429') {
-             setErrorMsg('API 請求次數已達上限 (429)。這可能是因為您剛才使用的金鑰已被額度限制，請到 Google AI Studio 重新申請一把全新的金鑰並貼上！');
+             setErrorMsg('API 請求次數已達上限 (429)。目前金鑰配額已耗盡，請稍候再試。');
           } else if (error.message === 'MISSING_KEY') {
              setErrorMsg('缺少 API 金鑰！請點擊右上角齒輪設定，填寫您的 Google API Key。');
              setShowApiSettings(true);
