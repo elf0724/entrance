@@ -56,7 +56,7 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // --- 系統預設金鑰 (這裡預設留空，交給介面讓您自行輸入) ---
+    // --- 系統預設金鑰 (請保持空白，保護您的資安) ---
     const apiKey = ""; 
 
     // --- 處理圖示轉換的輔助元件 (加入防呆機制避免崩潰) ---
@@ -117,7 +117,6 @@
       const [showResults, setShowResults] = useState(false);
       const [predictionData, setPredictionData] = useState(defaultData);
       const [errorMsg, setErrorMsg] = useState('');
-      const [authExpired, setAuthExpired] = useState(false);
 
       const timeOptions = [
         { id: 'sunrise', label: '日出前一小時', iconName: 'Sunrise' },
@@ -158,13 +157,14 @@
         const delays = [1000, 2000, 4000, 8000, 16000];
         
         const isCustomKey = userApiKey.trim() !== '';
-        // 如果是在 GitHub Pages 上，一定必須要填寫自己的 Key
+        // GitHub Pages 上必須填寫金鑰
         const effectiveApiKey = isCustomKey ? userApiKey.trim() : apiKey;
         
         if (!effectiveApiKey) {
             throw new Error('MISSING_KEY');
         }
 
+        // 💡 使用最新且廣泛支援的 2.0-flash 模型
         const modelName = "gemini-2.0-flash";
 
         const payload = {
@@ -231,10 +231,17 @@
           );
 
           if (!response.ok) {
+            // 解析 Google 伺服器回傳的真實錯誤訊息
+            let googleErrMsg = "";
+            try {
+              const errJson = await response.json();
+              googleErrMsg = errJson.error ? errJson.error.message : "未知原因";
+            } catch(e) {}
+
             if (response.status === 429) throw new Error('ERROR_429');
-            if (response.status === 400) throw new Error('API 金鑰無效或格式錯誤 (400)');
-            if (response.status === 401 || response.status === 403) throw new Error('AUTH_EXPIRED'); 
-            throw new Error(`API 錯誤狀態碼: ${response.status}`);
+            if (response.status === 400) throw new Error('ERROR_400|' + googleErrMsg);
+            if (response.status === 401 || response.status === 403) throw new Error('ERROR_AUTH|' + googleErrMsg); 
+            throw new Error(`API 錯誤狀態碼: ${response.status}|${googleErrMsg}`);
           }
           
           const result = await response.json();
@@ -253,7 +260,7 @@
           }
           
         } catch (error) {
-          if (error.message === 'AUTH_EXPIRED' || error.message === 'ERROR_429' || error.message === 'MISSING_KEY' || error.message.includes('400')) {
+          if (error.message.startsWith('ERROR_AUTH') || error.message.startsWith('ERROR_400') || error.message === 'ERROR_429' || error.message === 'MISSING_KEY') {
             throw error;
           }
           if (retryCount < maxRetries) {
@@ -271,7 +278,6 @@
         }
         
         setErrorMsg('');
-        setAuthExpired(false);
         setIsPredicting(true);
         setShowResults(false);
         
@@ -290,13 +296,19 @@
           setPredictionData(aiResult);
           setShowResults(true);
         } catch (error) {
-          if (error.message === 'AUTH_EXPIRED' || error.message.includes('400')) {
-             setErrorMsg('API 金鑰無效或已失效。請檢查右上角設定中的 Google API Key 是否輸入正確。');
+          if (error.message.startsWith('ERROR_AUTH')) {
+             const detail = error.message.split('|')[1] || "無詳細訊息";
+             setErrorMsg(`金鑰已被拒絕或註銷 (401/403)。請確認您貼上的是「全新申請」的金鑰，且沒有貼到舊的！(Google 原廠訊息: ${detail})`);
+             setShowApiSettings(true);
+          } else if (error.message.startsWith('ERROR_400')) {
+             const detail = error.message.split('|')[1] || "無詳細訊息";
+             setErrorMsg(`API 金鑰格式或模型錯誤 (400)。(Google 原廠訊息: ${detail})`);
+             setShowApiSettings(true);
           } else if (error.message === 'ERROR_429') {
-             setErrorMsg('API 請求次數已達上限 (429)。目前金鑰配額已耗盡，請稍候再試。');
+             setErrorMsg('API 請求被拒 (429)。【重要原因】：Google 目前在台灣等地區「未開放免費額度」。因此新申請的金鑰配額為 0，一執行就會報錯 429。解決方案：需在 Google Cloud 綁定信用卡啟用付費帳單才能獲得可用額度。');
           } else if (error.message === 'MISSING_KEY') {
              setErrorMsg('缺少 API 金鑰！請點擊右上角齒輪設定，填寫您的 Google API Key。');
-             setShowApiSettings(true); // 自動展開設定
+             setShowApiSettings(true);
           } else {
              setErrorMsg(error.message || '抱歉，取得氣象分析資料時發生錯誤，請稍後再試。');
           }
@@ -452,7 +464,7 @@
 
                   <button 
                     onClick={handlePredict}
-                    disabled={isPredicting || authExpired}
+                    disabled={isPredicting}
                     className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-[0.98]"
                   >
                     {isPredicting ? (
@@ -462,7 +474,7 @@
                     )}
                   </button>
                   
-                  {errorMsg && !authExpired && (
+                  {errorMsg && (
                     <div className="mt-4 p-4 bg-red-50 text-red-700 text-sm font-medium rounded-xl border border-red-200 flex items-start gap-3 shadow-sm animate-in fade-in">
                       <Icon name="AlertTriangle" className="w-5 h-5 shrink-0 mt-0.5" />
                       <span className="leading-relaxed">{errorMsg}</span>
@@ -473,7 +485,7 @@
 
               <div className="lg:col-span-8">
                 
-                {!showResults && !isPredicting && !authExpired && (
+                {!showResults && !isPredicting && (
                   <div className="h-full min-h-[500px] flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
                     <Icon name="CloudFog" className="w-20 h-20 mb-5 text-slate-300" />
                     <p className="text-xl font-bold text-slate-500">等待設定條件</p>
@@ -482,7 +494,7 @@
                   </div>
                 )}
 
-                {isPredicting && !authExpired && (
+                {isPredicting && (
                   <div className="h-full min-h-[500px] flex flex-col items-center justify-center text-indigo-500 space-y-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
                     <div className="relative">
                       <div className="absolute inset-0 rounded-full blur-xl bg-indigo-200 animate-pulse"></div>
@@ -495,7 +507,7 @@
                   </div>
                 )}
 
-                {showResults && !authExpired && predictionData && (
+                {showResults && predictionData && (
                   <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
                     
                     <div className="bg-indigo-50 border border-indigo-100 p-5 md:p-6 rounded-2xl shadow-sm">
