@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
@@ -23,6 +23,35 @@
   <!-- React 應用程式的掛載點 -->
   <div id="root"></div>
 
+  <!-- 💡 錯誤捕捉機制：防止記事本編碼錯誤或複製不完整導致的「全白畫面」 -->
+  <script>
+    window.addEventListener('error', function(event) {
+      const root = document.getElementById('root');
+      if (root && root.innerHTML === '') {
+        root.innerHTML = '<div style="padding:30px; color:#b91c1c; font-family:sans-serif; background:#fef2f2; height:100vh;">' +
+          '<h2 style="font-size:24px; font-weight:bold; margin-bottom:10px;">系統載入失敗 💥</h2>' +
+          '<p style="margin-bottom:10px;">錯誤訊息：' + event.message + '</p>' +
+          '<p style="font-weight:bold; margin-top:20px;">【常見解決方案】</p>' +
+          '<ol style="line-height:1.8;">' +
+          '<li>請確認您使用 Windows 記事本另存新檔時，最下方的「編碼」是否已選擇 <strong>UTF-8</strong>。</li>' +
+          '<li>請確認程式碼從頭到尾都有完整複製到。</li>' +
+          '</ol></div>';
+      }
+    });
+
+    const originalConsoleError = console.error;
+    console.error = function(...args) {
+      const root = document.getElementById('root');
+      if (root && root.innerHTML === '') {
+        root.innerHTML = '<div style="padding:30px; color:#b91c1c; font-family:sans-serif; background:#fef2f2; height:100vh;">' +
+          '<h2 style="font-size:24px; font-weight:bold; margin-bottom:10px;">編譯發生錯誤 💥</h2>' +
+          '<p style="margin-bottom:10px;">請確保程式碼複製完整，且存檔編碼為 UTF-8。</p>' +
+          '<p style="font-size:12px; color:#7f1d1d; background:#fee2e2; padding:10px; border-radius:8px;">' + args.join(' ') + '</p></div>';
+      }
+      originalConsoleError.apply(console, args);
+    };
+  </script>
+
   <!-- 我們的 React 程式碼寫在這裡，type 必須標記為 text/babel 讓 Babel 來翻譯 -->
   <script type="text/babel">
     const { useState, useEffect } = React;
@@ -30,20 +59,26 @@
     // --- 系統預設金鑰 (這裡預設留空，交給介面讓您自行輸入) ---
     const apiKey = ""; 
 
-    // --- 處理圖示轉換的輔助元件 ---
+    // --- 處理圖示轉換的輔助元件 (加入防呆機制避免崩潰) ---
     const Icon = ({ name, className }) => {
-      let iconName = name;
-      // 處理圖示名稱在新舊版間的差異
-      if (name === 'Loader2') iconName = 'LoaderCircle';
-      if (name === 'CheckCircle2') iconName = 'CheckCircle';
-      if (name === 'AlertTriangle') iconName = 'TriangleAlert';
+      try {
+        let iconName = name;
+        if (name === 'Loader2') iconName = 'LoaderCircle';
+        if (name === 'CheckCircle2') iconName = 'CheckCircle';
+        if (name === 'AlertTriangle') iconName = 'TriangleAlert';
 
-      const iconObj = window.lucide.icons[iconName] || window.lucide.icons[name];
-      if (iconObj) {
-        const svgHTML = iconObj.toSvg({ class: className });
-        return <span className={`inline-flex items-center justify-center ${className || ''}`} dangerouslySetInnerHTML={{ __html: svgHTML }} />;
+        const icons = window.lucide && window.lucide.icons ? window.lucide.icons : null;
+        if (!icons) return <span className={className}></span>;
+
+        const iconObj = icons[iconName] || icons[name];
+        if (iconObj) {
+          const svgHTML = iconObj.toSvg({ class: className });
+          return <span className={`inline-flex items-center justify-center ${className || ''}`} dangerouslySetInnerHTML={{ __html: svgHTML }} />;
+        }
+        return <span className={className}></span>;
+      } catch (e) {
+        return <span className={className}></span>;
       }
-      return <span className={className}></span>;
     };
 
     // --- System Prompt ---
