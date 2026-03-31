@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣象預測專家 · 雲海預測儀表板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #484f58;
+    --accent: #58a6ff;
+    --accent2: #1f6feb;
+    --green: #3fb950;
+    --green-bg: rgba(63,185,80,0.1);
+    --amber: #d29922;
+    --amber-bg: rgba(210,153,34,0.1);
+    --red: #f85149;
+    --red-bg: rgba(248,81,73,0.1);
+    --teal: #39d353;
+    --serif: 'Noto Serif TC', serif;
+    --sans: 'Noto Sans TC', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* starfield */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.12) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 60%, rgba(255,255,255,0.1) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.08) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,0.1) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 15%, rgba(255,255,255,0.12) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 85%, rgba(255,255,255,0.08) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .logo-mark {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-left: auto;
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; box-shadow:0 0 8px var(--green); }
+    50% { opacity:0.5; box-shadow:0 0 3px var(--green); }
+  }
+
+  .status-label {
+    font-size: 12px;
+    color: var(--green);
+    font-family: var(--mono);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 750px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .panel-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    font-family: var(--mono);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section { margin-bottom: 1.5rem; }
+
+  .form-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  input[type="date"] {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s;
+    color-scheme: dark;
+  }
+  input[type="date"]:focus { border-color: var(--accent2); }
+
+  .toggle-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: var(--sans);
+    font-weight: 400;
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .toggle-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .toggle-btn.active {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #fff;
+  }
+
+  .chip-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: var(--sans);
+    font-weight: 400;
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.active {
+    background: rgba(88,166,255,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  input[type="text"]:focus { border-color: var(--accent2); }
+  input[type="text"]::placeholder { color: var(--text3); }
+
+  .predict-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 0.5rem;
+    background: var(--accent2);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+    letter-spacing: 0.02em;
+  }
+  .predict-btn:hover { background: #388bfd; }
+  .predict-btn:active { transform: scale(0.98); }
+  .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .api-note {
+    margin-top: 1rem;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* API KEY section */
+  .api-section {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .api-key-wrap {
+    position: relative;
+  }
+
+  input.api-key-input {
+    width: 100%;
+    padding: 8px 36px 8px 12px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  input.api-key-input:focus { border-color: var(--accent2); color: var(--text); }
+
+  .eye-btn {
+    position: absolute;
+    right: 8px; top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+    line-height: 1;
+  }
+
+  /* Result panel */
+  .result-panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-height: 500px;
+  }
+
+  .placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 420px;
+    gap: 12px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  .placeholder-glyph {
+    font-family: var(--serif);
+    font-size: 48px;
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .placeholder p { font-size: 13px; line-height: 1.8; }
+
+  .loading-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 420px;
+    gap: 16px;
+  }
+
+  .loader {
+    display: flex;
+    gap: 6px;
+  }
+  .loader span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: bounce .8s ease-in-out infinite;
+  }
+  .loader span:nth-child(2) { animation-delay: .15s; }
+  .loader span:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce {
+    0%,60%,100% { transform: translateY(0); opacity:.5; }
+    30% { transform: translateY(-10px); opacity:1; }
+  }
+
+  .loading-msg {
+    font-size: 13px;
+    color: var(--text2);
+    font-family: var(--mono);
+  }
+
+  .error-box {
+    background: var(--red-bg);
+    border: 0.5px solid rgba(248,81,73,0.3);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    color: var(--red);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* Result content */
+  .summary-block {
+    background: var(--bg3);
+    border-left: 2px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .section-heading {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 1.5rem 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+  }
+
+  .prob-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 0.5rem;
+  }
+  .prob-table th {
+    text-align: left;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .prob-table td {
+    padding: 10px 10px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: middle;
+    color: var(--text);
+  }
+  .prob-table tr:last-child td { border-bottom: none; }
+  .prob-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .loc-name { font-weight: 500; font-size: 13px; }
+  .loc-time { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
+
+  .bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 4px;
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+  }
+  .bar-pct {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .note-text { font-size: 11px; color: var(--text3); line-height: 1.5; }
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 0.5rem;
+  }
+  .analysis-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .analysis-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-family: var(--mono);
+  }
+  .analysis-body {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .suggestion-list { display: flex; flex-direction: column; gap: 8px; }
+  .suggestion-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+  .suggestion-badge {
+    background: rgba(88,166,255,0.1);
+    color: var(--accent);
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 0.5px solid rgba(88,166,255,0.2);
+  }
+  .suggestion-loc {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .suggestion-meta {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin-bottom: 6px;
+  }
+  .suggestion-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .tips-list { display: flex; flex-direction: column; gap: 6px; }
+  .tip-item {
+    background: rgba(63,185,80,0.06);
+    border: 0.5px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #7ee787;
+    line-height: 1.7;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .tip-item::before {
+    content: '›';
+    color: var(--green);
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .closing-line {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 0.5px solid var(--border);
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  footer {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="logo-mark">雲海預測儀</div>
+    <div class="logo-sub">WEATHER · PHOTOGRAPHY · AI</div>
+    <div class="status-dot"></div>
+    <div class="status-label">Groq AI 就緒</div>
+  </header>
+
+  <div class="layout">
+
+    <!-- 左側：控制面板 -->
+    <div class="panel">
+      <div class="panel-label">預測條件</div>
+
+      <div class="form-section">
+        <label class="form-label">預測日期</label>
+        <input type="date" id="dateInput">
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">拍攝時段</label>
+        <div class="toggle-row">
+          <button class="toggle-btn active" data-val="sunrise">日出前一小時</button>
+          <button class="toggle-btn" data-val="sunset">日落後一小時</button>
+          <button class="toggle-btn" data-val="both">全天</button>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">觀測地點（可複選）</label>
+        <div class="chip-row">
+          <div class="chip active" data-loc="陽明山區">陽明山區</div>
+          <div class="chip" data-loc="九份/不厭亭">九份/不厭亭</div>
+          <div class="chip active" data-loc="五分山雷達站">五分山雷達站</div>
+          <div class="chip" data-loc="坪林南山寺">坪林南山寺</div>
+        </div>
+        <input type="text" id="customLoc" placeholder="自訂地點（如：觀音山）">
+      </div>
+
+      <button class="predict-btn" id="predictBtn" onclick="runPrediction()">開始預測分析</button>
+
+      <!-- API Key 設定 -->
+      <div class="api-section">
+        <label class="form-label">Groq API Key</label>
+        <div class="api-key-wrap">
+          <input type="password" class="api-key-input" id="apiKeyInput" placeholder="gsk_...">
+          <button class="eye-btn" onclick="toggleKey()" id="eyeBtn">&#128065;</button>
+        </div>
+      </div>
+
+      <div class="api-note">
+        llama-3.3-70b · groq.com<br>
+        分析結果僅供攝影參考
+      </div>
+    </div>
+
+    <!-- 右側：分析結果 -->
+    <div class="result-panel" id="resultPanel">
+      <div class="panel-label">氣象分析報告</div>
+      <div id="resultArea">
+        <div class="placeholder">
+          <div class="placeholder-glyph">⛅</div>
+          <p>選擇日期與地點<br>按下「開始預測分析」<br>AI 氣象專家即刻為您分析</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    氣象預測專家 · 雲海攝影助理 · 資料來源：中央氣象署 / Windy / ECMWF<br>
+    本網頁使用 Groq AI 引擎提供預測分析，結果僅供攝影規劃參考，不代表實際氣象預報
+  </footer>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `您是一位專業的「氣象預測專家」。您的目標是分析氣象數據，特別是針對攝影愛好者關心的低空雲海與平流霧現象，提供精確的預測資訊。
+
+角色定位與目標：
+- 作為攝影愛好者的資深氣象顧問，綜合判讀多方氣象資訊來源（如中央氣象署、Windy、NCDR/ECMWF、AOAWS、Meteoblue、Himawari-8等），為使用者提供特定時間與地點的詳細氣象分析。
+- 特別專注於評估低空雲海及低層平流霧的發生機率，協助用戶掌握最佳拍攝時機。
+- 將複雜的氣象科學數據轉化為淺顯易懂、具操作性的攝影建議。
+
+核心行為準則：
+1. 當使用者提供時間與地點時，整合中央氣象署與Windy的即時預報、衛星雲圖、濕度、風速及溫差數據。
+2. 雲海預測：深度分析水氣含量、逆溫層（Temperature Inversion）高度及風力條件。解釋逆溫層如何像蓋子一樣將雲霧阻隔在山谷中形成雲海。
+3. 平流霧預測：分析冷暖空氣交匯、露點溫度（Dew Point）與環境溫度的接近程度，判斷霧氣移入的可能性。
+4. 視覺效果評估：針對攝影需求，提供預估的能見度、光線狀況（如晨昏色溫預測）及通透度建議。
+5. 遇到專業術語時（如「輻射冷卻」、「平流霧」），附帶簡短解釋，讓攝影愛好者能邊學邊拍。
+
+請務必以以下JSON格式回覆，不要輸出任何JSON以外的內容，不要加 markdown 標記：
+{
+  "summary": "整體天氣概況說明（2-3句，專業且易懂）",
+  "table": [
+    {"time": "日期時段描述", "location": "地點名稱", "probability": 整數0到100, "note": "簡短備註說明"}
+  ],
+  "analysis": [
+    {"title": "分析項目標題", "content": "詳細說明內容"}
+  ],
+  "suggestions": [
+    {"location": "建議地點", "altitude": "海拔高度", "time": "建議時間", "description": "具體攝影建議"}
+  ],
+  "tips": ["注意事項1", "注意事項2"],
+  "closing": "以一句關於天氣變化的專業提醒或攝影祝福語作為結尾"
+}`;
+
+// 初始化預設 API Key
+const DEFAULT_KEY = "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";
+
+window.addEventListener('DOMContentLoaded', () => {
+  // 設定今天日期
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  document.getElementById('dateInput').value = `${yyyy}-${mm}-${dd}`;
+  // 填入預設 key
+  document.getElementById('apiKeyInput').value = DEFAULT_KEY;
+});
+
+let selectedTime = "sunrise";
+let selectedLocs = ["陽明山區", "五分山雷達站"];
+
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedTime = btn.dataset.val;
+  });
+});
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const loc = chip.dataset.loc;
+    if (chip.classList.contains('active')) {
+      chip.classList.remove('active');
+      selectedLocs = selectedLocs.filter(l => l !== loc);
+    } else {
+      chip.classList.add('active');
+      selectedLocs.push(loc);
+    }
+  });
+});
+
+function toggleKey() {
+  const inp = document.getElementById('apiKeyInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+const timeLabel = { sunrise: '日出前一小時', sunset: '日落後一小時', both: '全天' };
+
+function getProbColor(p) {
+  if (p >= 75) return { fill: '#3fb950', text: '#3fb950' };
+  if (p >= 50) return { fill: '#d29922', text: '#d29922' };
+  return { fill: '#f85149', text: '#f85149' };
+}
+
+async function runPrediction() {
+  const dateVal = document.getElementById('dateInput').value;
+  const customLoc = document.getElementById('customLoc').value.trim();
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  const allLocs = [...selectedLocs, ...(customLoc ? [customLoc] : [])];
+
+  if (!dateVal) { alert('請選擇預測日期'); return; }
+  if (allLocs.length === 0) { alert('請至少選擇一個觀測地點'); return; }
+  if (!apiKey) { alert('請在下方輸入您的 Groq API Key'); return; }
+
+  const btn = document.getElementById('predictBtn');
+  btn.disabled = true;
+  btn.textContent = '分析中...';
+
+  document.getElementById('resultArea').innerHTML = `
+    <div class="panel-label">氣象分析報告</div>
+    <div class="loading-wrap">
+      <div class="loader"><span></span><span></span><span></span></div>
+      <div class="loading-msg">AI 氣象專家聯網分析中，請稍候...</div>
+    </div>`;
+
+  const userMsg = `請預測以下條件的低空雲海與平流霧機率：
+日期：${dateVal}
+時段：${timeLabel[selectedTime]}
+觀測地點：${allLocs.join('、')}
+
+請依照指定JSON格式回覆，針對每個地點在指定時段各產出一筆table資料。`;
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: userMsg }
+        ],
+        temperature: 0.65,
+        max_tokens: 2500
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      const msg = err.error?.message || `HTTP ${res.status}`;
+      if (res.status === 401) throw new Error('API Key 無效或已失效，請確認輸入正確');
+      if (res.status === 429) throw new Error('API 請求次數已達上限，請稍候一分鐘後再試');
+      if (res.status === 404) throw new Error('模型不存在，請確認 Groq 帳號可使用 llama-3.3-70b-versatile');
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    const raw = data.choices?.[0]?.message?.content || '';
+    // 清理可能的 markdown 包裝
+    const clean = raw.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
+    let json;
+    try {
+      json = JSON.parse(clean);
+    } catch(e) {
+      // 嘗試找出 JSON 區塊
+      const match = clean.match(/\{[\s\S]*\}/);
+      if (match) json = JSON.parse(match[0]);
+      else throw new Error('AI 回傳格式異常，請再試一次');
+    }
+    renderResult(json);
+
+  } catch(e) {
+    document.getElementById('resultArea').innerHTML = `
+      <div class="panel-label">氣象分析報告</div>
+      <div class="error-box">預測失敗：${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '開始預測分析';
+  }
+}
+
+function renderResult(d) {
+  let html = '<div class="panel-label">氣象分析報告</div>';
+
+  // 概況
+  if (d.summary) {
+    html += `<div class="summary-block">${d.summary}</div>`;
+  }
+
+  // 機率表格
+  if (d.table && d.table.length) {
+    html += `<div class="section-heading">雲海 · 平流霧機率</div>`;
+    html += `<table class="prob-table">
+      <thead><tr>
+        <th>地點</th><th>機率</th><th>備註</th>
+      </tr></thead><tbody>`;
+    d.table.forEach(row => {
+      const p = Math.min(100, Math.max(0, Number(row.probability) || 0));
+      const c = getProbColor(p);
+      html += `<tr>
+        <td>
+          <div class="loc-name">${row.location || ''}</div>
+          <div class="loc-time">${row.time || ''}</div>
+        </td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${c.fill}"></div></div>
+            <span class="bar-pct" style="color:${c.text}">${p}%</span>
+          </div>
+        </td>
+        <td><div class="note-text">${row.note || ''}</div></td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+  }
+
+  // 深度分析
+  if (d.analysis && d.analysis.length) {
+    html += `<div class="section-heading">深度氣象判讀</div>`;
+    html += `<div class="analysis-grid">`;
+    d.analysis.forEach(a => {
+      html += `<div class="analysis-card">
+        <div class="analysis-title">${a.title || ''}</div>
+        <div class="analysis-body">${a.content || ''}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // 攝影建議
+  if (d.suggestions && d.suggestions.length) {
+    html += `<div class="section-heading">具體攝影建議</div>`;
+    html += `<div class="suggestion-list">`;
+    d.suggestions.forEach((s, i) => {
+      html += `<div class="suggestion-card">
+        <div>
+          <div class="suggestion-badge">0${i+1}</div>
+        </div>
+        <div>
+          <div class="suggestion-loc">${s.location || ''}</div>
+          <div class="suggestion-meta">${s.altitude || ''} &nbsp;·&nbsp; ${s.time || ''}</div>
+          <div class="suggestion-desc">${s.description || ''}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // 注意事項
+  if (d.tips && d.tips.length) {
+    html += `<div class="section-heading">注意事項</div>`;
+    html += `<div class="tips-list">`;
+    d.tips.forEach(t => { html += `<div class="tip-item">${t}</div>`; });
+    html += `</div>`;
+  }
+
+  // 結尾
+  if (d.closing) {
+    html += `<div class="closing-line">${d.closing}</div>`;
+  }
+
+  document.getElementById('resultArea').innerHTML = html;
+}
+</script>
+</body>
+</html>
