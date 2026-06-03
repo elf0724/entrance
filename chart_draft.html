@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圖表頁草稿｜政策研究資料庫</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --brand: #1e3a5f;
+    --brand-light: #2e5e99;
+    --accent: #f59e0b;
+  }
+  body { font-family: "微軟正黑體", "Microsoft JhengHei", "Noto Sans TC", sans-serif; background:#f1f5f9; }
+  .sidebar { width: 220px; min-height: 100vh; background: var(--brand); }
+  .sidebar a { display:block; padding:10px 16px; color:#c8d8f0; border-radius:6px; margin:2px 8px; font-size:14px; }
+  .sidebar a:hover, .sidebar a.active { background: var(--brand-light); color:#fff; }
+  .card { background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.08); padding:20px 24px; }
+  .card-title { font-size:14px; font-weight:700; color:var(--brand); margin-bottom:4px; }
+  .card-sub { font-size:11px; color:#6b7280; margin-bottom:16px; }
+  .section-label { font-size:11px; font-weight:700; color:#9ca3af; letter-spacing:.06em; text-transform:uppercase; margin-bottom:12px; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:9999px; font-size:11px; font-weight:600; }
+  .tag-high   { background:#dcfce7; color:#166534; }
+  .tag-mid    { background:#fef9c3; color:#854d0e; }
+  .tag-low    { background:#fee2e2; color:#991b1b; }
+  .tag-blue   { background:#dbeafe; color:#1e40af; }
+  .tag-gray   { background:#f3f4f6; color:#374151; }
+  .json-box   { background:#1e293b; color:#e2e8f0; border-radius:10px; padding:16px 20px; font-size:12px; font-family:monospace; line-height:1.7; overflow-x:auto; }
+  .json-key   { color:#93c5fd; }
+  .json-str   { color:#86efac; }
+  .json-val   { color:#fde68a; }
+  .notice-box { background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 16px; font-size:12px; color:#1e40af; }
+  .chart-wrap { position:relative; height:280px; }
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-thumb { background:#c0cad8; border-radius:3px; }
+</style>
+</head>
+<body>
+<div class="flex min-h-screen">
+
+  <!-- Sidebar（仿真實樣式） -->
+  <div class="sidebar flex flex-col flex-shrink-0 pt-4">
+    <div class="px-4 pb-4 border-b border-blue-800">
+      <div class="text-white font-bold text-base">📋 政策研究資料庫</div>
+      <div class="text-blue-300 text-xs mt-1">Policy Research DB</div>
+    </div>
+    <div class="mt-3 px-2 text-xs text-blue-400 font-semibold tracking-wider pl-4 mb-1">議題</div>
+    <a href="#">🌡️ 高溫政策</a>
+    <a href="#">📚 教育政策</a>
+    <div class="mt-4 px-2 text-xs text-blue-400 font-semibold tracking-wider pl-4 mb-1">分析</div>
+    <a href="#" class="active">📊 跨議題圖表</a>
+    <div class="flex-1"></div>
+    <div class="px-4 py-3 text-blue-400 text-xs border-t border-blue-800">
+      草稿預覽｜尚未整合至主頁
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="flex-1 overflow-y-auto">
+
+    <!-- Top bar -->
+    <div class="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3">
+      <div class="font-bold text-gray-700 text-lg">📊 跨議題圖表分析</div>
+      <span class="text-xs text-gray-400 ml-1">chart_draft.html — 草稿，不影響主網頁</span>
+      <span class="ml-auto tag tag-blue">Chart.js 4.4 · CDN</span>
+    </div>
+
+    <div class="p-6 space-y-6">
+
+      <!-- ── 提示說明 ──────────────────────────────────── -->
+      <div class="notice-box flex gap-3 items-start">
+        <span class="text-xl mt-0.5">💡</span>
+        <div>
+          <div class="font-semibold mb-1">草稿說明</div>
+          目前三張圖表使用<strong>從 JSON 動態讀取</strong>的真實資料。
+          確認版面與圖表方向後，再將 <code>&lt;section id="charts-page"&gt;</code> 嵌入主 index.html，
+          並在 Tab 列加一個「📊 圖表」按鈕即可。<br>
+          圓餅圖與雷達圖的分類字串需在 web_build.py 做正規化後效果更好（見下方「中期標籤提案」）。
+        </div>
+      </div>
+
+      <!-- ── 圖表區 ─────────────────────────────────────── -->
+      <div class="section-label">近期 — 現有 JSON 直接繪製</div>
+
+      <!-- Row 1：長條 + 圓餅 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- 長條圖：各議題政策數量 -->
+        <div class="card">
+          <div class="card-title">各議題政策筆數比較</div>
+          <div class="card-sub">來源：現行痛點 / 台灣現行政策 / 國際現行政策 各 sheet 列數</div>
+          <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+        </div>
+
+        <!-- 圓餅圖：各城市出現頻率（國際政策） -->
+        <div class="card">
+          <div class="card-title">國際政策城市分布</div>
+          <div class="card-sub">來源：兩議題「國際現行政策」sheet，依城市/國家計數</div>
+          <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+        </div>
+
+      </div>
+
+      <!-- Row 2：雷達圖 -->
+      <div class="card">
+        <div class="card-title">政策類別分布（雷達圖）</div>
+        <div class="card-sub">
+          來源：國際現行政策「政策類別」欄，依關鍵字分群後計數。
+          目前以關鍵字比對，正規化後準確度更高（見標籤提案）。
+        </div>
+        <div class="flex justify-center">
+          <div style="position:relative;width:min(500px,100%);height:320px;">
+            <canvas id="radarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 中期標籤提案 ─────────────────────────────── -->
+      <div class="section-label">中期 — 跨議題共用標籤欄位提案</div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- JSON 結構提案 -->
+        <div class="card">
+          <div class="card-title">JSON 結構提案（國際政策列）</div>
+          <div class="card-sub">在每個議題的 rows 裡統一加入以下欄位，web_build.py 在解析時自動填入</div>
+          <div class="json-box">
+<span class="json-key">"政策名稱"</span>: <span class="json-str">"AI Textbook 計畫"</span>,
+<span class="json-key">"城市"</span>:     <span class="json-str">"韓國首爾"</span>,
+<span class="json-key">"議題"</span>:     <span class="json-str">"教育政策"</span>,
+
+<span class="text-blue-300">// ── 跨議題共用標籤 ──</span>
+<span class="json-key">"政策類別_正規"</span>: <span class="json-str">"AI教育"</span>,
+<span class="json-key">"台北可行性"</span>:   <span class="json-str">"高"</span>,
+<span class="json-key">"難度"</span>:        <span class="json-str">"中"</span>,
+<span class="json-key">"預算規模"</span>:     <span class="json-str">"大"</span>,
+<span class="json-key">"標籤"</span>: [
+  <span class="json-str">"AI"</span>,
+  <span class="json-str">"課程改革"</span>,
+  <span class="json-str">"師資培訓"</span>
+],
+<span class="json-key">"_sources"</span>: [ <span class="text-gray-400">...</span> ]
+          </div>
+        </div>
+
+        <!-- 欄位說明表 -->
+        <div class="card">
+          <div class="card-title">標籤欄位定義</div>
+          <div class="card-sub">統一命名後，跨議題篩選與圖表才能對齊</div>
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="bg-gray-100 text-gray-600">
+                <th class="text-left px-3 py-2 rounded-tl font-semibold">欄位</th>
+                <th class="text-left px-3 py-2 font-semibold">值域</th>
+                <th class="text-left px-3 py-2 rounded-tr font-semibold">用途</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr><td class="px-3 py-2 font-mono text-blue-700">政策類別_正規</td><td class="px-3 py-2">AI教育 / 心理健康 / 弱勢支援 / 少子化因應 / 師資 / 課程 / 退場保護…</td><td class="px-3 py-2 text-gray-500">雷達圖 X 軸</td></tr>
+              <tr><td class="px-3 py-2 font-mono text-blue-700">台北可行性</td><td class="px-3 py-2"><span class="tag tag-high mr-1">高</span><span class="tag tag-mid mr-1">中</span><span class="tag tag-low">低</span></td><td class="px-3 py-2 text-gray-500">篩選、熱點圖</td></tr>
+              <tr><td class="px-3 py-2 font-mono text-blue-700">難度</td><td class="px-3 py-2"><span class="tag tag-high mr-1">高</span><span class="tag tag-mid mr-1">中</span><span class="tag tag-low">低</span></td><td class="px-3 py-2 text-gray-500">氣泡圖 Y 軸</td></tr>
+              <tr><td class="px-3 py-2 font-mono text-blue-700">預算規模</td><td class="px-3 py-2"><span class="tag tag-blue mr-1">大</span><span class="tag tag-mid mr-1">中</span><span class="tag tag-gray">小</span></td><td class="px-3 py-2 text-gray-500">氣泡圖大小</td></tr>
+              <tr><td class="px-3 py-2 font-mono text-blue-700">標籤</td><td class="px-3 py-2 font-mono text-gray-500">["AI","弱勢族群","立法"…]</td><td class="px-3 py-2 text-gray-500">標籤雲、多選篩選</td></tr>
+              <tr><td class="px-3 py-2 font-mono text-blue-700">議題</td><td class="px-3 py-2">高溫政策 / 教育政策</td><td class="px-3 py-2 text-gray-500">跨議題對比</td></tr>
+            </tbody>
+          </table>
+
+          <div class="mt-4 notice-box text-xs">
+            <strong>建議做法</strong>：web_build.py 在輸出每列時，
+            加一個 <code>auto_tag(row)</code> 函式，依政策內容關鍵字自動填入 <code>政策類別_正規</code> 與 <code>標籤</code>，
+            高難度欄位（台北可行性、難度）則由研究員手動在 md 檔案的 YAML front-matter 填寫。
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 未來圖表預告 -->
+      <div class="card">
+        <div class="card-title">中期可解鎖的圖表（有共用標籤後）</div>
+        <div class="card-sub">以下圖表草稿待確認標籤結構後製作</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+          <div class="border border-dashed border-gray-300 rounded-lg p-3 text-center text-xs text-gray-500">
+            <div class="text-2xl mb-1">🫧</div>
+            <div class="font-semibold text-gray-700">可行性 × 難度</div>
+            氣泡圖<br>（泡泡大小=預算）
+          </div>
+          <div class="border border-dashed border-gray-300 rounded-lg p-3 text-center text-xs text-gray-500">
+            <div class="text-2xl mb-1">🏷️</div>
+            <div class="font-semibold text-gray-700">標籤共現熱點圖</div>
+            Heatmap<br>（跨議題標籤交叉）
+          </div>
+          <div class="border border-dashed border-gray-300 rounded-lg p-3 text-center text-xs text-gray-500">
+            <div class="text-2xl mb-1">🌍</div>
+            <div class="font-semibold text-gray-700">城市政策地圖</div>
+            依城市比較<br>兩議題政策數
+          </div>
+          <div class="border border-dashed border-gray-300 rounded-lg p-3 text-center text-xs text-gray-500">
+            <div class="text-2xl mb-1">📈</div>
+            <div class="font-semibold text-gray-700">政策演進時間軸</div>
+            依實施年份<br>折線圖
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /p-6 -->
+  </div><!-- /main -->
+</div><!-- /flex -->
+
+<script>
+// ── 真實資料（從 JSON 動態讀取）───────────────────────────────────
+const DATA_FILES = ['../data/高溫政策.json','../data/教育政策.json'];
+
+const BRAND   = '#1e3a5f';
+const PALETTE = [
+  '#2e5e99','#f59e0b','#10b981','#ef4444','#8b5cf6',
+  '#06b6d4','#f97316','#ec4899','#84cc16','#6366f1',
+  '#14b8a6','#f43f5e','#a78bfa','#fbbf24','#34d399',
+];
+
+async function loadAll() {
+  const topics = await Promise.all(DATA_FILES.map(f => fetch(f).then(r => r.json())));
+  drawBarChart(topics);
+  drawPieChart(topics);
+  drawRadarChart(topics);
+}
+
+// ── 長條圖：各議題各 sheet 筆數 ─────────────────────────────────
+function drawBarChart(topics) {
+  const sheetNames = ['現行痛點','台灣現行政策','國際現行政策'];
+  const datasets = topics.map((t, ti) => ({
+    label: t.label,
+    data: t.sheets.map(s => s.rows.length),
+    backgroundColor: PALETTE[ti] + 'cc',
+    borderColor: PALETTE[ti],
+    borderWidth: 1.5,
+    borderRadius: 5,
+  }));
+
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: { labels: sheetNames, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'Microsoft JhengHei', size: 12 } } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}：${c.raw} 筆` } },
+      },
+      scales: {
+        x: { ticks: { font: { family: 'Microsoft JhengHei', size: 11 } } },
+        y: { beginAtZero: true,
+             ticks: { font: { family: 'Microsoft JhengHei', size: 11 }, stepSize: 10 },
+             title: { display: true, text: '政策筆數', font: { size: 11 } } },
+      },
+    }
+  });
+}
+
+// ── 圓餅圖：城市分布（兩議題合併） ─────────────────────────────
+function drawPieChart(topics) {
+  const counter = {};
+  topics.forEach(t => {
+    const intl = t.sheets.find(s => s.id === '國際');
+    if (!intl) return;
+    intl.rows.forEach(r => {
+      const city = r['城市'] || r['地區'] || '其他';
+      counter[city] = (counter[city] || 0) + 1;
+    });
+  });
+  const sorted = Object.entries(counter).sort((a,b) => b[1]-a[1]);
+  const TOP = 10;
+  const labels = sorted.slice(0, TOP).map(([k]) => k);
+  const values = sorted.slice(0, TOP).map(([,v]) => v);
+  if (sorted.length > TOP) {
+    labels.push('其他');
+    values.push(sorted.slice(TOP).reduce((s,[,v]) => s+v, 0));
+  }
+
+  new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: PALETTE, borderWidth: 2 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font: { family: 'Microsoft JhengHei', size: 11 }, boxWidth: 12, padding: 8 } },
+        tooltip: { callbacks: { label: c => ` ${c.label}：${c.raw} 筆 (${Math.round(c.raw/values.reduce((a,b)=>a+b)*100)}%)` } },
+      },
+    }
+  });
+}
+
+// ── 雷達圖：政策類別分布 ─────────────────────────────────────────
+// 依關鍵字將「政策類別」正規化為幾大群
+const CAT_MAP = [
+  { label: 'AI / 數位',    kw: ['AI','人工智','數位','智慧','科技','EdTech','SkillsFuture','GIGA'] },
+  { label: '弱勢/公平',    kw: ['弱勢','貧困','低收','原住','新住民','偏鄉','公平','equity','indigenous'] },
+  { label: '心理健康',     kw: ['心理','輔導','霸凌','情緒','mental','wellbeing'] },
+  { label: '師資/培訓',    kw: ['教師','師資','培訓','training','teacher'] },
+  { label: '課程/素養',    kw: ['課程','課綱','素養','curriculum','literacy'] },
+  { label: '少子化/退場',  kw: ['少子','退場','整併','出生','birthrate','declining'] },
+  { label: '預警/制度',    kw: ['預警','制度','法規','policy','framework','plan','masterplan'] },
+  { label: '基礎建設',     kw: ['建設','設備','平台','infrastructure','campus','SLS'] },
+];
+
+function classifyRow(text) {
+  const t = text.toLowerCase();
+  const hits = CAT_MAP.map((c,i) => ({
+    i, hit: c.kw.some(k => t.includes(k.toLowerCase()))
+  }));
+  return hits.filter(h => h.hit).map(h => h.i);
+}
+
+function drawRadarChart(topics) {
+  const datasets = topics.map((t, ti) => {
+    const counts = new Array(CAT_MAP.length).fill(0);
+    t.sheets.forEach(s => {
+      s.rows.forEach(r => {
+        const text = Object.values(r).filter(v => typeof v === 'string').join(' ');
+        classifyRow(text).forEach(idx => counts[idx]++);
+      });
+    });
+    return {
+      label: t.label,
+      data: counts,
+      fill: true,
+      backgroundColor: PALETTE[ti] + '33',
+      borderColor: PALETTE[ti],
+      borderWidth: 2,
+      pointBackgroundColor: PALETTE[ti],
+      pointRadius: 4,
+    };
+  });
+
+  new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: { labels: CAT_MAP.map(c => c.label), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'Microsoft JhengHei', size: 12 } } },
+      },
+      scales: {
+        r: {
+          beginAtZero: true,
+          ticks: { font: { size: 10 }, stepSize: 5 },
+          pointLabels: { font: { family: 'Microsoft JhengHei', size: 12 } },
+          grid: { color: '#e5e7eb' },
+          angleLines: { color: '#d1d5db' },
+        }
+      },
+    }
+  });
+}
+
+loadAll().catch(e => {
+  document.querySelector('.notice-box').innerHTML +=
+    `<br><span style="color:red">⚠️ 讀取 JSON 失敗（請用 python -m http.server 7788 開啟）：${e.message}</span>`;
+});
+</script>
+</body>
+</html>

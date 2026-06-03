@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圖表分析 v2 草稿｜政策研究資料庫</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+  :root{ --brand:#1e3a5f; --brand-light:#2e5e99; --accent:#f59e0b; }
+  body{ font-family:"微軟正黑體","Microsoft JhengHei","Noto Sans TC",sans-serif; background:#f1f5f9; }
+
+  /* Sidebar */
+  .sidebar{ width:210px; min-height:100vh; background:var(--brand); flex-shrink:0; }
+  .sb-a{ display:block; padding:8px 14px; color:#bfdbfe; border-radius:6px; margin:2px 8px; font-size:13px; cursor:pointer; transition:background .15s; }
+  .sb-a:hover,.sb-a.active{ background:var(--brand-light); color:#fff; }
+  .sb-sec{ padding:8px 14px 3px; font-size:9px; color:#60a5fa; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+
+  /* Tab */
+  .tab-btn{ padding:7px 16px; border-radius:6px 6px 0 0; font-size:12px; border:1px solid #d1d5db; border-bottom:none; background:#f9fafb; color:#6b7280; cursor:pointer; }
+  .tab-btn.active{ background:#fff; color:var(--brand); font-weight:700; border-top:2px solid var(--brand-light); }
+
+  /* Card */
+  .card{ background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.07); padding:18px 22px; }
+  .card-title{ font-size:13px; font-weight:700; color:var(--brand); }
+  .card-sub{ font-size:10px; color:#9ca3af; margin-top:2px; margin-bottom:14px; }
+
+  /* Heatmap */
+  .hm-wrap{ overflow-x:auto; }
+  .hm-table{ border-collapse:collapse; font-size:10px; min-width:600px; width:100%; }
+  .hm-table th{ background:var(--brand); color:#fff; padding:6px 8px; font-weight:600; white-space:nowrap; font-size:10px; }
+  .hm-table th.row-hdr{ text-align:left; min-width:130px; position:sticky; left:0; z-index:2; }
+  .hm-table td.row-hdr{ font-size:10px; color:#374151; padding:5px 8px; border-bottom:1px solid #f3f4f6; position:sticky; left:0; background:#fff; z-index:1; white-space:nowrap; }
+  .hm-cell{ width:60px; height:30px; text-align:center; border:1px solid #f3f4f6; font-size:9px; font-weight:600; cursor:pointer; transition:opacity .15s; }
+  .hm-cell:hover{ opacity:.75; }
+  .hm-3{ background:#1d4ed8; color:#fff; }   /* 高 */
+  .hm-2{ background:#93c5fd; color:#1e3a5f; } /* 中 */
+  .hm-1{ background:#dbeafe; color:#1e3a5f; } /* 低 */
+  .hm-0{ background:#f9fafb; color:#d1d5db; } /* 無 */
+  .cat-bar{ height:12px; border-radius:2px; display:inline-block; }
+
+  /* Cross-tab panel */
+  .xt-panel{ background:#fffbeb; border:1.5px solid #fde68a; border-radius:10px; padding:14px 18px; font-size:11px; }
+
+  /* Filter chips */
+  .fchip{ display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:9999px; font-size:11px; font-weight:600; cursor:pointer; border:1.5px solid transparent; transition:all .15s; }
+  .fchip.on{ border-color:var(--brand); background:var(--brand); color:#fff; }
+  .fchip.off{ border-color:#d1d5db; background:#f9fafb; color:#6b7280; }
+
+  ::-webkit-scrollbar{ width:5px; height:5px; }
+  ::-webkit-scrollbar-thumb{ background:#c0cad8; border-radius:3px; }
+
+  /* 圖表說明badge */
+  .why-badge{ display:inline-block; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; border-radius:6px; padding:3px 9px; font-size:10px; font-weight:600; margin-bottom:10px; }
+</style>
+</head>
+<body>
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <div class="sidebar pt-4 flex flex-col">
+    <div class="px-4 pb-3 border-b border-blue-800">
+      <div class="text-white font-bold text-sm">📋 政策研究資料庫</div>
+      <div class="text-blue-300 text-xs mt-0.5">Policy Research DB</div>
+    </div>
+    <div class="sb-sec">議題</div>
+    <div class="sb-a" onclick="switchTopic('高溫政策')" id="sb-高溫政策">🌡️ 高溫政策</div>
+    <div class="sb-a" onclick="switchTopic('教育政策')" id="sb-教育政策">📚 教育政策</div>
+    <div class="sb-sec">分析</div>
+    <div class="sb-a active">📊 圖表分析</div>
+    <div class="flex-1"></div>
+    <div class="px-4 py-3 text-blue-400 text-xs border-t border-blue-800">草稿 v2 · 尚未整合</div>
+  </div>
+
+  <!-- Main -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+
+    <!-- Topbar -->
+    <div class="bg-white border-b border-gray-200 px-5 py-2.5 flex items-center gap-3 flex-shrink-0">
+      <div id="topicLabel" class="font-bold text-gray-700 text-base"></div>
+      <div class="flex gap-1 ml-3" id="groupFilters"></div>
+      <div class="ml-auto text-xs text-gray-400">草稿預覽 chart_v2_draft.html</div>
+    </div>
+
+    <!-- Tab row -->
+    <div class="bg-white border-b border-gray-200 px-5 flex gap-1 pt-1 flex-shrink:0">
+      <button class="tab-btn active" onclick="showSection('s1',this)">① 痛點分析</button>
+      <button class="tab-btn" onclick="showSection('s2',this)">② 台灣政策覆蓋</button>
+      <button class="tab-btn" onclick="showSection('s3',this)">③ 國際對應圖</button>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-5">
+
+      <!-- ════ S1 痛點分析 ════ -->
+      <div id="s1">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+          <!-- 水平條形圖 -->
+          <div class="card lg:col-span-2">
+            <div class="card-title">各子族群核心痛點數量</div>
+            <div class="why-badge">📌 為何用橫向條形：族群多（16項），橫排文字不截斷，顏色區分主類別</div>
+            <div class="card-sub">顏色代表所屬大類；長度代表痛點條目數</div>
+            <div style="position:relative;height:420px"><canvas id="painBar"></canvas></div>
+          </div>
+
+          <!-- 甜甜圈 -->
+          <div class="card flex flex-col">
+            <div class="card-title">痛點族群主類別比例</div>
+            <div class="why-badge">📌 甜甜圈：快速看出哪個大類涵蓋最多子族群</div>
+            <div class="card-sub">各大類含幾個子族群</div>
+            <div style="position:relative;flex:1;min-height:200px"><canvas id="painDonut"></canvas></div>
+          </div>
+
+        </div>
+
+        <!-- Cross-tab hint -->
+        <div class="xt-panel mt-1" id="xt-s1">
+          <span class="font-bold">💡 點擊上方任一族群列</span>，下方即顯示：台灣有哪些政策對應此族群、國際有哪些案例可借鑑。
+        </div>
+      </div>
+
+      <!-- ════ S2 台灣政策覆蓋矩陣 ════ -->
+      <div id="s2" class="hidden">
+        <div class="card">
+          <div class="card-title">台灣現行政策 × 痛點族群覆蓋矩陣</div>
+          <div class="why-badge">📌 為何用熱力矩陣：一格一覽政策是否覆蓋族群；空白格即政策缺口</div>
+          <div class="card-sub">
+            顏色深度代表覆蓋程度：
+            <span class="inline-block w-3 h-3 rounded-sm bg-blue-700 align-middle"></span> 高度相關 &nbsp;
+            <span class="inline-block w-3 h-3 rounded-sm bg-blue-300 align-middle"></span> 部分相關 &nbsp;
+            <span class="inline-block w-3 h-3 rounded-sm bg-blue-100 align-middle"></span> 間接相關 &nbsp;
+            <span class="inline-block w-3 h-3 rounded-sm bg-gray-100 align-middle"></span> 無對應
+          </div>
+          <div class="hm-wrap" id="hmContainer"></div>
+        </div>
+
+        <div class="xt-panel mt-3" id="xt-s2">
+          <span class="font-bold">💡 點擊矩陣任一格</span>，右側顯示政策說明摘要及來源。
+        </div>
+      </div>
+
+      <!-- ════ S3 國際政策對應 ════ -->
+      <div id="s3" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+          <!-- 雷達圖 -->
+          <div class="card">
+            <div class="card-title">各國政策面向覆蓋雷達</div>
+            <div class="why-badge">📌 雷達圖：一眼看出各國強項面向與弱點，多邊形越大覆蓋越全面</div>
+            <div class="card-sub">軸線 = 痛點對應面向；面積越大代表該國政策越全面</div>
+            <div style="position:relative;height:320px"><canvas id="intlRadar"></canvas></div>
+          </div>
+
+          <!-- 橫向條形：各面向國際案例數 -->
+          <div class="card">
+            <div class="card-title">各痛點面向國際案例數</div>
+            <div class="why-badge">📌 橫向條形：看哪個痛點面向已有最多國際參考案例</div>
+            <div class="card-sub">愈長代表可借鑑的國際案例愈多</div>
+            <div style="position:relative;height:320px"><canvas id="intlDimBar"></canvas></div>
+          </div>
+
+        </div>
+
+        <!-- 國際案例 × 痛點面向矩陣 -->
+        <div class="card mt-5">
+          <div class="card-title">國際城市 × 痛點面向覆蓋矩陣</div>
+          <div class="why-badge">📌 補充矩陣：搭配雷達圖，可精確到哪個城市在哪個面向有政策</div>
+          <div class="card-sub">點擊格子查看政策摘要</div>
+          <div class="hm-wrap" id="intlHmContainer"></div>
+        </div>
+
+        <div class="xt-panel mt-3" id="xt-s3">
+          <span class="font-bold">💡 點擊矩陣格子</span> 或雷達圖資料點，顯示對應的國際政策摘要。
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /flex -->
+
+<!-- Detail panel (slides in) -->
+<div id="detailPanel" class="hidden fixed right-0 top-0 h-full w-80 bg-white shadow-2xl border-l border-gray-200 z-50 flex flex-col">
+  <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
+    <div class="font-bold text-sm text-gray-700" id="panelTitle">詳細內容</div>
+    <button onclick="closePanel()" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+  </div>
+  <div class="overflow-y-auto flex-1 p-4 text-xs text-gray-700 space-y-3" id="panelBody"></div>
+</div>
+
+<script>
+// ══ 設定 ══════════════════════════════════════════════════════════
+const TOPICS = {
+  '高溫政策': {
+    label: '🌡️ 高溫政策',
+    catColors: ['#2e5e99','#0891b2','#0d9488','#7c3aed','#b45309','#be185d'],
+    // 痛點族群
+    groups: [
+      { cat:'1_戶外工作者',     sub:'1-1_外送員',         short:'外送員' },
+      { cat:'1_戶外工作者',     sub:'1-2_建築工程人員',   short:'建築工人' },
+      { cat:'1_戶外工作者',     sub:'1-3_農漁業工作者',   short:'農漁業' },
+      { cat:'1_戶外工作者',     sub:'1-4_清潔環保人員',   short:'清潔人員' },
+      { cat:'1_戶外工作者',     sub:'1-5_警察交通執勤人員',short:'警察執勤' },
+      { cat:'2_室內高風險工作者',sub:'2-1_工廠作業員',    short:'工廠作業員' },
+      { cat:'2_室內高風險工作者',sub:'2-2_廚房餐飲人員',  short:'廚房餐飲' },
+      { cat:'3_通勤上班族',     sub:'（整體）',           short:'通勤上班族' },
+      { cat:'4_照顧者',         sub:'4-1_嬰幼兒家長',    short:'嬰幼兒家長' },
+      { cat:'4_照顧者',         sub:'4-2_老人照顧者',    short:'老人照顧者' },
+      { cat:'5_脆弱族群',       sub:'5-1_獨居老人',      short:'獨居老人' },
+      { cat:'5_脆弱族群',       sub:'5-2_慢性病患者',    short:'慢性病患者' },
+      { cat:'5_脆弱族群',       sub:'5-3_低收入戶',      short:'低收入戶' },
+      { cat:'6_學生族群',       sub:'（整體）',           short:'學生族群' },
+    ],
+    // 台灣政策面向 × 族群覆蓋 (0=無 1=間接 2=部分 3=高度)
+    twPolicies: [
+      '職安法303-1條', '熱危害預防指引', '職業病補償制度',
+      '冷卻中心政策', '弱勢族群照護', '通勤環境改善', '學校高溫措施'
+    ],
+    twMatrix: [
+    //  外  建  農  清  警  廠  廚  通  嬰  老  獨  慢  低  生
+      [ 2,  3,  2,  2,  2,  3,  3,  1,  0,  0,  0,  0,  0,  0 ], // 職安法
+      [ 3,  3,  3,  3,  3,  3,  3,  1,  0,  0,  0,  0,  0,  0 ], // 熱危害指引
+      [ 2,  2,  2,  2,  2,  2,  2,  0,  0,  0,  0,  0,  0,  0 ], // 職業病補償
+      [ 0,  0,  0,  0,  1,  0,  0,  2,  2,  2,  3,  2,  3,  2 ], // 冷卻中心
+      [ 0,  0,  0,  0,  0,  0,  0,  0,  2,  3,  3,  3,  3,  1 ], // 弱勢族群
+      [ 0,  0,  0,  0,  0,  0,  0,  3,  1,  1,  0,  0,  0,  0 ], // 通勤環境
+      [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3 ], // 學校措施
+    ],
+    // 國際政策面向
+    intlDims: ['官方預警系統','冷卻中心','弱勢族群保護','都市降溫建設','跨部門應變','職場高溫保護'],
+    intlCities: ['新加坡','日本東京','南韓首爾','法國巴黎','澳洲雪梨','美國鳳凰城'],
+    intlMatrix: [
+    //  預  冷  弱  建  跨  職
+      [ 3,  3,  3,  2,  3,  2 ], // 新加坡
+      [ 3,  3,  3,  3,  3,  2 ], // 東京
+      [ 3,  2,  3,  2,  2,  3 ], // 首爾
+      [ 3,  3,  3,  3,  3,  1 ], // 巴黎
+      [ 3,  2,  3,  2,  2,  2 ], // 雪梨
+      [ 2,  3,  3,  1,  2,  1 ], // 鳳凰城
+    ],
+  },
+
+  '教育政策': {
+    label: '📚 教育政策',
+    catColors: ['#2e5e99','#0891b2','#7c3aed','#be185d','#b45309'],
+    groups: [
+      { cat:'1_學生族群',   sub:'1-1_情緒障礙心理困難學生', short:'情緒障礙學生' },
+      { cat:'1_學生族群',   sub:'1-2_特殊教育學生',         short:'特殊教育學生' },
+      { cat:'1_學生族群',   sub:'1-3_新住民子女',           short:'新住民子女' },
+      { cat:'1_學生族群',   sub:'1-4_弱勢家庭學生',         short:'弱勢家庭學生' },
+      { cat:'1_學生族群',   sub:'1-5_偏遠區小校學生',       short:'偏遠區小校' },
+      { cat:'2_教育工作者', sub:'2-1_代理超額教師',         short:'代理超額教師' },
+      { cat:'2_教育工作者', sub:'2-2_輔導教師',             short:'輔導教師' },
+      { cat:'3_家長',       sub:'3-1_明星學區搶學區家長',   short:'學區競爭家長' },
+      { cat:'3_家長',       sub:'3-2_私校面臨退場家長',     short:'私校退場家長' },
+      { cat:'4_學校機構',   sub:'4-1_少子化小型學校',       short:'少子化小型校' },
+      { cat:'4_學校機構',   sub:'4-2_AI轉型中小學',         short:'AI轉型中小學' },
+      { cat:'5_大學生',     sub:'5-1_AI衝擊應屆畢業生',     short:'AI衝擊畢業生' },
+      { cat:'5_大學生',     sub:'5-2_在學大學生AI素養落差', short:'在學AI素養' },
+      { cat:'5_大學生',     sub:'5-3_高房租外縣市就讀生',   short:'高房租就讀生' },
+      { cat:'5_大學生',     sub:'5-4_私立大學瀕退場學生',   short:'私大退場學生' },
+      { cat:'5_大學生',     sub:'5-5_學費凍漲高教品質流失', short:'學費高教品質' },
+    ],
+    twPolicies: [
+      'AI人才方舟計畫', '2030雙語政策', '私校退場機制',
+      '108課綱', 'AI素養教材(臺北)', '5S智慧校園',
+      '特教資源中心', '學生輔導諮商中心', '額滿學校管理'
+    ],
+    //           情  特  新  弱  偏  代  輔  學  私  小  AI  畢  素  租  退  費
+    twMatrix: [
+      [ 0,  0,  0,  2,  1,  0,  0,  0,  0,  1,  3,  2,  3,  0,  0,  0 ], // AI方舟
+      [ 0,  0,  1,  2,  1,  1,  0,  0,  0,  0,  3,  1,  2,  0,  0,  0 ], // 雙語
+      [ 0,  0,  0,  0,  0,  0,  0,  0,  3,  2,  0,  0,  0,  0,  3,  1 ], // 私校退場
+      [ 1,  1,  1,  2,  1,  0,  1,  0,  0,  1,  2,  1,  2,  0,  0,  0 ], // 108課綱
+      [ 0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  3,  1,  3,  0,  0,  0 ], // AI素養教材
+      [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  3,  0,  2,  0,  0,  0 ], // 5S智慧校園
+      [ 2,  3,  1,  1,  1,  0,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0 ], // 特教資源
+      [ 3,  1,  1,  1,  0,  0,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0 ], // 輔導諮商
+      [ 0,  0,  0,  0,  0,  0,  0,  3,  0,  1,  0,  0,  0,  0,  0,  0 ], // 額滿管理
+    ],
+    intlDims: ['AI/數位教育','弱勢公平','心理健康','師資培訓','少子化/退場','課程/素養','基礎建設'],
+    intlCities: ['新加坡','韓國','日本','芬蘭','愛沙尼亞','澳洲'],
+    intlMatrix: [
+    //  AI  弱  心  師  少  課  建
+      [  3,  3,  2,  2,  1,  3,  3 ], // 新加坡
+      [  3,  1,  1,  3,  3,  3,  2 ], // 韓國
+      [  3,  1,  1,  2,  3,  3,  3 ], // 日本
+      [  3,  3,  3,  3,  2,  3,  2 ], // 芬蘭
+      [  3,  2,  1,  2,  1,  3,  3 ], // 愛沙尼亞
+      [  3,  3,  2,  2,  1,  2,  2 ], // 澳洲
+    ],
+  }
+};
+
+const HM_LABELS = ['', '間接', '部分', '高度'];
+const HM_CLASSES = ['hm-0','hm-1','hm-2','hm-3'];
+
+let currentTopic = '教育政策';
+let painBarChart, painDonutChart, radarChart, dimBarChart;
+
+// ── 工具函式 ──────────────────────────────────────────────────────
+function getCatIndex(cats, cat) {
+  return cats.indexOf(cat) === -1 ? cats.push(cat) - 1 : cats.indexOf(cat);
+}
+
+function getUniqueCats(groups) {
+  const seen = [], out = [];
+  groups.forEach(g => { if (!seen.includes(g.cat)) { seen.push(g.cat); out.push(g.cat); } });
+  return out;
+}
+
+// ── 切換議題 ──────────────────────────────────────────────────────
+function switchTopic(t) {
+  currentTopic = t;
+  document.querySelectorAll('[id^="sb-"]').forEach(el => el.classList.remove('active'));
+  document.getElementById('sb-' + t).classList.add('active');
+  document.getElementById('topicLabel').textContent = TOPICS[t].label + ' — 圖表分析';
+  destroyCharts();
+  renderAll();
+  buildGroupFilters();
+}
+
+function destroyCharts() {
+  [painBarChart, painDonutChart, radarChart, dimBarChart].forEach(c => c && c.destroy());
+}
+
+// ── 族群篩選器 ────────────────────────────────────────────────────
+let activeFilter = null;
+function buildGroupFilters() {
+  const cfg = TOPICS[currentTopic];
+  const cats = getUniqueCats(cfg.groups);
+  const container = document.getElementById('groupFilters');
+  container.innerHTML = '<span class="text-xs text-gray-400 mr-1">篩選族群：</span>';
+  cats.forEach((cat, i) => {
+    const clean = cat.replace(/^\d+_/, '');
+    const chip = document.createElement('div');
+    chip.className = 'fchip off';
+    chip.style.borderColor = cfg.catColors[i];
+    chip.textContent = clean;
+    chip.onclick = () => {
+      activeFilter = activeFilter === cat ? null : cat;
+      document.querySelectorAll('#groupFilters .fchip').forEach((c,j) => {
+        c.className = 'fchip ' + (activeFilter === cats[j] ? 'on' : 'off');
+        if(activeFilter === cats[j]) c.style.background = cfg.catColors[j];
+        else { c.style.background=''; c.style.borderColor = cfg.catColors[j]; }
+      });
+      renderAll();
+    };
+    container.appendChild(chip);
+  });
+}
+
+// ── Section 切換 ──────────────────────────────────────────────────
+function showSection(id, btn) {
+  ['s1','s2','s3'].forEach(s => document.getElementById(s).classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.remove('hidden');
+  btn.classList.add('active');
+}
+
+// ── 主渲染 ────────────────────────────────────────────────────────
+function renderAll() {
+  const cfg = TOPICS[currentTopic];
+  const groups = activeFilter
+    ? cfg.groups.filter(g => g.cat === activeFilter)
+    : cfg.groups;
+
+  renderPainBar(groups, cfg);
+  renderPainDonut(groups, cfg);
+  renderTwHeatmap(cfg, groups);
+  renderIntlRadar(cfg);
+  renderIntlDimBar(cfg);
+  renderIntlHeatmap(cfg);
+}
+
+// ── S1a 水平條形圖 ────────────────────────────────────────────────
+function renderPainBar(groups, cfg) {
+  if (painBarChart) painBarChart.destroy();
+  const cats = getUniqueCats(cfg.groups);
+  const labels = groups.map(g => g.short);
+  // 從 JSON 實際計算 bullets（此處用固定5模擬真實值）
+  const counts = groups.map(g => 5); // 實際上從JSON讀取
+  const colors = groups.map(g => cfg.catColors[cats.indexOf(g.cat)] || '#2e5e99');
+
+  painBarChart = new Chart(document.getElementById('painBar'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '核心痛點數',
+        data: counts,
+        backgroundColor: colors.map(c => c + 'cc'),
+        borderColor: colors,
+        borderWidth: 1.5,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      onClick: (e, els) => {
+        if (!els.length) return;
+        const g = groups[els[0].index];
+        showGroupDetail(g, cfg);
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => ` ${c.raw} 項核心痛點 — 點擊查看詳情`,
+            title: c => groups[c[0].dataIndex].sub,
+          }
+        }
+      },
+      scales: {
+        x: { beginAtZero: true, max: 7,
+             ticks: { stepSize: 1, font: { size: 11 } },
+             title: { display: true, text: '核心痛點條目數', font: { size: 11 } } },
+        y: { ticks: { font: { family: 'Microsoft JhengHei', size: 11 } } },
+      }
+    }
+  });
+}
+
+// ── S1b 甜甜圈 ────────────────────────────────────────────────────
+function renderPainDonut(groups, cfg) {
+  if (painDonutChart) painDonutChart.destroy();
+  const cats = getUniqueCats(cfg.groups);
+  const catCounts = cats.map(cat => groups.filter(g => g.cat === cat).length);
+  const catLabels = cats.map(c => c.replace(/^\d+_/, ''));
+
+  painDonutChart = new Chart(document.getElementById('painDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: catLabels,
+      datasets: [{ data: catCounts, backgroundColor: cfg.catColors, borderWidth: 2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Microsoft JhengHei', size: 10 }, boxWidth: 10, padding: 6 } },
+        tooltip: { callbacks: { label: c => ` ${c.label}：${c.raw} 個子族群` } }
+      }
+    }
+  });
+}
+
+// ── S2 台灣政策熱力矩陣 ────────────────────────────────────────────
+function renderTwHeatmap(cfg, groups) {
+  const container = document.getElementById('hmContainer');
+  const groupIdxMap = cfg.groups.map((g,i) => i);
+  const filteredIdx = activeFilter
+    ? cfg.groups.map((g,i) => g.cat === activeFilter ? i : -1).filter(i => i >= 0)
+    : groupIdxMap;
+
+  let html = '<table class="hm-table"><thead><tr>';
+  html += '<th class="row-hdr">政策面向 \\ 族群</th>';
+  filteredIdx.forEach(i => {
+    html += `<th style="writing-mode:vertical-lr;transform:rotate(180deg);height:80px;padding:4px 6px;font-size:9px;">${cfg.groups[i].short}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  cfg.twPolicies.forEach((pol, pi) => {
+    html += `<tr><td class="row-hdr">${pol}</td>`;
+    filteredIdx.forEach(gi => {
+      const val = cfg.twMatrix[pi][gi];
+      const lbl = HM_LABELS[val];
+      html += `<td class="hm-cell ${HM_CLASSES[val]}" onclick="showTwDetail('${pol}','${cfg.groups[gi].short}',${val})" title="${pol} × ${cfg.groups[gi].short}：${lbl || '無對應'}">${lbl}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  // 覆蓋率統計列
+  html += '<tr style="background:#f8fafc"><td class="row-hdr" style="font-weight:700;color:#1e3a5f;">覆蓋族群數</td>';
+  filteredIdx.forEach(gi => {
+    const total = cfg.twPolicies.filter((_,pi) => cfg.twMatrix[pi][gi] > 0).length;
+    const max = cfg.twPolicies.length;
+    const pct = Math.round(total/max*100);
+    const color = pct >= 60 ? '#166534' : pct >= 30 ? '#854d0e' : '#991b1b';
+    html += `<td class="hm-cell hm-0" style="color:${color};font-weight:700;">${total}/${max}</td>`;
+  });
+  html += '</tr></tbody></table>';
+
+  container.innerHTML = html;
+}
+
+// ── S3a 雷達圖 ────────────────────────────────────────────────────
+const RADAR_PALETTE = ['#2e5e99','#f59e0b','#10b981','#ef4444','#8b5cf6','#06b6d4'];
+
+function renderIntlRadar(cfg) {
+  if (radarChart) radarChart.destroy();
+  const datasets = cfg.intlCities.map((city, i) => ({
+    label: city,
+    data: cfg.intlMatrix[i],
+    fill: true,
+    backgroundColor: RADAR_PALETTE[i] + '22',
+    borderColor: RADAR_PALETTE[i],
+    borderWidth: 2,
+    pointBackgroundColor: RADAR_PALETTE[i],
+    pointRadius: 3,
+  }));
+
+  radarChart = new Chart(document.getElementById('intlRadar'), {
+    type: 'radar',
+    data: { labels: cfg.intlDims, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Microsoft JhengHei', size: 10 }, boxWidth: 10, padding: 5 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}：${'★'.repeat(c.raw)}${'☆'.repeat(3-c.raw)}` } }
+      },
+      scales: {
+        r: {
+          beginAtZero: true, max: 3, min: 0,
+          ticks: { stepSize: 1, font: { size: 9 }, callback: v => ['無','低','中','高'][v] },
+          pointLabels: { font: { family: 'Microsoft JhengHei', size: 10 } },
+          grid: { color: '#e5e7eb' }, angleLines: { color: '#d1d5db' },
+        }
+      }
+    }
+  });
+}
+
+// ── S3b 各面向案例數條形 ──────────────────────────────────────────
+function renderIntlDimBar(cfg) {
+  if (dimBarChart) dimBarChart.destroy();
+  // 每個面向有幾個城市得分 >= 2
+  const counts = cfg.intlDims.map((_,di) =>
+    cfg.intlCities.filter((_,ci) => cfg.intlMatrix[ci][di] >= 2).length
+  );
+
+  dimBarChart = new Chart(document.getElementById('intlDimBar'), {
+    type: 'bar',
+    data: {
+      labels: cfg.intlDims,
+      datasets: [{
+        label: '有強力政策的國家/城市數',
+        data: counts,
+        backgroundColor: counts.map(c =>
+          c >= 5 ? '#1d4ed8cc' : c >= 3 ? '#60a5facc' : '#bfdbfecc'
+        ),
+        borderRadius: 4, borderWidth: 0,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` ${c.raw} 個城市有強力對應政策` } }
+      },
+      scales: {
+        x: { beginAtZero: true, max: cfg.intlCities.length,
+             ticks: { stepSize: 1, font: { size: 10 } },
+             title: { display: true, text: '城市數（政策強度≥中）', font: { size: 10 } } },
+        y: { ticks: { font: { family: 'Microsoft JhengHei', size: 11 } } },
+      }
+    }
+  });
+}
+
+// ── S3c 國際 × 面向矩陣 ──────────────────────────────────────────
+function renderIntlHeatmap(cfg) {
+  const container = document.getElementById('intlHmContainer');
+  let html = '<table class="hm-table"><thead><tr>';
+  html += '<th class="row-hdr">城市 \\ 痛點面向</th>';
+  cfg.intlDims.forEach(d => html += `<th style="font-size:9px;padding:5px 6px;white-space:normal;text-align:center;max-width:70px;">${d}</th>`);
+  html += '</tr></thead><tbody>';
+
+  cfg.intlCities.forEach((city, ci) => {
+    html += `<tr><td class="row-hdr">${city}</td>`;
+    cfg.intlDims.forEach((dim, di) => {
+      const val = cfg.intlMatrix[ci][di];
+      html += `<td class="hm-cell ${HM_CLASSES[val]}" onclick="showIntlDetail('${city}','${dim}',${val})" title="${city} × ${dim}">${HM_LABELS[val] || '—'}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  // 面向覆蓋率統計行
+  html += '<tr style="background:#f8fafc"><td class="row-hdr" style="font-weight:700;color:#1e3a5f;">強力案例數</td>';
+  cfg.intlDims.forEach((_,di) => {
+    const n = cfg.intlCities.filter((_,ci) => cfg.intlMatrix[ci][di] >= 2).length;
+    const color = n >= 4 ? '#166534' : n >= 2 ? '#854d0e' : '#991b1b';
+    html += `<td class="hm-cell hm-0" style="color:${color};font-weight:700;">${n}</td>`;
+  });
+  html += '</tr></tbody></table>';
+  container.innerHTML = html;
+}
+
+// ── Detail Panels ─────────────────────────────────────────────────
+function showGroupDetail(g, cfg) {
+  const twCoverage = cfg.twPolicies
+    .map((p, pi) => ({ p, v: cfg.twMatrix[pi][cfg.groups.indexOf(g)] }))
+    .filter(x => x.v > 0)
+    .map(x => `<div class="flex gap-2 items-center"><span class="inline-block w-2 h-2 rounded-full ${x.v===3?'bg-blue-700':x.v===2?'bg-blue-400':'bg-blue-200'}"></span>${x.p} — <span class="font-semibold">${HM_LABELS[x.v]}</span></div>`)
+    .join('');
+
+  openPanel(g.sub,
+    `<div class="font-semibold text-blue-700 mb-2">${g.cat.replace(/^\d+_/,'')}</div>
+     <div class="font-bold mb-1">台灣現行政策覆蓋：</div>
+     <div class="space-y-1 mb-3">${twCoverage || '<span class="text-gray-400">尚無對應政策</span>'}</div>
+     <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+       💡 切換至「② 台灣政策覆蓋」Tab 可看完整矩陣，切換「③ 國際對應圖」可看哪些國際案例可借鑑。
+     </div>`
+  );
+}
+
+function showTwDetail(pol, group, val) {
+  openPanel(`${pol} × ${group}`,
+    `<div class="font-bold text-blue-700 mb-1">政策名稱</div><div class="mb-3">${pol}</div>
+     <div class="font-bold text-blue-700 mb-1">對應族群</div><div class="mb-3">${group}</div>
+     <div class="font-bold text-blue-700 mb-1">覆蓋程度</div>
+     <div class="inline-block px-3 py-1 rounded-full text-sm font-bold ${val===3?'bg-blue-700 text-white':val===2?'bg-blue-300 text-blue-900':val===1?'bg-blue-100 text-blue-700':'bg-gray-100 text-gray-400'} mb-3">
+       ${['無對應','間接相關','部分覆蓋','高度覆蓋'][val]}
+     </div>
+     <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-500">
+       完整政策內容請至「台灣現行政策」分頁查閱，可使用欄位篩選搜尋。
+     </div>`
+  );
+}
+
+function showIntlDetail(city, dim, val) {
+  openPanel(`${city} × ${dim}`,
+    `<div class="font-bold text-blue-700 mb-1">國家/城市</div><div class="mb-3">${city}</div>
+     <div class="font-bold text-blue-700 mb-1">痛點面向</div><div class="mb-3">${dim}</div>
+     <div class="font-bold text-blue-700 mb-1">政策強度</div>
+     <div class="inline-block px-3 py-1 rounded-full text-sm font-bold ${val===3?'bg-blue-700 text-white':val===2?'bg-blue-300 text-blue-900':val===1?'bg-blue-100 text-blue-700':'bg-gray-100 text-gray-400'} mb-3">
+       ${'★'.repeat(val)}${'☆'.repeat(3-val)} ${['無','低','中','高'][val]}度覆蓋
+     </div>
+     <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-xs text-green-800">
+       💡 切換至「國際現行政策」分頁，篩選「${city}」可查看完整政策描述與來源連結。
+     </div>`
+  );
+}
+
+function openPanel(title, body) {
+  document.getElementById('panelTitle').textContent = title;
+  document.getElementById('panelBody').innerHTML = body;
+  document.getElementById('detailPanel').classList.remove('hidden');
+}
+function closePanel() { document.getElementById('detailPanel').classList.add('hidden'); }
+
+// ── 初始化 ────────────────────────────────────────────────────────
+switchTopic('教育政策');
+</script>
+</body>
+</html>
