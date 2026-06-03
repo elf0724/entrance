@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>政策研究資料庫</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --brand: #1e3a5f;
+    --brand-light: #2e5e99;
+    --accent: #f59e0b;
+  }
+  body { font-family: "微軟正黑體", "Microsoft JhengHei", "Noto Sans TC", sans-serif; }
+  .sidebar { width: 220px; min-height: 100vh; background: var(--brand); }
+  .sidebar a { display: block; padding: 10px 16px; color: #c8d8f0; border-radius: 6px; margin: 2px 8px; transition: background .15s; font-size: 14px; cursor:pointer; }
+  .sidebar a:hover, .sidebar a.active { background: var(--brand-light); color: #fff; }
+  .tab-btn { padding: 7px 18px; border-radius: 6px 6px 0 0; font-size: 13px; border: 1px solid #d1d5db; border-bottom: none; background: #f9fafb; color: #555; cursor: pointer; transition: background .15s; }
+  .tab-btn.active { background: #fff; color: var(--brand); font-weight: 700; border-top: 2px solid var(--brand-light); }
+  th { position: sticky; top: 0; background: var(--brand); color: #fff; padding: 8px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; user-select: none; z-index: 10; }
+  th:hover { background: var(--brand-light); }
+  th .sort-icon { margin-left: 4px; opacity: .5; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td { padding: 7px 10px; font-size: 12px; vertical-align: top; border-bottom: 1px solid #e5e7eb; white-space: pre-wrap; word-break: break-word; max-width: 320px; }
+  tr:hover td { background: #f0f6ff !important; }
+  tr.selected td { background: #fef3c7 !important; }
+  .source-link { color: #1d4ed8; text-decoration: underline; }
+  .source-link:hover { color: #1e40af; }
+  .badge { display: inline-block; padding: 1px 7px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+  #compareModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; overflow-y: auto; }
+  #compareModal .inner { background: #fff; border-radius: 12px; margin: 40px auto; width: 95%; max-width: 1200px; padding: 28px; }
+  .compare-col { flex: 1; min-width: 220px; border: 1px solid #d1d5db; border-radius: 8px; padding: 14px; font-size: 12px; }
+  .compare-col h3 { font-weight: 700; color: var(--brand); font-size: 13px; margin-bottom: 10px; border-bottom: 2px solid var(--brand-light); padding-bottom: 6px; }
+  .compare-field { margin-bottom: 10px; }
+  .compare-field .label { font-weight: 600; color: #555; font-size: 11px; margin-bottom: 2px; }
+  .compare-field .val { white-space: pre-wrap; line-height: 1.5; }
+  input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; }
+  .filter-row select { font-size: 11px; padding: 2px 4px; border: 1px solid #d1d5db; border-radius: 4px; background: #f9fafb; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #c0cad8; border-radius: 3px; }
+  .highlight { background: #fde68a; border-radius: 2px; }
+
+  /* ── 圖表頁專用樣式 ── */
+  .chart-card { background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.07); padding:18px 22px; }
+  .chart-card-title { font-size:15px; font-weight:700; color:var(--brand); }
+  .chart-card-sub { font-size:12px; color:#9ca3af; margin-top:2px; margin-bottom:12px; }
+  .why-badge { display:inline-block; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; border-radius:6px; padding:3px 10px; font-size:12px; font-weight:600; margin-bottom:8px; }
+  .hm-wrap { overflow-x:auto; }
+  .hm-table { border-collapse:collapse; font-size:13px; width:100%; }
+  .hm-table th { position:sticky; top:0; background:var(--brand); color:#fff; padding:8px 12px; font-weight:600; white-space:nowrap; font-size:13px; cursor:default; }
+  .hm-table th.row-hdr { text-align:left; min-width:180px; position:sticky; left:0; z-index:12; }
+  .hm-table td.row-hdr { font-size:13px; color:#374151; padding:7px 12px; border-bottom:1px solid #f3f4f6; position:sticky; left:0; background:#fff; z-index:1; white-space:nowrap; }
+  .hm-cell { width:72px; height:38px; text-align:center; border:1px solid #f3f4f6; font-size:12px; font-weight:600; cursor:pointer; transition:opacity .15s; }
+  .hm-cell:hover { opacity:.7; }
+  .hm-3 { background:#1d4ed8; color:#fff; }
+  .hm-2 { background:#93c5fd; color:#1e3a5f; }
+  .hm-1 { background:#dbeafe; color:#1e3a5f; }
+  .hm-0 { background:#f9fafb; color:#d1d5db; }
+  .fchip { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:9999px; font-size:11px; font-weight:600; cursor:pointer; border:1.5px solid transparent; transition:all .15s; white-space:nowrap; }
+  .fchip.on  { color:#fff; }
+  .fchip.off { border-color:#d1d5db; background:#f9fafb; color:#6b7280; }
+  .xt-panel { background:#fffbeb; border:1.5px solid #fde68a; border-radius:10px; padding:12px 16px; font-size:11px; color:#92400e; }
+  #detailPanel { transition: transform .2s; }
+  #detailPanel.hidden { display:none; }
+
+  /* ── 手機版側邊欄 ── */
+  #menuToggle {
+    display: none;
+    position: fixed;
+    top: 10px; left: 10px;
+    z-index: 500;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    width: 40px; height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  #sidebarOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 300;
+  }
+  @media (max-width: 768px) {
+    #menuToggle { display: flex; }
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      z-index: 400;
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+      min-height: unset;
+    }
+    .sidebar.open { transform: translateX(0); }
+    #sidebarOverlay.open { display: block; }
+    /* 主內容區左邊不再預留側邊欄空間 */
+    .flex.min-h-screen > div:not(.sidebar) { width: 100% !important; }
+  }
+</style>
+</head>
+<body class="bg-gray-50">
+
+<!-- 手機版選單按鈕 -->
+<button id="menuToggle" onclick="toggleSidebar()">☰</button>
+<!-- 點選側邊欄外部關閉 -->
+<div id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- Layout -->
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <div class="sidebar flex flex-col flex-shrink-0 pt-4" id="sidebar">
+    <div class="px-4 pb-4 border-b border-blue-800">
+      <div class="text-white font-bold text-base">📋 政策研究資料庫</div>
+      <div class="text-blue-300 text-xs mt-1">Policy Research DB</div>
+    </div>
+    <div class="mt-3 px-2 text-xs text-blue-400 font-semibold tracking-wider pl-4 mb-1">議題</div>
+    <div id="topicNav"></div>
+    <!-- 圖表分析入口 -->
+    <div class="mt-3 px-2 text-xs text-blue-400 font-semibold tracking-wider pl-4 mb-1">分析</div>
+    <a id="chartNavLink" onclick="showChartView(); closeSidebar(); return false;">📊 圖表分析</a>
+    <div class="flex-1"></div>
+    <div class="px-4 py-3 text-blue-400 text-xs border-t border-blue-800">
+      新增議題：在 web_build.py<br>加入資料後重新執行
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+
+    <!-- Top bar -->
+    <div class="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-4 flex-wrap">
+      <div id="topicTitle" class="font-bold text-gray-700 text-lg mr-2"></div>
+      <div class="flex-1 relative max-w-sm" id="searchArea">
+        <input id="searchInput" type="text" placeholder="🔍 全文搜尋…"
+          class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </div>
+      <!-- 圖表篩選器（圖表模式顯示） -->
+      <div id="chartFilterArea" class="hidden flex-1 flex items-center gap-1 flex-wrap"></div>
+      <div class="flex items-center gap-2 ml-auto" id="exportArea">
+        <span id="selCount" class="text-xs text-gray-500 hidden"></span>
+        <button id="compareBtn" onclick="openCompare()"
+          class="hidden text-sm bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg font-semibold transition">
+          ⚖️ 比較選取
+        </button>
+        <button onclick="exportCSV()"
+          class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition">
+          ↓ CSV
+        </button>
+        <button onclick="exportExcel()"
+          class="text-sm bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg transition">
+          ↓ Excel
+        </button>
+      </div>
+    </div>
+
+    <!-- Sheet tabs / Chart tabs -->
+    <div class="bg-white border-b border-gray-200 px-6 pt-2 flex gap-1" id="sheetTabs"></div>
+
+    <!-- Stats bar（圖表模式隱藏） -->
+    <div class="bg-gray-100 border-b border-gray-200 px-6 py-1 flex items-center gap-4 text-xs text-gray-500" id="statsBar">
+      <span id="rowCount"></span>
+      <span id="filterInfo" class="text-blue-600"></span>
+      <button onclick="clearFilters()" id="clearFiltersBtn" class="hidden text-red-500 hover:underline">✕ 清除所有篩選</button>
+    </div>
+
+    <!-- Table / Chart area + Detail Panel 並排 -->
+    <div class="flex flex-1 overflow-hidden">
+      <div class="flex-1 overflow-auto px-4 pt-3 pb-6" id="tableArea">
+        <div id="loadingMsg" class="text-center text-gray-400 mt-20 text-lg">載入中…</div>
+      </div>
+      <!-- Detail Side Panel（圖表點擊詳情，與矩陣並排） -->
+      <div id="detailPanel" class="hidden w-80 flex-shrink-0 bg-white border-l border-gray-200 flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+          <div class="font-bold text-sm text-gray-700 truncate pr-2" id="panelTitle"></div>
+          <button onclick="closeDetailPanel()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none flex-shrink-0">&times;</button>
+        </div>
+        <div class="overflow-y-auto flex-1 p-4 text-xs text-gray-700 space-y-3" id="panelBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Compare Modal -->
+<div id="compareModal">
+  <div class="inner">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold text-gray-800">⚖️ 政策比較</h2>
+      <button onclick="closeCompare()" class="text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
+    </div>
+    <div id="compareContent" class="flex gap-4 flex-wrap"></div>
+    <div class="mt-4 text-right">
+      <button onclick="exportCompareCSV()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">↓ 匯出比較結果</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 手機版側邊欄開關 ──────────────────────────────────────────────
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// 原有資料表功能
+// ════════════════════════════════════════════════════════════════════
+let allTopics = [];
+let currentTopic = null;
+let currentSheetIdx = 0;
+let sortCol = -1, sortAsc = true;
+let filters = {};
+let selectedRows = new Set();
+let searchTerm = '';
+let chartMode = false;
+
+// ── Boot ────────────────────────────────────────────────────────────
+async function loadTopicIndex() {
+  await loadChartConfigs();
+  const res = await fetch('data/index.json');
+  allTopics = await res.json();
+  renderNav();
+  if (allTopics.length) loadTopic(allTopics[0].id);
+}
+
+function renderNav() {
+  const nav = document.getElementById('topicNav');
+  nav.innerHTML = allTopics.map(t =>
+    `<a href="#" onclick="loadTopic('${t.id}');closeSidebar();return false;" id="nav-${t.id}">${t.label}</a>`
+  ).join('');
+}
+
+async function loadTopic(id) {
+  chartMode = false;
+  document.querySelectorAll('#topicNav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(`nav-${id}`)?.classList.add('active');
+  document.getElementById('chartNavLink').classList.remove('active');
+  // 恢復資料表 UI
+  document.getElementById('searchArea').classList.remove('hidden');
+  document.getElementById('exportArea').classList.remove('hidden');
+  document.getElementById('statsBar').classList.remove('hidden');
+  document.getElementById('chartFilterArea').classList.add('hidden');
+  closeDetailPanel();
+
+  const res = await fetch(`data/${id}.json`);
+  currentTopic = await res.json();
+  currentSheetIdx = 0;
+  selectedRows.clear();
+  filters = {};
+  sortCol = -1; sortAsc = true;
+  document.getElementById('topicTitle').textContent = currentTopic.label;
+  renderSheetTabs();
+  renderTable();
+}
+
+// ── Sheet Tabs ───────────────────────────────────────────────────────
+function renderSheetTabs() {
+  const tabs = document.getElementById('sheetTabs');
+  tabs.innerHTML = currentTopic.sheets.map((s, i) =>
+    `<button class="tab-btn ${i===currentSheetIdx?'active':''}" onclick="switchSheet(${i})">
+      ${s.name} <span class="text-gray-400 font-normal text-xs">(${s.rows.length})</span>
+    </button>`
+  ).join('');
+}
+
+function switchSheet(i) {
+  currentSheetIdx = i;
+  selectedRows.clear();
+  filters = {};
+  sortCol = -1; sortAsc = true;
+  document.getElementById('searchInput').value = '';
+  searchTerm = '';
+  renderSheetTabs();
+  renderTable();
+}
+
+function currentSheet() { return currentTopic.sheets[currentSheetIdx]; }
+
+function getFilteredRows() {
+  const sheet = currentSheet();
+  let rows = sheet.rows;
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    rows = rows.filter(row => sheet.columns.some(col => (row[col]||'').toLowerCase().includes(q)));
+  }
+  Object.entries(filters).forEach(([colName, val]) => {
+    if (!val) return;
+    rows = rows.filter(row => (row[colName]||'') === val);
+  });
+  if (sortCol >= 0) {
+    const col = sheet.columns[sortCol];
+    rows = [...rows].sort((a, b) => {
+      const av = (a[col]||'').toLowerCase(), bv = (b[col]||'').toLowerCase();
+      return sortAsc ? av.localeCompare(bv, 'zh') : bv.localeCompare(av, 'zh');
+    });
+  }
+  return rows;
+}
+
+function renderTable() {
+  const sheet = currentSheet();
+  const rows = getFilteredRows();
+  const srcCol = sheet.srcCol;
+
+  document.getElementById('rowCount').textContent = `顯示 ${rows.length} / ${sheet.rows.length} 筆`;
+  const hasFilters = searchTerm || Object.values(filters).some(v => v);
+  document.getElementById('filterInfo').textContent = hasFilters ? '（已篩選）' : '';
+  document.getElementById('clearFiltersBtn').classList.toggle('hidden', !hasFilters);
+  updateSelUI();
+
+  const wrap = document.createElement('div');
+  wrap.className = 'overflow-x-auto rounded-lg shadow-sm border border-gray-200';
+  const table = document.createElement('table');
+  table.className = 'w-full bg-white border-collapse text-sm';
+  table.style.minWidth = '900px';
+  const thead = document.createElement('thead');
+
+  const tr1 = document.createElement('tr');
+  const chkTh = document.createElement('th');
+  chkTh.style.width = '32px';
+  chkTh.innerHTML = `<input type="checkbox" id="checkAll" onchange="toggleAll(this.checked)">`;
+  tr1.appendChild(chkTh);
+  sheet.columns.forEach((col, i) => {
+    if (col === srcCol) return;
+    const th = document.createElement('th');
+    th.innerHTML = `${col} <span class="sort-icon">${sortCol===i?(sortAsc?'↑':'↓'):'⇅'}</span>`;
+    if (sortCol === i) th.classList.add('sorted');
+    th.onclick = () => { if (sortCol===i) sortAsc=!sortAsc; else {sortCol=i;sortAsc=true;} renderTable(); };
+    tr1.appendChild(th);
+  });
+  const srcTh = document.createElement('th');
+  srcTh.textContent = srcCol;
+  srcTh.style.minWidth = '140px';
+  tr1.appendChild(srcTh);
+  thead.appendChild(tr1);
+
+  const tr2 = document.createElement('tr');
+  tr2.className = 'filter-row';
+  tr2.style.background = '#1a3457';
+  const emptyTd = document.createElement('td');
+  emptyTd.style.cssText = 'padding:4px;background:#1a3457';
+  tr2.appendChild(emptyTd);
+  sheet.columns.forEach((col, i) => {
+    if (col === srcCol) return;
+    const td = document.createElement('td');
+    td.style.cssText = 'padding:4px 8px;background:#1a3457';
+    const uniqueVals = [...new Set(sheet.rows.map(r => r[col]||'').filter(v=>v))].sort((a,b)=>a.localeCompare(b,'zh'));
+    if (uniqueVals.length <= 30 && uniqueVals.length > 1) {
+      const sel = document.createElement('select');
+      sel.innerHTML = `<option value="">全部</option>` + uniqueVals.map(v=>`<option value="${escHtml(v)}" ${filters[col]===v?'selected':''}>${escHtml(v.substring(0,20))}</option>`).join('');
+      sel.onchange = () => { filters[col] = sel.value; renderTable(); };
+      td.appendChild(sel);
+    }
+    tr2.appendChild(td);
+  });
+  const srcTd = document.createElement('td');
+  srcTd.style.cssText = 'padding:4px;background:#1a3457';
+  tr2.appendChild(srcTd);
+  thead.appendChild(tr2);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  rows.forEach((row, ri) => {
+    const tr = document.createElement('tr');
+    tr.className = ri % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+    if (selectedRows.has(row._id)) tr.classList.add('selected');
+    const chkTd = document.createElement('td');
+    chkTd.style.cssText = 'text-align:center;padding:6px';
+    const chk = document.createElement('input');
+    chk.type = 'checkbox';
+    chk.checked = selectedRows.has(row._id);
+    chk.onchange = () => { if (chk.checked) selectedRows.add(row._id); else selectedRows.delete(row._id); updateSelUI(); tr.classList.toggle('selected', chk.checked); };
+    chkTd.appendChild(chk);
+    tr.appendChild(chkTd);
+    sheet.columns.forEach(col => {
+      if (col === srcCol) return;
+      const td = document.createElement('td');
+      let val = row[col] || '';
+      td.innerHTML = searchTerm ? highlightText(val, searchTerm) : escHtml(val);
+      tr.appendChild(td);
+    });
+    const sTd = document.createElement('td');
+    sTd.style.minWidth = '140px';
+    const srcs = row._sources || [];
+    if (srcs.length) sTd.innerHTML = srcs.map(s=>`<a class="source-link block mb-1" href="${escHtml(s.url)}" target="_blank" rel="noopener">↗ ${escHtml(s.label)}</a>`).join('');
+    tr.appendChild(sTd);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  sheet.rows.forEach((r, i) => r._id = i);
+  const area = document.getElementById('tableArea');
+  area.innerHTML = '';
+  if (rows.length === 0) {
+    area.innerHTML = '<div class="text-center text-gray-400 mt-16 text-base">沒有符合條件的資料</div>';
+  } else {
+    area.appendChild(wrap);
+  }
+}
+
+function updateSelUI() {
+  const n = selectedRows.size;
+  const el = document.getElementById('selCount'), btn = document.getElementById('compareBtn');
+  if (n > 0) { el.textContent=`已選 ${n} 筆`; el.classList.remove('hidden'); btn.classList.toggle('hidden', n<2); }
+  else { el.classList.add('hidden'); btn.classList.add('hidden'); }
+}
+function toggleAll(checked) {
+  const rows = getFilteredRows();
+  if (checked) rows.forEach(r => selectedRows.add(r._id)); else selectedRows.clear();
+  renderTable();
+}
+function openCompare() {
+  const sheet = currentSheet();
+  const rows = sheet.rows.filter(r => selectedRows.has(r._id));
+  document.getElementById('compareContent').innerHTML = rows.map(row => {
+    const fields = sheet.columns.map(col => {
+      if (col === sheet.srcCol) {
+        const srcs = row._sources||[];
+        return `<div class="compare-field"><div class="label">${escHtml(col)}</div><div class="val">${srcs.map(s=>`<a class="source-link" href="${escHtml(s.url)}" target="_blank">${escHtml(s.label)}</a>`).join('<br>')||'—'}</div></div>`;
+      }
+      return `<div class="compare-field"><div class="label">${escHtml(col)}</div><div class="val">${escHtml(row[col]||'—')}</div></div>`;
+    }).join('');
+    return `<div class="compare-col"><h3>${escHtml(row[sheet.columns[1]]||row[sheet.columns[0]]||'')}</h3>${fields}</div>`;
+  }).join('');
+  document.getElementById('compareModal').style.display = 'block';
+}
+function closeCompare() { document.getElementById('compareModal').style.display = 'none'; }
+document.getElementById('searchInput').addEventListener('input', function() { searchTerm=this.value.trim(); renderTable(); });
+function clearFilters() { filters={}; searchTerm=''; document.getElementById('searchInput').value=''; renderTable(); }
+function rowsToExportData() {
+  const sheet = currentSheet(), rows = getFilteredRows(), headers = [...sheet.columns];
+  return { headers, data: rows.map(r => headers.map(col => col===sheet.srcCol ? (r._sources||[]).map(s=>s.url).join('\n') : r[col]||'')) };
+}
+function exportCSV() {
+  const {headers,data} = rowsToExportData();
+  const blob = new Blob(['﻿'+[headers,...data].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8;'});
+  download(blob,`${currentTopic.id}_${currentSheet().name}.csv`);
+}
+function exportExcel() {
+  const {headers,data} = rowsToExportData();
+  const ws = XLSX.utils.aoa_to_sheet([headers,...data]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,currentSheet().name.substring(0,31));
+  XLSX.writeFile(wb,`${currentTopic.id}_${currentSheet().name}.xlsx`);
+}
+function exportCompareCSV() {
+  const sheet = currentSheet(), rows = sheet.rows.filter(r=>selectedRows.has(r._id)), headers = sheet.columns;
+  const blob = new Blob(['﻿'+[headers,...rows.map(r=>headers.map(col=>col===sheet.srcCol?(r._sources||[]).map(s=>s.url).join('\n'):r[col]||''))].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8;'});
+  download(blob,`比較結果_${currentSheet().name}.csv`);
+}
+function download(blob,filename) { const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); }
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function highlightText(text,query) {
+  const escaped=escHtml(text), qEsc=escHtml(query).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return escaped.replace(new RegExp(qEsc,'gi'),m=>`<mark class="highlight">${m}</mark>`);
+}
+document.getElementById('compareModal').addEventListener('click',function(e){if(e.target===this)closeCompare();});
+
+// ════════════════════════════════════════════════════════════════════
+// 圖表分析功能
+// ════════════════════════════════════════════════════════════════════
+const HM_LABELS  = ['', '間接', '部分', '高度'];
+const HM_CLASSES = ['hm-0','hm-1','hm-2','hm-3'];
+const RADAR_PAL  = ['#2e5e99','#f59e0b','#10b981','#ef4444','#8b5cf6','#06b6d4'];
+
+let activeChartSection = 's1';
+let activeChartFilter  = new Set(); // 複選：存放選中的族群大類
+let chartInstances = {};
+
+// 圖表設定：從 data/chart_configs.json 動態載入
+let CHART_CONFIGS = {};
+async function loadChartConfigs() {
+  const res = await fetch('data/chart_configs.json?_=' + Date.now());
+  CHART_CONFIGS = await res.json();
+}
+
+// ── 切換至圖表模式 ────────────────────────────────────────────────
+function showChartView() {
+  if (!currentTopic) return;
+  chartMode = true;
+  document.querySelectorAll('#topicNav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('chartNavLink').classList.add('active');
+  document.getElementById('searchArea').classList.add('hidden');
+  document.getElementById('exportArea').classList.add('hidden');
+  document.getElementById('statsBar').classList.add('hidden');
+  document.getElementById('chartFilterArea').classList.remove('hidden');
+  document.getElementById('topicTitle').textContent = currentTopic.label + ' — 📊 圖表分析';
+  activeChartSection = 's1';
+  activeChartFilter = new Set();
+  destroyCharts();
+  renderChartTabs();
+  renderChartFilterChips();
+  renderChartArea();
+}
+
+function destroyCharts() {
+  Object.values(chartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
+  chartInstances = {};
+}
+
+// ── Chart Tabs ────────────────────────────────────────────────────
+function renderChartTabs() {
+  document.getElementById('sheetTabs').innerHTML = [
+    ['s1','① 痛點分析'],
+    ['s2','② 台灣政策覆蓋'],
+    ['s3','③ 國際對應圖'],
+  ].map(([id,label]) =>
+    `<button class="tab-btn ${id===activeChartSection?'active':''}" onclick="switchChartSection('${id}',this)">${label}</button>`
+  ).join('');
+}
+
+function switchChartSection(id, btn) {
+  activeChartSection = id;
+  document.querySelectorAll('#sheetTabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  destroyCharts();
+  renderChartArea();
+}
+
+// ── 族群篩選 chips ────────────────────────────────────────────────
+function renderChartFilterChips() {
+  const tid = currentTopic.id;
+  const cfg = CHART_CONFIGS[tid];
+  if (!cfg) { document.getElementById('chartFilterArea').innerHTML = ''; return; }
+  const cats = [...new Set(cfg.groups.map(g => g.cat))];
+  const area = document.getElementById('chartFilterArea');
+  area.innerHTML = '<span class="text-xs text-gray-400 mr-1 flex-shrink-0">族群篩選：</span>';
+
+  // ── 全部 按鈕 ──
+  const btnAll = document.createElement('div');
+  const allOn = activeChartFilter.size === cats.length;
+  btnAll.className = 'fchip ' + (allOn ? 'on' : 'off');
+  btnAll.style.borderColor = '#6b7280';
+  if (allOn) btnAll.style.background = '#6b7280';
+  btnAll.textContent = '全部';
+  btnAll.onclick = () => {
+    cats.forEach(c => activeChartFilter.add(c));
+    renderChartFilterChips();
+    destroyCharts();
+    renderChartArea();
+  };
+  area.appendChild(btnAll);
+
+  // ── 各族群 chips ──
+  cats.forEach((cat, i) => {
+    const clean = cat.replace(/^\d+_/, '');
+    const chip = document.createElement('div');
+    const isOn = activeChartFilter.has(cat);
+    chip.className = 'fchip ' + (isOn ? 'on' : 'off');
+    chip.style.borderColor = cfg.catColors[i];
+    if (isOn) chip.style.background = cfg.catColors[i];
+    chip.textContent = clean;
+    chip.onclick = () => {
+      if (activeChartFilter.has(cat)) activeChartFilter.delete(cat);
+      else activeChartFilter.add(cat);
+      renderChartFilterChips();
+      destroyCharts();
+      renderChartArea();
+    };
+    area.appendChild(chip);
+  });
+
+  // ── 全部清除 按鈕 ──
+  const btnClear = document.createElement('div');
+  btnClear.className = 'fchip off';
+  btnClear.style.borderColor = '#ef4444';
+  btnClear.style.color = '#ef4444';
+  btnClear.textContent = '✕ 清除';
+  btnClear.onclick = () => {
+    activeChartFilter.clear();
+    renderChartFilterChips();
+    destroyCharts();
+    renderChartArea();
+  };
+  area.appendChild(btnClear);
+}
+
+// ── 主渲染 ────────────────────────────────────────────────────────
+function renderChartArea() {
+  const tid = currentTopic.id;
+  const cfg = CHART_CONFIGS[tid];
+  const area = document.getElementById('tableArea');
+
+  if (!cfg) {
+    area.innerHTML = `<div class="text-center text-gray-400 mt-20 text-base">此議題尚未設定圖表設定</div>`;
+    return;
+  }
+
+  const groups = activeChartFilter.size > 0
+    ? cfg.groups.filter(g => activeChartFilter.has(g.cat))
+    : cfg.groups;
+
+  if (activeChartSection === 's1') renderS1(area, cfg, groups);
+  else if (activeChartSection === 's2') renderS2(area, cfg, groups);
+  else if (activeChartSection === 's3') renderS3(area, cfg);
+}
+
+// ════ S1：痛點分析 ═══════════════════════════════════════════════
+function renderS1(area, cfg, groups) {
+  area.innerHTML = `
+    <div class="space-y-4 pb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="chart-card lg:col-span-2">
+          <div class="chart-card-title">各子族群核心痛點數量</div>
+          <div class="why-badge">📌 橫向條形：族群多，橫排文字不截斷；顏色區分主類別</div>
+          <div class="chart-card-sub">點擊任一列 → 右側顯示台灣政策覆蓋情形</div>
+          <div style="position:relative;height:${Math.max(260, groups.length * 28)}px">
+            <canvas id="c_painBar"></canvas>
+          </div>
+        </div>
+        <div class="chart-card flex flex-col">
+          <div class="chart-card-title">族群主類別比例</div>
+          <div class="why-badge">📌 甜甜圈：快速看出哪個大類涵蓋最多子族群</div>
+          <div class="chart-card-sub">各大類含幾個子族群</div>
+          <div style="position:relative;flex:1;min-height:200px"><canvas id="c_painDonut"></canvas></div>
+        </div>
+      </div>
+      <div class="xt-panel" id="xt_s1">💡 點擊上方族群列，查看台灣對應政策覆蓋情況</div>
+    </div>`;
+
+  // 水平條形圖 — 從 JSON 現行痛點 sheet 計算真實痛點條數
+  const cats = [...new Set(cfg.groups.map(g => g.cat))];
+  const colors = groups.map(g => cfg.catColors[cats.indexOf(g.cat)] || '#2e5e99');
+
+  function countPainPoints(g) {
+    if (!currentTopic) return 0;
+    const sheet = currentTopic.sheets.find(s => s.name === '現行痛點');
+    if (!sheet) return 0;
+    const row = sheet.rows.find(r => r['子族群'] === g.sub);
+    if (!row) return 0;
+    const raw = row['核心痛點'] || '';
+    return raw.split('\n').filter(s => s.trim().length > 0).length;
+  }
+
+  const painCounts = groups.map(g => countPainPoints(g));
+  const maxCount = Math.max(...painCounts, 5);
+
+  chartInstances['painBar'] = new Chart(document.getElementById('c_painBar'), {
+    type: 'bar',
+    data: {
+      labels: groups.map(g => g.short),
+      datasets: [{
+        label: '核心痛點數', data: painCounts,
+        backgroundColor: colors.map(c => c + 'cc'), borderColor: colors,
+        borderWidth: 1.5, borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      onClick: (e, els) => { if (els.length) showGroupDetail(groups[els[0].index], cfg); },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` ${c.raw} 項核心痛點 — 點擊查看詳情`, title: c => groups[c[0].dataIndex].sub } }
+      },
+      scales: {
+        x: { beginAtZero:true, max: maxCount + 1, ticks:{stepSize:1,font:{size:11}}, title:{display:true,text:'核心痛點條目數',font:{size:11}} },
+        y: { ticks:{font:{family:'Microsoft JhengHei',size:11}} }
+      }
+    }
+  });
+
+  // 甜甜圈
+  const catCounts = cats.map(cat => groups.filter(g => g.cat === cat).length);
+  chartInstances['painDonut'] = new Chart(document.getElementById('c_painDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: cats.map(c => c.replace(/^\d+_/,'')),
+      datasets: [{ data: catCounts, backgroundColor: cfg.catColors, borderWidth: 2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'bottom', labels:{font:{family:'Microsoft JhengHei',size:10},boxWidth:10,padding:5} },
+        tooltip: { callbacks: { label: c => ` ${c.label}：${c.raw} 個子族群` } }
+      }
+    }
+  });
+}
+
+// ════ S2：台灣政策覆蓋矩陣 ═══════════════════════════════════════
+function renderS2(area, cfg, groups) {
+  const groupIdxs = activeChartFilter.size > 0
+    ? cfg.groups.map((g,i) => activeChartFilter.has(g.cat) ? i : -1).filter(i => i >= 0)
+    : cfg.groups.map((_,i) => i);
+
+  let hmHTML = '<table class="hm-table"><thead><tr>';
+  hmHTML += '<th class="row-hdr">政策面向 \\ 族群</th>';
+  groupIdxs.forEach(i => {
+    hmHTML += `<th style="writing-mode:vertical-rl;height:80px;padding:4px 6px;font-size:9px;font-weight:600;cursor:default;">${cfg.groups[i].short}</th>`;
+  });
+  hmHTML += '</tr></thead><tbody>';
+  cfg.twPolicies.forEach((pol, pi) => {
+    hmHTML += `<tr><td class="row-hdr">${pol}</td>`;
+    groupIdxs.forEach(gi => {
+      const v = cfg.twMatrix[pi][gi];
+      hmHTML += `<td class="hm-cell ${HM_CLASSES[v]}" onclick="showTwDetail('${escHtml(pol)}','${escHtml(cfg.groups[gi].short)}',${v})" title="${escHtml(pol)} × ${escHtml(cfg.groups[gi].short)}：${HM_LABELS[v]||'無'}">${HM_LABELS[v]}</td>`;
+    });
+    hmHTML += '</tr>';
+  });
+  // 統計列
+  hmHTML += '<tr style="background:#f1f5f9"><td class="row-hdr font-bold" style="color:var(--brand)">覆蓋政策數</td>';
+  groupIdxs.forEach(gi => {
+    const n = cfg.twPolicies.filter((_,pi) => cfg.twMatrix[pi][gi] > 0).length;
+    const max = cfg.twPolicies.length;
+    const color = n/max >= .6 ? '#166534' : n/max >= .3 ? '#854d0e' : '#991b1b';
+    hmHTML += `<td class="hm-cell hm-0" style="color:${color};font-weight:700;">${n}/${max}</td>`;
+  });
+  hmHTML += '</tr></tbody></table>';
+
+  area.innerHTML = `
+    <div class="space-y-4 pb-6">
+      <div class="chart-card">
+        <div class="chart-card-title">台灣現行政策 × 痛點族群覆蓋矩陣</div>
+        <div class="why-badge">📌 熱力矩陣：一格看出政策是否覆蓋族群；空白格即政策缺口</div>
+        <div class="chart-card-sub">
+          <span class="inline-block w-3 h-3 rounded-sm bg-blue-700 align-middle mr-1"></span>高度覆蓋&ensp;
+          <span class="inline-block w-3 h-3 rounded-sm bg-blue-300 align-middle mr-1"></span>部分覆蓋&ensp;
+          <span class="inline-block w-3 h-3 rounded-sm bg-blue-100 align-middle mr-1"></span>間接相關&ensp;
+          <span class="inline-block w-3 h-3 rounded-sm bg-gray-100 align-middle mr-1"></span>無對應&emsp;
+          點擊格子查看說明
+        </div>
+        <div class="hm-wrap">${hmHTML}</div>
+      </div>
+      <div class="xt-panel">💡 最底列「覆蓋政策數」顯示各族群被幾個政策涵蓋；紅色代表政策覆蓋不足，是潛在缺口。</div>
+    </div>`;
+}
+
+// ════ S3：國際對應圖 ══════════════════════════════════════════════
+
+// 從 JSON 自動產生城市清單與覆蓋矩陣
+function buildIntlMatrixFromJSON(cfg) {
+  if (!currentTopic) return { cities: cfg.intlCities, matrix: cfg.intlMatrix };
+  const sheet = currentTopic.sheets.find(s => s.name === '國際現行政策');
+  if (!sheet || !sheet.rows.length) return { cities: cfg.intlCities, matrix: cfg.intlMatrix };
+
+  // 取得所有有資料的城市（保留順序、去重）
+  const cities = [...new Set(sheet.rows.map(r => r['城市']).filter(Boolean))];
+
+  // 對每個城市×面向計算覆蓋強度
+  const matrix = cities.map(city => {
+    return cfg.intlDims.map(dim => {
+      const dimKw = dim.replace(/[（）【】\s]/g, '');
+      const matchRows = sheet.rows.filter(r => {
+        if (r['城市'] !== city) return false;
+        const cat = (r['政策類別'] || '').replace(/^\d+[.\s]+/, '');
+        const hits = [...dimKw].filter(ch => cat.includes(ch)).length;
+        return hits >= Math.ceil(dimKw.length * 0.5);
+      });
+      if (!matchRows.length) return 0;
+      const totalLen = matchRows.reduce((s, r) => s + (r['政策內容'] || '').length, 0);
+      if (totalLen >= 300) return 3;
+      if (totalLen >= 100) return 2;
+      return 1;
+    });
+  });
+
+  return { cities, matrix };
+}
+
+// 儲存 S3 的城市/矩陣供篩選用
+let _s3Cities = [], _s3Matrix = [], _s3Cfg = null;
+let _s3ActiveVals = new Set(); // 複選：目前勾選的覆蓋等級集合（空=全部）
+
+function buildIntlMatrixHTML(cities, matrix, cfg, activeVals) {
+  // 複選篩選：城市的任一格數值在 activeVals 內即顯示；activeVals 空集合 = 全部
+  const filtered = cities.map((city, ci) => ({ city, row: matrix[ci] }))
+    .filter(({ row }) => activeVals.size === 0 || row.some(v => activeVals.has(v)));
+
+  let html = '<table class="hm-table"><thead><tr>';
+  html += '<th class="row-hdr">城市 \\ 痛點面向</th>';
+  cfg.intlDims.forEach(d => {
+    html += `<th style="font-size:9px;padding:5px 6px;white-space:normal;text-align:center;max-width:72px;">${d}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+  filtered.forEach(({ city, row }) => {
+    html += `<tr><td class="row-hdr">${city}</td>`;
+    cfg.intlDims.forEach((dim, di) => {
+      const v = row[di];
+      html += `<td class="hm-cell ${HM_CLASSES[v]}" onclick="showIntlDetail('${escHtml(city)}','${escHtml(dim)}',${v})" title="${escHtml(city)} × ${escHtml(dim)}">${HM_LABELS[v]||'—'}</td>`;
+    });
+    html += '</tr>';
+  });
+  // 底列：各面向強力案例數（以篩選後城市計）
+  html += '<tr style="background:#f1f5f9"><td class="row-hdr font-bold" style="color:var(--brand)">強力案例數</td>';
+  cfg.intlDims.forEach((_, di) => {
+    const n = filtered.filter(({ row }) => row[di] >= 2).length;
+    const tot = filtered.length;
+    const color = n >= Math.ceil(tot * 0.6) ? '#166534' : n >= Math.ceil(tot * 0.3) ? '#854d0e' : '#991b1b';
+    html += `<td class="hm-cell hm-0" style="color:${color};font-weight:700;">${n}</td>`;
+  });
+  html += '</tr></tbody></table>';
+  return { html, count: filtered.length };
+}
+
+function toggleIntlFilter(val) {
+  // val=0 → 清除所有選取（回全部）
+  if (val === 0) {
+    _s3ActiveVals.clear();
+  } else {
+    if (_s3ActiveVals.has(val)) _s3ActiveVals.delete(val);
+    else _s3ActiveVals.add(val);
+  }
+  // 更新 chip 樣式
+  document.querySelectorAll('.intl-filter-chip').forEach(c => {
+    const v = parseInt(c.dataset.val);
+    const active = v === 0 ? _s3ActiveVals.size === 0 : _s3ActiveVals.has(v);
+    c.className = 'intl-filter-chip ' + (active
+      ? 'px-3 py-1 rounded-full text-xs font-bold cursor-pointer border-2 bg-blue-700 text-white border-blue-700'
+      : 'px-3 py-1 rounded-full text-xs font-semibold cursor-pointer border-2 border-gray-300 text-gray-600 hover:border-blue-400');
+  });
+  const { html, count } = buildIntlMatrixHTML(_s3Cities, _s3Matrix, _s3Cfg, _s3ActiveVals);
+  document.getElementById('intlMatrixWrap').innerHTML = html;
+  const label = _s3ActiveVals.size === 0 ? '全部' : [..._s3ActiveVals].map(v => HM_LABELS[v]).join('＋');
+  document.getElementById('intlCityCount').textContent = `篩選：${label}｜顯示 ${count} / ${_s3Cities.length} 個城市`;
+}
+
+function renderS3(area, cfg) {
+  // 優先從 JSON 自動產生城市與矩陣
+  const { cities: intlCities, matrix: intlMatrix } = buildIntlMatrixFromJSON(cfg);
+  _s3Cities = intlCities; _s3Matrix = intlMatrix; _s3Cfg = cfg; _s3ActiveVals = new Set();
+
+  const { html: intlHmHTML } = buildIntlMatrixHTML(intlCities, intlMatrix, cfg, _s3ActiveVals);
+
+  const chipStyle = (isAll) => isAll
+    ? 'intl-filter-chip px-3 py-1 rounded-full text-xs font-bold cursor-pointer border-2 bg-blue-700 text-white border-blue-700'
+    : 'intl-filter-chip px-3 py-1 rounded-full text-xs font-semibold cursor-pointer border-2 border-gray-300 text-gray-600 hover:border-blue-400';
+
+  area.innerHTML = `
+    <div class="space-y-4 pb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="chart-card">
+          <div class="chart-card-title">各國政策面向覆蓋雷達</div>
+          <div class="why-badge">📌 雷達圖：一眼看各國強項與弱點；多邊形越大覆蓋越全面</div>
+          <div class="chart-card-sub">軸線 = 痛點對應面向；★★★ 為高度覆蓋</div>
+          <div style="position:relative;height:300px"><canvas id="c_radar"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">各痛點面向：國際強力案例數</div>
+          <div class="why-badge">📌 橫向條形：看哪個痛點面向有最多國際可借鑑案例</div>
+          <div class="chart-card-sub">深藍 = 5+個城市；淺藍 = 3-4個；極淺 = 1-2個</div>
+          <div style="position:relative;height:300px"><canvas id="c_dimBar"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">城市 × 痛點面向覆蓋矩陣</div>
+        <div class="why-badge">📌 補充矩陣：搭配雷達圖，精確到哪個城市在哪個面向有政策</div>
+        <div class="flex items-center gap-2 mb-2 flex-wrap">
+          <span class="text-xs text-gray-500 mr-1">篩選（複選）：</span>
+          <span class="${chipStyle(true)}"  data-val="0" onclick="toggleIntlFilter(0)">全部</span>
+          <span class="${chipStyle(false)}" data-val="3" onclick="toggleIntlFilter(3)">高度</span>
+          <span class="${chipStyle(false)}" data-val="2" onclick="toggleIntlFilter(2)">部分</span>
+          <span class="${chipStyle(false)}" data-val="1" onclick="toggleIntlFilter(1)">間接</span>
+          <span class="intl-filter-chip px-3 py-1 rounded-full text-xs font-semibold cursor-pointer border-2 border-red-300 text-red-500 hover:border-red-500" onclick="toggleIntlFilter(0)">✕ 清除</span>
+          <span class="ml-auto text-xs text-gray-400" id="intlCityCount">全部｜顯示 ${intlCities.length} / ${intlCities.length} 個城市</span>
+        </div>
+        <div class="hm-wrap" id="intlMatrixWrap">${intlHmHTML}</div>
+      </div>
+      <div class="xt-panel">💡 點擊格子可查看說明，右側面板直接顯示政策內容。城市與矩陣數值依「國際現行政策」資料自動產生。</div>
+    </div>`;
+
+  // 雷達圖（城市超過 12 個時只取前 12，避免圖例過擠）
+  const radarCities = intlCities.slice(0, 12);
+  const radarMatrix = intlMatrix.slice(0, 12);
+  chartInstances['radar'] = new Chart(document.getElementById('c_radar'), {
+    type: 'radar',
+    data: {
+      labels: cfg.intlDims,
+      datasets: radarCities.map((city, i) => ({
+        label: city, data: radarMatrix[i],
+        fill: true, backgroundColor: RADAR_PAL[i % RADAR_PAL.length]+'22',
+        borderColor: RADAR_PAL[i % RADAR_PAL.length], borderWidth: 2,
+        pointBackgroundColor: RADAR_PAL[i % RADAR_PAL.length], pointRadius: 3,
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'bottom', labels:{font:{family:'Microsoft JhengHei',size:9},boxWidth:8,padding:4} },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}：${'★'.repeat(c.raw)}${'☆'.repeat(3-c.raw)}` } }
+      },
+      scales: { r: {
+        beginAtZero:true, max:3, min:0,
+        ticks:{stepSize:1,font:{size:9},callback:v=>['無','低','中','高'][v]},
+        pointLabels:{font:{family:'Microsoft JhengHei',size:10}},
+        grid:{color:'#e5e7eb'}, angleLines:{color:'#d1d5db'},
+      }}
+    }
+  });
+
+  // 面向案例數條形
+  const dimCounts = cfg.intlDims.map((_,di) => intlCities.filter((_,ci) => intlMatrix[ci][di] >= 2).length);
+  chartInstances['dimBar'] = new Chart(document.getElementById('c_dimBar'), {
+    type: 'bar',
+    data: {
+      labels: cfg.intlDims,
+      datasets: [{
+        label: '有強力政策的城市數', data: dimCounts,
+        backgroundColor: dimCounts.map(n => n>=Math.ceil(intlCities.length*0.6)?'#1d4ed8cc':n>=Math.ceil(intlCities.length*0.3)?'#60a5facc':'#bfdbfecc'),
+        borderRadius: 4, borderWidth: 0,
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>` ${c.raw} 個城市有強力對應政策`}}
+      },
+      scales: {
+        x:{beginAtZero:true,max:intlCities.length,ticks:{stepSize:1,font:{size:10}},title:{display:true,text:'城市數（政策強度≥中）',font:{size:10}}},
+        y:{ticks:{font:{family:'Microsoft JhengHei',size:11}}}
+      }
+    }
+  });
+}
+
+// ── Detail Panel ──────────────────────────────────────────────────
+function showGroupDetail(g, cfg) {
+  const gIdx = cfg.groups.findIndex(x => x.sub === g.sub);
+  const twRows = cfg.twPolicies
+    .map((p, pi) => ({p, v: cfg.twMatrix[pi][gIdx]}))
+    .filter(x => x.v > 0);
+  const covered = twRows.map(x =>
+    `<div class="flex gap-2 items-start mb-1">
+       <span class="inline-block w-2 h-2 rounded-full mt-1 flex-shrink-0 ${x.v===3?'bg-blue-700':x.v===2?'bg-blue-400':'bg-blue-200'}"></span>
+       <span>${escHtml(x.p)}</span>
+       <span class="ml-auto font-semibold text-gray-500 flex-shrink-0">${HM_LABELS[x.v]}</span>
+     </div>`
+  ).join('');
+
+  // 從現行痛點 sheet 撈出核心痛點 & 可能政策方向
+  let painPointsHTML = '';
+  let policyDirHTML = '';
+  if (currentTopic) {
+    const sheet = currentTopic.sheets.find(s => s.name === '現行痛點');
+    if (sheet) {
+      const row = sheet.rows.find(r => r['子族群'] === g.sub);
+      if (row) {
+        // 核心痛點
+        const rawPain = row['核心痛點'] || '';
+        const painItems = rawPain.split('\n').map(s => s.trim()).filter(s => s.length > 0)
+          .map(pt => { const t = pt.replace(/^[•\-]\s*/, ''); return t ? `<li class="mb-1">${escHtml(t)}</li>` : ''; }).join('');
+        if (painItems) {
+          painPointsHTML = `
+            <div class="mb-4">
+              <div class="font-bold text-gray-800 mb-2">核心痛點</div>
+              <ul class="list-none space-y-1 text-sm text-gray-700 bg-red-50 border border-red-100 rounded-lg p-3">${painItems}</ul>
+            </div>`;
+        }
+        // 可能政策方向（欄位名稱相容兩種）
+        const rawDir = row['可能政策方向'] || row['可能的政策方向'] || '';
+        const dirItems = rawDir.split('\n').map(s => s.trim()).filter(s => s.length > 0)
+          .map(pt => { const t = pt.replace(/^[•\-]\s*/, ''); return t ? `<li class="mb-1">${escHtml(t)}</li>` : ''; }).join('');
+        if (dirItems) {
+          policyDirHTML = `
+            <div class="mb-4">
+              <div class="font-bold text-gray-800 mb-2">💡 可能政策方向</div>
+              <ul class="list-none space-y-1 text-sm text-gray-700 bg-green-50 border border-green-100 rounded-lg p-3">${dirItems}</ul>
+            </div>`;
+        }
+      }
+    }
+  }
+
+  openDetailPanel(g.sub.replace(/^\d+-\d+_/, ''),
+    `<div class="font-semibold text-blue-700 mb-3">${escHtml(g.cat.replace(/^\d+_/,''))}</div>
+     ${painPointsHTML}
+     ${policyDirHTML}
+     <div class="font-bold mb-2">台灣政策覆蓋（${twRows.length}/${cfg.twPolicies.length} 項）</div>
+     <div class="mb-3">${covered||'<span class="text-gray-400">尚無對應政策</span>'}</div>
+     <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-amber-800 text-sm">
+       切換至「② 台灣政策覆蓋」可看完整矩陣，「③ 國際對應圖」可找借鑑案例。
+     </div>`
+  );
+}
+
+function showTwDetail(pol, group, val) {
+  const lvlClass = val===3?'bg-blue-700 text-white':val===2?'bg-blue-200 text-blue-900':val===1?'bg-blue-50 text-blue-700':'bg-gray-100 text-gray-400';
+  openDetailPanel(`${pol}`,
+    `<div class="space-y-3">
+       <div><div class="text-gray-500 text-xs mb-1">政策面向</div><div class="font-semibold">${escHtml(pol)}</div></div>
+       <div><div class="text-gray-500 text-xs mb-1">對應族群</div><div class="font-semibold">${escHtml(group)}</div></div>
+       <div><div class="text-gray-500 text-xs mb-1">覆蓋程度</div>
+         <span class="inline-block px-3 py-1 rounded-full text-sm font-bold ${lvlClass}">
+           ${['無對應','間接相關','部分覆蓋','高度覆蓋'][val]}
+         </span>
+       </div>
+       <div class="bg-gray-50 rounded-lg p-3 text-gray-500">切換至「台灣現行政策」分頁可查完整政策說明。</div>
+     </div>`
+  );
+}
+
+function showIntlDetail(city, dim, val) {
+  const stars = '★'.repeat(val) + '☆'.repeat(3 - val);
+  const lvlClass = val===3?'bg-blue-700 text-white':val===2?'bg-blue-200 text-blue-900':val===1?'bg-blue-50 text-blue-700':'bg-gray-100 text-gray-400';
+
+  // 從 JSON 撈出該城市 × 面向的政策內容
+  let policyHTML = '';
+  if (currentTopic && val > 0) {
+    const sheet = currentTopic.sheets.find(s => s.name === '國際現行政策');
+    if (sheet) {
+      // 用 dim 的關鍵字比對 政策類別（去掉數字前綴與標點）
+      const dimKeywords = dim.replace(/[（）【】\s]/g, '').split('');
+      const matchRows = sheet.rows.filter(r => {
+        if (r['城市'] !== city) return false;
+        const cat = (r['政策類別'] || '').replace(/^\d+[.\s]+/, '');
+        // 只要 dim 有一半以上字元出現在 cat 就算符合
+        const hits = dimKeywords.filter(ch => cat.includes(ch)).length;
+        return hits >= Math.ceil(dimKeywords.length * 0.5);
+      });
+      if (matchRows.length > 0) {
+        // 彙整所有 matchRows 的來源（去重）
+        const allSources = [];
+        const seenUrls = new Set();
+        matchRows.forEach(r => {
+          (r['_sources'] || []).forEach(s => {
+            if (s.url && !seenUrls.has(s.url)) {
+              seenUrls.add(s.url);
+              allSources.push(s);
+            }
+          });
+        });
+        const sourcesHTML = allSources.length
+          ? `<div class="mt-3 pt-2 border-t border-gray-200">
+               <div class="text-xs font-semibold text-gray-500 mb-1">📎 來源</div>
+               <ul class="space-y-1">
+                 ${allSources.map(s => `<li><a href="${escHtml(s.url)}" target="_blank" rel="noopener"
+                   class="text-xs text-blue-600 hover:underline break-all">${escHtml(s.label || s.url)}</a></li>`).join('')}
+               </ul>
+             </div>`
+          : '';
+
+        policyHTML = matchRows.map(r => {
+          const content = (r['政策內容'] || '').trim()
+            .split('\n').filter(l => l.trim())
+            .map(l => `<li class="mb-1">${escHtml(l.replace(/^[•\-\|]\s*/, '').trim())}</li>`)
+            .join('');
+          const keyOrig = (r['關鍵原文+中文翻譯'] || '').trim();
+          return `
+            <div class="mb-3">
+              <div class="text-xs font-semibold text-blue-600 mb-1">${escHtml(r['政策類別'] || '')}</div>
+              <ul class="list-none text-sm text-gray-700 bg-blue-50 border border-blue-100 rounded-lg p-3 space-y-1">${content}</ul>
+              ${keyOrig ? `<div class="mt-2 text-xs text-gray-500 italic px-1">${escHtml(keyOrig)}</div>` : ''}
+            </div>`;
+        }).join('') + sourcesHTML;
+      }
+    }
+  }
+
+  if (!policyHTML) {
+    policyHTML = val === 0
+      ? '<div class="text-gray-400 text-sm">此面向目前無對應政策資料。</div>'
+      : '<div class="text-gray-400 text-sm">政策內容暫無詳細資料，請至「國際現行政策」分頁查詢。</div>';
+  }
+
+  openDetailPanel(`${city} — ${dim}`,
+    `<div class="space-y-3">
+       <div class="flex items-center gap-3">
+         <span class="font-semibold text-gray-800">${escHtml(city)}</span>
+         <span class="text-gray-400 text-sm">／</span>
+         <span class="text-blue-700 font-semibold text-sm">${escHtml(dim)}</span>
+         <span class="ml-auto inline-block px-2 py-0.5 rounded-full text-xs font-bold ${lvlClass}">${stars}</span>
+       </div>
+       <div>${policyHTML}</div>
+     </div>`
+  );
+}
+
+function openDetailPanel(title, body) {
+  document.getElementById('panelTitle').textContent = title;
+  document.getElementById('panelBody').innerHTML = body;
+  document.getElementById('detailPanel').classList.remove('hidden');
+}
+function closeDetailPanel() { document.getElementById('detailPanel').classList.add('hidden'); }
+
+// ── Init ──────────────────────────────────────────────────────────
+loadTopicIndex();
+</script>
+</body>
+</html>
