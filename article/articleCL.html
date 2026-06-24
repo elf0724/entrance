@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before {
+      content: '← ';
+      letter-spacing: 0;
+    }
+
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Page header ── */
+    .page-header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 48px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .page-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.97rem;
+      color: var(--text-mid);
+    }
+
+    /* ── Wrapper ── */
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* ── Section head ── */
+    .section { padding-top: 56px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--rule-light);
+      padding-bottom: 10px;
+      margin-bottom: 0;
+    }
+
+    .section-label {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ── Pinned links ── */
+    .pinned-list { list-style: none; }
+
+    .pinned-item { border-bottom: 1px solid var(--rule-light); }
+
+    .pinned-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      text-decoration: none;
+      color: var(--text-main);
+      transition: color 0.2s;
+    }
+
+    .pinned-link:hover { color: var(--accent-h); }
+
+    .pinned-link:hover .link-arrow { color: var(--accent-h); transform: translateX(4px); }
+
+    .pinned-title {
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+
+    .link-arrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      flex-shrink: 0;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    /* ── Article list ── */
+    .article-list { list-style: none; }
+
+    .article-item { border-bottom: 1px solid var(--rule-light); }
+    .article-item:first-child { border-top: 1px solid var(--rule-light); }
+
+    .article-link {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 0 20px;
+      align-items: baseline;
+      padding: 16px 0;
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s;
+    }
+
+    .article-link:hover .article-title { color: var(--accent-h); }
+    .article-link:hover .link-arrow { color: var(--accent-h); transform: translateX(4px); }
+
+    .article-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .article-title {
+      font-size: 0.93rem;
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: color 0.2s;
+    }
+
+    /* ── Back link ── */
+    .back-row {
+      padding-top: 52px;
+    }
+
+    .back-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .back-link::before { content: '← '; letter-spacing: 0; }
+
+    .back-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      margin-top: 64px;
+      padding: 32px 32px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 560px) {
+      .article-link { grid-template-columns: 68px 1fr; }
+      .link-arrow { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .wrapper, .page-header, .nav-inner, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-back">入口</a>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header class="page-header fade-in">
+    <p class="page-eyebrow">Journal / Essays</p>
+    <h1 class="page-title">攝影雜文</h1>
+    <p class="page-subtitle">Thoughts on photography, cameras, and light.</p>
+  </header>
+
+  <!-- Content -->
+  <div class="wrapper fade-in" style="animation-delay: 0.3s;">
+
+    <!-- 置頂精選 -->
+    <section class="section" aria-labelledby="label-pinned">
+      <div class="section-head">
+        <span class="section-label" id="label-pinned">精選 / Featured</span>
+      </div>
+      <ul class="pinned-list">
+        <li class="pinned-item">
+          <a class="pinned-link" href="https://elf0724.github.io/entrance/article/bocp7.html">
+            <span class="pinned-title">【攝影的起點】勘誤</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="pinned-item">
+          <a class="pinned-link" href="https://elf0724.github.io/entrance/article/basicofphotography.html">
+            <span class="pinned-title">「攝影的起點」化學篇</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="pinned-item">
+          <a class="pinned-link" href="https://elf0724.github.io/entrance/article/digiphoto.html">
+            <span class="pinned-title">Digiphoto 雜誌「攝影眼」系列專欄文章</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 文章列表 -->
+    <section class="section" aria-labelledby="label-articles">
+      <div class="section-head">
+        <span class="section-label" id="label-articles">所有文章 / All Articles</span>
+      </div>
+      <ul class="article-list">
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/composition.html">
+            <span class="article-date">2016.08.25</span>
+            <span class="article-title">構圖</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/caffenol.html">
+            <span class="article-date">2015.02.15</span>
+            <span class="article-title">咖啡顯影 Caffenol</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/E-M1.html">
+            <span class="article-date">2013.12.01</span>
+            <span class="article-title">E-M1 與 4/3 系統鏡頭 E-M1 &amp; 4/3 System Lens</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/Ciroflex.html">
+            <span class="article-date">2012.11.13</span>
+            <span class="article-title">美國製雙鏡反射式相機 Ciro-Flex 簡介及實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/KievBear2.html">
+            <span class="article-date">2012.09.09</span>
+            <span class="article-title">俄國間諜相機 Kiev Bear2 (Vega2) 簡介及實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/2011E510Tainan.html">
+            <span class="article-date">2011.12.31</span>
+            <span class="article-title">2011 年 E-510 十張－臺南</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/2011E510SanFo.html">
+            <span class="article-date">2011.12.31</span>
+            <span class="article-title">2011 年 E-510 十張－舊金山</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/500t.html">
+            <span class="article-date">2011.10.28</span>
+            <span class="article-title">電影底片 Kodak 500T 實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/250d.html">
+            <span class="article-date">2011.10.22</span>
+            <span class="article-title">電影底片 Kodak 250D 實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/50mm.html">
+            <span class="article-date">2011.07.13</span>
+            <span class="article-title">50mm 標準鏡頭</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/efkeort25.html">
+            <span class="article-date">2011.04.27</span>
+            <span class="article-title">efke PL25 ORT 黑白底片正色片與 dr5 黑白正片沖洗程序簡介</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/fisheye.html">
+            <span class="article-date">2011.04.06</span>
+            <span class="article-title">Zenitar 16mm F2.8 Fisheye MC 俄製魚眼鏡頭簡介與實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/PSCamera.html">
+            <span class="article-date">2011.02.22</span>
+            <span class="article-title">幾部輕便型底片機實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/2010.html">
+            <span class="article-date">2011.01.03</span>
+            <span class="article-title">自我觀照的靈光－記在兩部相機的回顧之後</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/20105DII.html">
+            <span class="article-date">2011.01.02</span>
+            <span class="article-title">烈士壯年，雄心不已－2010 年 5D Mark II 使用回顧</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/2010E510.html">
+            <span class="article-date">2011.01.01</span>
+            <span class="article-title">老驥伏櫪，志在千里－2010 年 E-510 使用回顧</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/5DIIOMZuiko.html">
+            <span class="article-date">2010.12.21</span>
+            <span class="article-title">5DII 的 OM Zuiko 老鏡轉接解析力記錄</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/efke.html">
+            <span class="article-date">2010.11.15</span>
+            <span class="article-title">efke KB100 黑白底片實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/LF.html">
+            <span class="article-date">2010.08.31</span>
+            <span class="article-title">底片大型相機之抉擇</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="article-item">
+          <a class="article-link" href="https://elf0724.github.io/entrance/article/T64.html">
+            <span class="article-date">2009.04.09</span>
+            <span class="article-title">FUJICHROME T64 TUNGSTEN 燈光片實拍</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <div class="back-row">
+      <a class="back-link" href="https://elf0724.github.io/entrance/index.html">入口</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>
