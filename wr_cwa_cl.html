@@ -553,14 +553,19 @@
         <label class="form-label">中央氣象署 API Key（選填）</label>
         <input type="text" id="cwaKeyInput" placeholder="CWA-XXXXXXXX-XXXX-...（留空則僅用 Open-Meteo）">
         <div class="field-hint">金鑰只留在目前分頁的記憶體中，重新整理需重新輸入，不會送到中央氣象署以外的任何伺服器。尚未申請請至 <a href="https://opendata.cwa.gov.tw/" target="_blank" rel="noopener">opendata.cwa.gov.tw</a> 註冊會員。<strong>若已在下方代理伺服器設定 CWA_API_KEY，這欄可以留空。</strong></div>
-        <input type="text" id="cwaProxyInput" placeholder="CWA 代理伺服器網址（選填，如 https://xxx.workers.dev）" style="margin-top:8px;">
-        <div class="field-hint">鄉鎮預報是否開放瀏覽器直接呼叫尚未百分之百確認，若已架好 Cloudflare Worker 代理，請把網址填在這裡（結尾不要加斜線，且不要加後面的路徑）；留空則直接呼叫官方網址，失敗時自動氣象站與 Open-Meteo 不受影響，僅鄉鎮預報這部分退回 Open-Meteo。若在 Worker 後台設定了 CWA_API_KEY 環境變數，上方金鑰欄位可留空，由 Worker 自動代入。</div>
+        <input type="text" id="cwaProxyInput" placeholder="代理伺服器網址（選填，如 https://xxx.workers.dev）" style="margin-top:8px;">
+        <div class="field-hint">鄉鎮預報是否開放瀏覽器直接呼叫尚未百分之百確認，若已架好 Cloudflare Worker 代理，請把網址填在這裡（結尾不要加斜線，且不要加後面的路徑）；留空則直接呼叫官方網址，失敗時自動氣象站與 Open-Meteo 不受影響，僅鄉鎮預報這部分退回 Open-Meteo。若在 Worker 後台設定了 CWA_API_KEY 環境變數，上方金鑰欄位可留空，由 Worker 自動代入。<strong>這個代理伺服器網址同時也給下方 Groq AI 潤飾功能共用</strong>，不用另外架一支。</div>
       </div>
 
       <div class="form-section">
         <label class="form-label">Groq API Key（選填，AI 潤飾文字說明）</label>
-        <input type="text" id="groqKeyInput" placeholder="gsk_...（留空則使用內建模板文字）">
-        <div class="field-hint">填了金鑰後，AI 只會把「已經算好的機率與數值」改寫成更自然的文字，不會重新計算或更動任何數字；機率一律仍由規則運算產生。留空就跟原本一樣用內建模板文字，完全不呼叫 AI。尚未申請請至 <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com</a> 取得。</div>
+        <input type="text" id="groqKeyInput" placeholder="gsk_...（留空則使用內建模板文字，或改用下方代理伺服器代管）">
+        <div class="field-hint">填了金鑰後，AI 只會把「已經算好的機率與數值」改寫成更自然的文字，不會重新計算或更動任何數字；機率一律仍由規則運算產生。尚未申請請至 <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com</a> 取得。</div>
+        <label style="display:flex; align-items:center; gap:6px; margin-top:8px; font-size:12px; color:var(--text2); cursor:pointer;">
+          <input type="checkbox" id="groqUseProxyInput" style="width:auto; margin:0;">
+          改用上方代理伺服器代管的金鑰（免填，需已在 Worker 設定 GROQ_API_KEY）
+        </label>
+        <div class="field-hint">兩者都沒填/沒勾就完全不呼叫 AI，直接用內建模板文字。</div>
       </div>
 
       <button class="predict-btn" id="predictBtn" onclick="runPrediction()">開始預測分析</button>
@@ -985,7 +990,7 @@ function templateNarrative(results) {
  * ============================================================ */
 const GROQ_MODEL = 'llama-3.3-70b-versatile'; // Groq 若下架此模型，改這裡即可
 
-async function polishNarrativeWithGroq(results, template, apiKey) {
+async function polishNarrativeWithGroq(results, template, apiKey, proxyBase) {
   const dataForPrompt = results.map(r => ({
     location: r.location, time: r.timeLabel, probability: r.probability, dominantType: r.dominantType,
     cloudSeaPct: r.cloudSea.total, advectionFogPct: r.advectionFog.total, radiationFogPct: r.radiationFog.total,
@@ -1006,9 +1011,16 @@ JSON 格式：{"summary":"string","analysis":[{"title":"string","content":"strin
   const userPrompt = `規則運算完成的原始數據（JSON，數字都已確定、不可更動）：\n${JSON.stringify(dataForPrompt)}\n\n` +
     `內建模板文字（供參考語氣與涵蓋重點，請改寫得更自然，但涵蓋的資訊範圍要相近）：\n${JSON.stringify(template)}`;
 
-  const res = await safeFetch('https://api.groq.com/openai/v1/chat/completions', 'Groq', {
+  // 代理伺服器路由規則：路徑開頭 /groq/ 轉發到 api.groq.com（見 cwa-cors-proxy-worker.js）
+  const targetUrl = proxyBase
+    ? `${proxyBase.replace(/\/+$/, '')}/groq/openai/v1/chat/completions`
+    : 'https://api.groq.com/openai/v1/chat/completions';
+  const headers = { 'Content-Type': 'application/json' };
+  if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`; // 留空則交給代理伺服器用 GROQ_API_KEY 代管
+
+  const res = await safeFetch(targetUrl, 'Groq', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    headers,
     body: JSON.stringify({
       model: GROQ_MODEL,
       messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
@@ -1237,12 +1249,17 @@ async function runPrediction() {
     // 2) 產生說明文字：預設使用內建模板文字（依規則運算結果組成，不經 AI 改寫）
     let narrative = templateNarrative(results);
 
-    // 3) 若有提供 Groq 金鑰，嘗試用 AI 把文字潤飾得更自然（機率與數值不受影響）
+    // 3) 若有提供 Groq 金鑰、或勾選改用代理伺服器代管，嘗試用 AI 把文字潤飾得更自然
+    //    （機率與數值不受影響，AI 只改寫語氣，見 polishNarrativeWithGroq 內的規則）
     const groqKey = document.getElementById('groqKeyInput').value.trim();
-    if (groqKey) {
+    const groqUseProxy = document.getElementById('groqUseProxyInput').checked;
+    if (groqUseProxy && !cwaProxy) {
+      dataSourceLog.push(`<span class="warn">⚠</span> 已勾選使用代理伺服器代管 Groq 金鑰，但未填代理伺服器網址，本次略過 AI 潤飾，改用內建模板文字`);
+    }
+    if (groqKey || (groqUseProxy && cwaProxy)) {
       setLoading('正在請 AI 潤飾文字說明...');
       try {
-        narrative = await polishNarrativeWithGroq(results, narrative, groqKey);
+        narrative = await polishNarrativeWithGroq(results, narrative, groqKey, cwaProxy);
         dataSourceLog.push(`<span class="ok">✓</span> 文字說明已由 Groq AI（${GROQ_MODEL}）潤飾，機率與數值仍為規則運算結果`);
       } catch (e) {
         dataSourceLog.push(`<span class="warn">⚠</span> Groq AI 潤飾失敗（${e.message}），已改用內建模板文字`);
