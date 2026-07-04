@@ -848,6 +848,41 @@ function nearestCwaStation(stations, lat, lon) {
   };
 }
 
+/* ---- 抑制因子（乘法折減）：雲海是「多條件同時成立」的現象，單靠某一項
+ *      （例如濕度高）不該堆出高分。以下因子把「條件不對」的情況壓下來，
+ *      依實際攝影經驗與氣象資料（台灣雲海秋冬好發、需中海拔逆溫層、日出
+ *      優於日落）校準。每個因子回傳 0~1 的乘數，1 代表完全不折減。 ---- */
+
+// 季節因子：台灣高山雲海以秋冬（11-3月）為主，夏季（尤其7-8月）因雲的凝結
+// 高度升到全年最高、常超過山頂，雲海少見。低海拔惡地型日出景點（如二寮）
+// 反而是夏季旺季，所以低海拔地點的季節懲罰放輕。
+function seasonFactor(month, targetAlt) {
+  // month: 1-12
+  const isHighAltitude = targetAlt >= 1000;
+  // 秋冬（11,12,1,2,3）最佳；4,10 過渡；5-9 較差（夏季）
+  const highAltByMonth = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.8, 5: 0.6, 6: 0.45, 7: 0.4, 8: 0.4, 9: 0.6, 10: 0.85, 11: 1.0, 12: 1.0 };
+  // 低海拔景點季節性沒那麼極端（夏季雨後反而好），折減幅度收斂到 0.7~1.0
+  const lowAltByMonth  = { 1: 0.9, 2: 0.9, 3: 0.9, 4: 0.85, 5: 0.8, 6: 0.8, 7: 0.75, 8: 0.75, 9: 0.85, 10: 0.9, 11: 0.9, 12: 0.9 };
+  return (isHighAltitude ? highAltByMonth : lowAltByMonth)[month] ?? 0.7;
+}
+
+// 時段因子：雲海清晨（日出前後）最易成形，經一夜輻射冷卻、水氣易凝結；
+// 傍晚（日落）雖也可能有，但普遍較不穩定、機率較低。
+function slotFactor(slot) {
+  return slot === 'sunrise' ? 1.0 : 0.75;
+}
+
+// 海拔因子：雲海需要觀測點位於雲層之上。台灣盛行雲霧帶約在 1500-2500m，
+// 低海拔通常看不到（少數惡地地形日出景點例外，但那是特例、機率本就不高）。
+// 這裡給一條平滑曲線：>=1500m 不折減，越低折減越重，但保留一個地板值
+// （不歸零），因為低海拔偶爾仍有輻射霧/谷地霧。
+function altitudeFactor(targetAlt) {
+  if (targetAlt >= 1500) return 1.0;
+  if (targetAlt >= 800) return lerpScore(targetAlt, 800, 0.75, 1500, 1.0);
+  if (targetAlt >= 300) return lerpScore(targetAlt, 300, 0.45, 800, 0.75);
+  return lerpScore(clamp(targetAlt, 0, 300), 0, 0.35, 300, 0.45);
+}
+
 /* ============================================================
  * 4. 規則運算引擎（對應 weather-forecast-expert 技能之閾值）
  * ============================================================ */
@@ -871,15 +906,34 @@ function inversionMatchScore(layers, targetAlt) {
   return { score: Math.round(score), base: best.base, deltaT: best.deltaT, diff: Math.round(bestDiff) };
 }
 
-function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precipProb }) {
+function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precipProb, month, slot }) {
   const inv = inversionMatchScore(findInversions(profile), targetAlt);
   const rhScore = rh >= 85 ? 25 : lerpScore(rh, 70, 0, 85, 25);
   const windScore = windSpeed <= 3 ? 15 : lerpScore(windSpeed, 3, 15, 6, 0);
   const diurnalScore = diurnalRange >= 10 ? 15 : lerpScore(diurnalRange, 5, 0, 10, 15);
-  // 觀景點本身若正在下雨，即使逆溫層條件理想也看不到雲海，同樣套用降雨折減
   const discount = precipDiscount(precipProb);
-  const total = clamp(Math.round((inv.score + rhScore + windScore + diurnalScore) * discount), 0, 100);
-  return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2) } };
+
+  // 逆溫層必要性：雲海的物理前提是「雲頂被逆溫層壓在觀測點高度附近」。若在
+  // 觀測點高度附近完全找不到合適的逆溫層（inv.score 很低），代表水氣即使多
+  // 也會直接發展成一般雲或往上散掉，不會形成「腳下的雲海」。過去版本只是
+  // 少加 inv 那份分數，但濕度／風速／溫差三項仍能堆到 55 分，導致「濕度高
+  // 但根本沒有逆溫層」的低海拔悶熱天氣被誤判成雲海。改成：把逆溫層匹配度
+  // 當成一個乘法必要條件，匹配度低時大幅折減總分。
+  //   inv.score 45=完美貼合、25=尚可、0=無匹配
+  const invNecessity = inv.score >= 45 ? 1.0
+    : inv.score >= 25 ? lerpScore(inv.score, 25, 0.6, 45, 1.0)
+    : lerpScore(inv.score, 0, 0.25, 25, 0.6); // 完全無逆溫層時只剩 0.25
+
+  const seasonF = seasonFactor(month, targetAlt);
+  const slotF = slotFactor(slot);
+  const altF = altitudeFactor(targetAlt);
+
+  const base = inv.score + rhScore + windScore + diurnalScore;
+  // 天花板 92%：雲海是瞬息萬變的機率事件，即使所有指標都完美，仍有地形、
+  // 局部環流、當下水氣變化等模型抓不到的變數，不宜給出 100%「保證看得到」
+  // 的錯覺。實務上攝影者也普遍認為沒有任何一天能打包票。
+  const total = clamp(Math.round(base * discount * invNecessity * seasonF * slotF * altF), 0, 92);
+  return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2), invNecessity: +invNecessity.toFixed(2), seasonF: +seasonF.toFixed(2), slotF: +slotF.toFixed(2), altF: +altF.toFixed(2) } };
 }
 
 // 降雨機率折減：正在下雨／高降雨機率時，不論多潮濕都不算「觀景級」霧況，
@@ -891,7 +945,7 @@ function precipDiscount(precipProb) {
   return 1;
 }
 
-function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb }) {
+function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slot }) {
   // 露點差與相對濕度都是「接近飽和」的訊號，兩者高度相關（RH≈100% 時露點差必然趨近 0）。
   // 過去版本把兩者都給滿分、直接相加，等於同一件事算了兩次分數，
   // 導致終年潮濕的地點（如九份）幾乎每晚都會被算成 100%。
@@ -904,18 +958,23 @@ function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb }) {
   else windScore = lerpScore(windSpeed, 4, 25, 7, 0);
   const cloudScore = (cloudLow >= 20 && cloudLow <= 80) ? 10 : lerpScore(Math.abs(cloudLow - 50), 30, 10, 60, 0);
   const discount = precipDiscount(precipProb);
-  const total = clamp(Math.round((satScore + satBonus + windScore + cloudScore) * discount), 0, 100);
-  return { total, detail: { dewSpread, satScore: Math.round(satScore), rh, satBonus: Math.round(satBonus), windSpeed, windScore: Math.round(windScore), cloudLow, cloudScore: Math.round(cloudScore), precipProb, discount: +discount.toFixed(2) } };
+  // 平流霧清晨較易維持，傍晚偏弱（但不像輻射霧那麼絕對，折減較輕）
+  const slotF = slot === 'sunrise' ? 1.0 : 0.85;
+  const total = clamp(Math.round((satScore + satBonus + windScore + cloudScore) * discount * slotF), 0, 92);
+  return { total, detail: { dewSpread, satScore: Math.round(satScore), rh, satBonus: Math.round(satBonus), windSpeed, windScore: Math.round(windScore), cloudLow, cloudScore: Math.round(cloudScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2) } };
 }
 
-function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipProb }) {
+function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipProb, slot }) {
   const clearSky = 100 - Math.max(cloudLow, cloudMid);
   const clearScore = clearSky >= 80 ? 35 : lerpScore(clearSky, 40, 0, 80, 35);
   const calmScore = windSpeed <= 2 ? 30 : lerpScore(windSpeed, 2, 30, 5, 0);
   const dewScore = dewSpread <= 1 ? 35 : lerpScore(dewSpread, 1, 35, 4, 0);
   const discount = precipDiscount(precipProb);
-  const total = clamp(Math.round((clearScore + calmScore + dewScore) * discount), 0, 100);
-  return { total, detail: { clearSky: Math.round(clearSky), clearScore: Math.round(clearScore), windSpeed, calmScore: Math.round(calmScore), dewSpread, dewScore: Math.round(dewScore), precipProb, discount: +discount.toFixed(2) } };
+  // 輻射霧靠的是「夜間長時間輻射冷卻使地面降溫至露點」，所以是清晨限定的現象。
+  // 傍晚（日落時段）地面剛結束一天日照、還沒冷卻，幾乎不可能有輻射霧，強力折減。
+  const slotF = slot === 'sunrise' ? 1.0 : 0.3;
+  const total = clamp(Math.round((clearScore + calmScore + dewScore) * discount * slotF), 0, 92);
+  return { total, detail: { clearSky: Math.round(clearSky), clearScore: Math.round(clearScore), windSpeed, calmScore: Math.round(calmScore), dewSpread, dewScore: Math.round(dewScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2) } };
 }
 
 function classifyLabel(total) {
@@ -1221,9 +1280,10 @@ async function runPrediction() {
           if (cwaPoP != null) mergedPrecip = cwaPoP;
         }
 
-        const cloudSea = scoreCloudSea({ profile, targetAlt: loc.alt ?? surfaceAlt, rh: mergedRh, windSpeed, diurnalRange, precipProb: mergedPrecip });
-        const advectionFog = scoreAdvectionFog({ dewSpread: mergedDewSpread, windSpeed, rh: mergedRh, cloudLow, precipProb: mergedPrecip });
-        const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip });
+        const targetMonth = targetDate.getMonth() + 1; // 1-12
+        const cloudSea = scoreCloudSea({ profile, targetAlt: loc.alt ?? surfaceAlt, rh: mergedRh, windSpeed, diurnalRange, precipProb: mergedPrecip, month: targetMonth, slot });
+        const advectionFog = scoreAdvectionFog({ dewSpread: mergedDewSpread, windSpeed, rh: mergedRh, cloudLow, precipProb: mergedPrecip, slot });
+        const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip, slot });
 
         const scores = [
           { type: '雲海', ...cloudSea },
@@ -1297,6 +1357,14 @@ function renderResult(results, narrative, dataSourceLog) {
   html += `<div class="section-heading">深度氣象判讀</div><div class="analysis-grid">`;
   results.forEach(r => {
     const inv = r.cloudSea.detail.inversion;
+    const d = r.cloudSea.detail;
+    // 把明顯拉低雲海機率的因子列出來，讓使用者理解數字為何偏低（透明度）
+    const factors = [];
+    if (d.invNecessity != null && d.invNecessity < 0.6) factors.push('缺乏貼合的逆溫層');
+    if (d.seasonF != null && d.seasonF < 0.7) factors.push('非雲海好發季節');
+    if (d.slotF != null && d.slotF < 1) factors.push('日落時段較不利');
+    if (d.altF != null && d.altF < 0.7) factors.push('海拔偏低');
+    if (d.discount != null && d.discount < 1) factors.push('降雨機率偏高');
     html += `<div class="analysis-card">
       <div class="analysis-title">${r.location} · ${r.timeLabel.split(' ')[1] || ''}</div>
       <table class="metric-table">
@@ -1307,6 +1375,7 @@ function renderResult(results, narrative, dataSourceLog) {
         <tr><td>日夜溫差</td><td>${r.diurnalRange.toFixed(1)}°C</td></tr>
         <tr><td>資料來源</td><td>${r.cwaUsed ? 'Open-Meteo + CWA' : 'Open-Meteo'}</td></tr>
         ${r.obsRef ? `<tr><td>最近測站參考</td><td>${r.obsRef.stationName}（${r.obsRef.distanceKm}km）</td></tr>` : ''}
+        ${factors.length ? `<tr><td>主要折減因素</td><td>${factors.join('、')}</td></tr>` : ''}
       </table>
       ${r.cwaNote ? `<div class="note-text" style="color:var(--amber); margin-top:6px;">⚠ ${r.cwaNote}</div>` : ''}
     </div>`;
