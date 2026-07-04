@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣象預測專家 · 雲海預測儀表板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --bg2: #ffffff;
+    --bg3: #f6f8fa;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #1a2332;
+    --text2: #4a5568;
+    --text3: #a0aec0;
+    --accent: #2563eb;
+    --accent2: #1d4ed8;
+    --green: #16a34a;
+    --green-bg: rgba(22,163,74,0.08);
+    --amber: #b45309;
+    --amber-bg: rgba(180,83,9,0.08);
+    --red: #dc2626;
+    --red-bg: rgba(220,38,38,0.08);
+    --teal: #0d9488;
+    --serif: 'Noto Serif TC', serif;
+    --sans: 'Noto Sans TC', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(186,230,253,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 30% at 80% 70%, rgba(199,210,254,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 60% 10%, rgba(224,242,254,0.3) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .logo-mark {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-left: auto;
+    box-shadow: 0 0 6px rgba(22,163,74,0.5);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; box-shadow:0 0 6px rgba(22,163,74,0.5); }
+    50% { opacity:0.5; box-shadow:0 0 2px rgba(22,163,74,0.3); }
+  }
+
+  .status-label {
+    font-size: 12px;
+    color: var(--green);
+    font-family: var(--mono);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 750px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .panel-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    font-family: var(--mono);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section { margin-bottom: 1.5rem; }
+
+  .form-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  input[type="date"] {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s;
+    color-scheme: light;
+  }
+  input[type="date"]:focus { border-color: var(--accent2); }
+
+  .toggle-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: var(--sans);
+    font-weight: 400;
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .toggle-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .toggle-btn.active {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #fff;
+  }
+
+  .chip-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: var(--sans);
+    font-weight: 400;
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.active {
+    background: rgba(37,99,235,0.08);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  input[type="text"]:focus { border-color: var(--accent2); }
+  input[type="text"]::placeholder { color: var(--text3); }
+
+  .predict-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 0.5rem;
+    background: var(--accent2);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+    letter-spacing: 0.02em;
+  }
+  .predict-btn:hover { background: #388bfd; }
+  .predict-btn:active { transform: scale(0.98); }
+  .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .api-note {
+    margin-top: 1rem;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .field-hint {
+    font-size: 10.5px;
+    color: var(--text3);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .field-hint a { color: var(--accent2); }
+
+  .result-panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-height: 500px;
+  }
+
+  .placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 420px;
+    gap: 12px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  .placeholder-glyph {
+    font-family: var(--serif);
+    font-size: 48px;
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .placeholder p { font-size: 13px; line-height: 1.8; }
+
+  .loading-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 420px;
+    gap: 16px;
+  }
+
+  .loader { display: flex; gap: 6px; }
+  .loader span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: bounce .8s ease-in-out infinite;
+  }
+  .loader span:nth-child(2) { animation-delay: .15s; }
+  .loader span:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce {
+    0%,60%,100% { transform: translateY(0); opacity:.5; }
+    30% { transform: translateY(-10px); opacity:1; }
+  }
+
+  .loading-msg { font-size: 13px; color: var(--text2); font-family: var(--mono); }
+
+  .error-box {
+    background: var(--red-bg);
+    border: 0.5px solid rgba(248,81,73,0.3);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    color: var(--red);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .summary-block {
+    background: #eff6ff;
+    border-left: 2px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .section-heading {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 1.5rem 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+  }
+
+  .prob-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 0.5rem;
+  }
+  .prob-table th {
+    text-align: left;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .prob-table td {
+    padding: 10px 10px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: middle;
+    color: var(--text);
+  }
+  .prob-table tr:last-child td { border-bottom: none; }
+  .prob-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .loc-name { font-weight: 500; font-size: 13px; }
+  .loc-time { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
+
+  .bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill { height: 4px; border-radius: 2px; transition: width 0.6s cubic-bezier(.4,0,.2,1); }
+  .bar-pct { font-family: var(--mono); font-size: 13px; font-weight: 500; min-width: 36px; text-align: right; }
+
+  .note-text { font-size: 11px; color: var(--text3); line-height: 1.5; }
+
+  .data-source-line {
+    font-size: 10.5px;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin: 0.25rem 0 1rem;
+    line-height: 1.7;
+  }
+  .data-source-line .ok { color: var(--green); }
+  .data-source-line .warn { color: var(--amber); }
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 0.5rem;
+  }
+  .analysis-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .analysis-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent2);
+    margin-bottom: 6px;
+    font-family: var(--mono);
+  }
+  .analysis-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  .metric-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .metric-table td { padding: 3px 0; color: var(--text2); }
+  .metric-table td:first-child { color: var(--text3); width: 40%; }
+  .metric-table td:last-child { text-align: right; font-family: var(--mono); }
+
+  .suggestion-list { display: flex; flex-direction: column; gap: 8px; }
+  .suggestion-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+  .suggestion-badge {
+    background: rgba(37,99,235,0.08);
+    color: var(--accent2);
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 0.5px solid rgba(37,99,235,0.2);
+  }
+  .suggestion-loc { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .suggestion-meta { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 6px; }
+  .suggestion-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  .tips-list { display: flex; flex-direction: column; gap: 6px; }
+  .tip-item {
+    background: rgba(22,163,74,0.06);
+    border: 0.5px solid rgba(22,163,74,0.25);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #15803d;
+    line-height: 1.7;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .tip-item::before { content: '›'; color: var(--green); font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+
+  .closing-line {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 0.5px solid var(--border);
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  footer {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="logo-mark">雲海預測儀</div>
+    <div class="logo-sub">WEATHER · PHOTOGRAPHY · AUTO-DATA</div>
+    <div class="status-dot"></div>
+    <div class="status-label">自動氣象資料擷取 · 就緒</div>
+  </header>
+
+  <div class="layout">
+
+    <!-- 左側：控制面板 -->
+    <div class="panel">
+      <div class="panel-label">預測條件</div>
+
+      <div class="form-section">
+        <label class="form-label">預測日期</label>
+        <input type="date" id="dateInput">
+        <div class="field-hint">支援未來約 16 天內的預報（Open-Meteo 模型上限）</div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">拍攝時段</label>
+        <div class="toggle-row">
+          <button class="toggle-btn active" data-val="sunrise">日出前一小時</button>
+          <button class="toggle-btn" data-val="sunset">日落後一小時</button>
+          <button class="toggle-btn" data-val="both">全天（兩者皆列）</button>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">觀測地點（可複選）</label>
+        <div class="chip-row" id="chipRow">
+          <div class="chip active" data-loc="陽明山區">陽明山區</div>
+          <div class="chip active" data-loc="九份/不厭亭">九份/不厭亭</div>
+        </div>
+        <input type="text" id="customLoc" placeholder="自訂地點（如：阿里山、觀霧）自動查座標">
+      </div>
+
+      <button class="predict-btn" id="predictBtn" onclick="runPrediction()">開始預測分析</button>
+
+      <div class="api-note">資料來源：Open-Meteo（自動擷取）<br>機率為規則運算結果，僅供攝影規劃參考</div>
+    </div>
+
+    <!-- 右側：分析結果 -->
+    <div class="result-panel" id="resultPanel">
+      <div class="panel-label">氣象分析報告</div>
+      <div id="resultArea">
+        <div class="placeholder">
+          <div class="placeholder-glyph">⛅</div>
+          <p>選擇日期與地點<br>按下「開始預測分析」<br>系統將自動抓取氣象資料並計算機率</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    氣象預測專家 · 雲海攝影助理 · 資料來源：Open-Meteo（自動擷取）<br>
+    機率由逆溫層、濕度、風速、露點、日夜溫差、降雨機率等指標規則運算而得，結果僅供攝影規劃參考，不代表官方氣象預報
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+ * 1. 地點設定：座標與海拔為概估值，需要更精準可自行調整
+ *    county/town 欄位保留供未來若接上中央氣象署資料時比對用
+ * ============================================================ */
+const LOCATIONS = {
+  '陽明山區':     { lat: 25.1637, lon: 121.5407, alt: 800, county: '臺北市', town: '北投區' },
+  '九份/不厭亭':  { lat: 25.1097, lon: 121.8447, alt: 600, county: '新北市', town: '瑞芳區' },
+};
+
+// 垂直剖面採用的氣壓層（hPa），涵蓋台灣中低海拔山區的逆溫層常見高度
+const PRESSURE_LEVELS = [1000, 975, 950, 925, 900, 850, 800];
+
+/* ============================================================
+ * 2. 共用工具
+ * ============================================================ */
+function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+function lerpScore(x, x0, y0, x1, y1) {
+  if (x1 === x0) return y0;
+  const t = clamp((x - x0) / (x1 - x0), 0, 1);
+  return y0 + (y1 - y0) * t;
+}
+function pad2(n) { return String(n).padStart(2, '0'); }
+function fmtDate(d) { return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371, toRad = x => x * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+/* ============================================================
+ * 3. 資料擷取：Open-Meteo（唯一資料來源，免金鑰、免後端）
+ * ============================================================ */
+// 統一包一層 fetch，把瀏覽器丟出的低階網路錯誤（Failed to fetch）
+// 轉成使用者看得懂的訊息，方便判斷是網路問題還是被預覽環境擋住
+async function safeFetch(url, label, options) {
+  try {
+    return await fetch(url, options);
+  } catch (e) {
+    throw new Error(
+      `${label ? label + '：' : ''}無法連線（${e.message}）。` +
+      `若你是在聊天室內的檔案預覽視窗中測試，該預覽通常會封鎖對外連線；` +
+      `請把此 HTML 檔案存到電腦後，直接用瀏覽器開啟（雙擊檔案，或拖進 Chrome 分頁）再試一次。`
+    );
+  }
+}
+
+async function geocodeLocation(name) {
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=zh&format=json`;
+  const res = await safeFetch(url, '地點查詢');
+  if (!res.ok) throw new Error('地點查詢失敗');
+  const data = await res.json();
+  if (!data.results || !data.results.length) throw new Error(`找不到地點「${name}」，請確認地名或改用中文/英文常見寫法`);
+  const r = data.results[0];
+  return { lat: r.latitude, lon: r.longitude, alt: r.elevation ?? 500, county: null, town: null, resolvedName: r.name };
+}
+
+async function fetchOpenMeteo(loc, dateStr) {
+  const hourlyVars = [
+    'temperature_2m', 'relative_humidity_2m', 'dew_point_2m', 'wind_speed_10m',
+    'cloud_cover_low', 'cloud_cover_mid', 'precipitation_probability',
+    ...PRESSURE_LEVELS.flatMap(p => [`temperature_${p}hPa`, `geopotential_height_${p}hPa`]),
+  ].join(',');
+  const dailyVars = 'temperature_2m_max,temperature_2m_min,sunrise,sunset';
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}` +
+    `&hourly=${hourlyVars}&daily=${dailyVars}&timezone=Asia%2FTaipei` +
+    `&start_date=${dateStr}&end_date=${dateStr}`;
+  const res = await safeFetch(url, 'Open-Meteo');
+  if (!res.ok) throw new Error(`Open-Meteo 資料擷取失敗 (HTTP ${res.status})`);
+  return res.json();
+}
+
+// 依據時刻字串（YYYY-MM-DDTHH:00）找出 hourly 陣列的索引，找不到則取最接近者
+function findHourIndex(hourlyTimeArr, targetIso) {
+  let idx = hourlyTimeArr.indexOf(targetIso);
+  if (idx !== -1) return idx;
+  // fallback：找最近的時刻
+  const targetMs = new Date(targetIso).getTime();
+  let best = 0, bestDiff = Infinity;
+  hourlyTimeArr.forEach((t, i) => {
+    const diff = Math.abs(new Date(t).getTime() - targetMs);
+    if (diff < bestDiff) { bestDiff = diff; best = i; }
+  });
+  return best;
+}
+
+function buildProfile(hourly, idx, surfaceAlt, surfaceTemp) {
+  const profile = [{ height: surfaceAlt, temp: surfaceTemp }];
+  PRESSURE_LEVELS.forEach(p => {
+    const h = hourly[`geopotential_height_${p}hPa`]?.[idx];
+    const t = hourly[`temperature_${p}hPa`]?.[idx];
+    if (typeof h === 'number' && typeof t === 'number') profile.push({ height: h, temp: t });
+  });
+  // 依高度排序並去除過於接近地面（<20m 差）以免雜訊
+  return profile.sort((a, b) => a.height - b.height).filter((p, i, arr) => i === 0 || p.height - arr[i-1].height > 20);
+}
+
+/* ============================================================
+ * 4. 規則運算引擎（對應 weather-forecast-expert 技能之閾值）
+ * ============================================================ */
+function findInversions(profile) {
+  const layers = [];
+  for (let i = 0; i < profile.length - 1; i++) {
+    const a = profile[i], b = profile[i + 1];
+    if (b.temp > a.temp + 0.1) layers.push({ base: a.height, top: b.height, deltaT: +(b.temp - a.temp).toFixed(1) });
+  }
+  return layers;
+}
+
+function inversionMatchScore(layers, targetAlt) {
+  if (!layers.length) return { score: 0, base: null, deltaT: 0, diff: null };
+  let best = null, bestDiff = Infinity;
+  layers.forEach(l => { const diff = Math.abs(l.base - targetAlt); if (diff < bestDiff) { bestDiff = diff; best = l; } });
+  let score = 0;
+  if (bestDiff <= 200) score = 45;
+  else if (bestDiff <= 400) score = lerpScore(bestDiff, 200, 45, 400, 25);
+  else if (bestDiff <= 800) score = lerpScore(bestDiff, 400, 25, 800, 0);
+  return { score: Math.round(score), base: best.base, deltaT: best.deltaT, diff: Math.round(bestDiff) };
+}
+
+function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precipProb }) {
+  const inv = inversionMatchScore(findInversions(profile), targetAlt);
+  const rhScore = rh >= 85 ? 25 : lerpScore(rh, 70, 0, 85, 25);
+  const windScore = windSpeed <= 3 ? 15 : lerpScore(windSpeed, 3, 15, 6, 0);
+  const diurnalScore = diurnalRange >= 10 ? 15 : lerpScore(diurnalRange, 5, 0, 10, 15);
+  // 觀景點本身若正在下雨，即使逆溫層條件理想也看不到雲海，同樣套用降雨折減
+  const discount = precipDiscount(precipProb);
+  const total = clamp(Math.round((inv.score + rhScore + windScore + diurnalScore) * discount), 0, 100);
+  return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2) } };
+}
+
+// 降雨機率折減：正在下雨／高降雨機率時，不論多潮濕都不算「觀景級」霧況，
+// 直接大幅折減總分（下雨=視野差、體驗差，跟「站在雲海上方」是完全不同的事）
+function precipDiscount(precipProb) {
+  if (precipProb == null) return 1;
+  if (precipProb >= 50) return 0.3;
+  if (precipProb >= 30) return lerpScore(precipProb, 30, 0.6, 50, 0.3);
+  return 1;
+}
+
+function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb }) {
+  // 露點差與相對濕度都是「接近飽和」的訊號，兩者高度相關（RH≈100% 時露點差必然趨近 0）。
+  // 過去版本把兩者都給滿分、直接相加，等於同一件事算了兩次分數，
+  // 導致終年潮濕的地點（如九份）幾乎每晚都會被算成 100%。
+  // 修正：以露點差為主要判斷（0-40），濕度只作為次要佐證、權重降低且門檻拉高（0-10）。
+  const satScore = dewSpread <= 1 ? 40 : lerpScore(dewSpread, 1, 40, 4, 0);
+  const satBonus = rh >= 95 ? 10 : lerpScore(rh, 85, 0, 95, 10);
+  let windScore;
+  if (windSpeed <= 1) windScore = lerpScore(windSpeed, 0, 5, 1, 15);
+  else if (windSpeed <= 4) windScore = 25;
+  else windScore = lerpScore(windSpeed, 4, 25, 7, 0);
+  const cloudScore = (cloudLow >= 20 && cloudLow <= 80) ? 10 : lerpScore(Math.abs(cloudLow - 50), 30, 10, 60, 0);
+  const discount = precipDiscount(precipProb);
+  const total = clamp(Math.round((satScore + satBonus + windScore + cloudScore) * discount), 0, 100);
+  return { total, detail: { dewSpread, satScore: Math.round(satScore), rh, satBonus: Math.round(satBonus), windSpeed, windScore: Math.round(windScore), cloudLow, cloudScore: Math.round(cloudScore), precipProb, discount: +discount.toFixed(2) } };
+}
+
+function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipProb }) {
+  const clearSky = 100 - Math.max(cloudLow, cloudMid);
+  const clearScore = clearSky >= 80 ? 35 : lerpScore(clearSky, 40, 0, 80, 35);
+  const calmScore = windSpeed <= 2 ? 30 : lerpScore(windSpeed, 2, 30, 5, 0);
+  const dewScore = dewSpread <= 1 ? 35 : lerpScore(dewSpread, 1, 35, 4, 0);
+  const discount = precipDiscount(precipProb);
+  const total = clamp(Math.round((clearScore + calmScore + dewScore) * discount), 0, 100);
+  return { total, detail: { clearSky: Math.round(clearSky), clearScore: Math.round(clearScore), windSpeed, calmScore: Math.round(calmScore), dewSpread, dewScore: Math.round(dewScore), precipProb, discount: +discount.toFixed(2) } };
+}
+
+function classifyLabel(total) {
+  if (total >= 70) return { label: '極佳', color: '#3fb950' };
+  if (total >= 40) return { label: '尚可', color: '#d29922' };
+  return { label: '不佳', color: '#f85149' };
+}
+
+/* ============================================================
+ * 5. 內建模板文字產生器（機率與說明文字全程不經 AI，完全免金鑰運作）
+ * ============================================================ */
+function templateNarrative(results) {
+  const top = results.slice().sort((a, b) => b.probability - a.probability)[0];
+  const summary = `本次分析共比對 ${results.length} 筆地點／時段資料，機率最高為「${top.location}」${top.timeLabel}（${top.probability}%，${top.dominantType}機制主導）。所有數據均來自即時擷取的氣象模型，機率由逆溫層、濕度、風速、露點等指標規則運算而得。`;
+
+  const analysis = [
+    { title: '雲海形成關鍵：逆溫層', content: results.map(r => {
+      const inv = r.cloudSea.detail.inversion;
+      return inv.base != null
+        ? `${r.location}：偵測到逆溫層底部約 ${inv.base}m，與目標海拔相差 ${inv.diff}m，強度 +${inv.deltaT}°C。`
+        : `${r.location}：此時段垂直剖面未偵測到明顯逆溫層，雲海條件較不利。`;
+    }).join(' ') },
+    { title: '水氣與風力條件', content: results.map(r =>
+        `${r.location}：相對濕度 ${r.rh}%、地面風速 ${r.windSpeed} m/s、露點差 ${r.dewSpread.toFixed(1)}°C${r.precipProb != null ? `、降雨機率 ${r.precipProb}%` : ''}${r.precipProb >= 30 ? '（降雨機率偏高，已對機率做折減）' : ''}。`
+      ).join(' ') },
+  ];
+
+  const suggestions = results
+    .filter(r => r.probability >= 40)
+    .sort((a, b) => b.probability - a.probability)
+    .slice(0, 3)
+    .map(r => ({
+      location: r.location,
+      altitude: `約 ${LOCATIONS[r.location]?.alt ?? '—'}m`,
+      time: r.timeLabel,
+      description: `機率 ${r.probability}%（${r.dominantType}為主）。${r.probability >= 70 ? '條件極佳，強烈建議前往。' : '條件尚可，建議出發但需隨機應變，留意最新雲圖變化。'}`
+    }));
+  if (!suggestions.length) {
+    suggestions.push({ location: top.location, altitude: `約 ${LOCATIONS[top.location]?.alt ?? '—'}m`, time: top.timeLabel, description: '本次所有地點條件皆偏弱，建議觀望或改期，可留意逆溫層是否於臨近日期增強。' });
+  }
+
+  const tips = [
+    '本頁機率為自動擷取氣象模型資料後之規則運算結果，非官方預報，建議出發前 12–24 小時再次確認最新預報。',
+    '山區天氣變化快，請注意保暖與行車／登山安全。',
+  ];
+
+  const closing = '天氣如畫，快門留情——願您此行捕捉到心中那片最美的琉璃光。';
+
+  return { summary, analysis, suggestions, tips, closing };
+}
+
+/* ============================================================
+ * 6. UI 互動
+ * ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dateInput').value = fmtDate(new Date());
+});
+
+let selectedTime = 'sunrise';
+let selectedLocs = ['陽明山區', '九份/不厭亭'];
+
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedTime = btn.dataset.val;
+  });
+});
+
+document.getElementById('chipRow').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  const loc = chip.dataset.loc;
+  if (chip.classList.contains('active')) {
+    chip.classList.remove('active');
+    selectedLocs = selectedLocs.filter(l => l !== loc);
+  } else {
+    chip.classList.add('active');
+    selectedLocs.push(loc);
+  }
+});
+
+const timeLabel = { sunrise: '日出前一小時', sunset: '日落後一小時', both: '全天' };
+
+function getProbColor(p) {
+  if (p >= 75) return { fill: '#3fb950', text: '#3fb950' };
+  if (p >= 50) return { fill: '#d29922', text: '#d29922' };
+  return { fill: '#f85149', text: '#f85149' };
+}
+
+function setLoading(msg) {
+  document.getElementById('resultArea').innerHTML = `
+    <div class="panel-label">氣象分析報告</div>
+    <div class="loading-wrap">
+      <div class="loader"><span></span><span></span><span></span></div>
+      <div class="loading-msg">${msg}</div>
+    </div>`;
+}
+
+/* ---- 主流程：抓資料 -> 建立剖面 -> 規則運算 -> 文字產生 -> 渲染 ---- */
+async function runPrediction() {
+  const dateVal = document.getElementById('dateInput').value;
+  const customLoc = document.getElementById('customLoc').value.trim();
+
+  if (!dateVal) { alert('請選擇預測日期'); return; }
+  if (selectedLocs.length === 0 && !customLoc) { alert('請至少選擇一個觀測地點'); return; }
+
+  const btn = document.getElementById('predictBtn');
+  btn.disabled = true;
+  btn.textContent = '分析中...';
+  setLoading('正在自動擷取氣象資料（Open-Meteo）...');
+
+  const dataSourceLog = [];
+
+  try {
+    // 1) 準備地點清單（含自訂地點自動查座標）
+    const locEntries = [];
+    for (const name of selectedLocs) locEntries.push([name, LOCATIONS[name]]);
+    if (customLoc) {
+      try {
+        const g = await geocodeLocation(customLoc);
+        locEntries.push([`${customLoc}（${g.resolvedName}）`, g]);
+        dataSourceLog.push(`<span class="ok">✓</span> 自訂地點「${customLoc}」座標查詢成功`);
+      } catch (e) {
+        dataSourceLog.push(`<span class="warn">⚠</span> 自訂地點「${customLoc}」查詢失敗：${e.message}`);
+      }
+    }
+    if (!locEntries.length) throw new Error('沒有可用的地點資料');
+
+    const timeSlots = selectedTime === 'both' ? ['sunrise', 'sunset'] : [selectedTime];
+    const results = [];
+
+    for (const [locName, loc] of locEntries) {
+      setLoading(`正在分析 ${locName}...`);
+      const om = await fetchOpenMeteo(loc, dateVal);
+      dataSourceLog.push(`<span class="ok">✓</span> ${locName}：Open-Meteo 資料擷取成功`);
+
+      const dayIdx = 0; // 只查詢單一日期
+      const diurnalRange = (om.daily.temperature_2m_max[dayIdx] ?? 0) - (om.daily.temperature_2m_min[dayIdx] ?? 0);
+      const surfaceAlt = om.elevation ?? loc.alt;
+
+      for (const slot of timeSlots) {
+        const sunIso = slot === 'sunrise' ? om.daily.sunrise[dayIdx] : om.daily.sunset[dayIdx];
+        const sunDate = new Date(sunIso);
+        const targetDate = new Date(sunDate.getTime() + (slot === 'sunrise' ? -60 : 60) * 60000);
+        targetDate.setMinutes(0, 0, 0);
+        const targetIso = `${fmtDate(targetDate)}T${pad2(targetDate.getHours())}:00`;
+
+        const idx = findHourIndex(om.hourly.time, targetIso);
+        const rh = om.hourly.relative_humidity_2m[idx];
+        const windSpeed = om.hourly.wind_speed_10m[idx];
+        const t2m = om.hourly.temperature_2m[idx];
+        const td2m = om.hourly.dew_point_2m[idx];
+        const dewSpread = t2m - td2m;
+        const cloudLow = om.hourly.cloud_cover_low[idx];
+        const cloudMid = om.hourly.cloud_cover_mid[idx];
+        const precipProb = om.hourly.precipitation_probability?.[idx] ?? null;
+        const profile = buildProfile(om.hourly, idx, surfaceAlt, t2m);
+
+        const cloudSea = scoreCloudSea({ profile, targetAlt: loc.alt ?? surfaceAlt, rh, windSpeed, diurnalRange, precipProb });
+        const advectionFog = scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb });
+        const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipProb });
+
+        const scores = [
+          { type: '雲海', ...cloudSea },
+          { type: '平流霧', ...advectionFog },
+          { type: '輻射霧', ...radiationFog },
+        ].sort((a, b) => b.total - a.total);
+
+        results.push({
+          location: locName, timeLabel: `${fmtDate(targetDate)} ${timeLabel[slot]}（約${pad2(targetDate.getHours())}:00）`,
+          probability: scores[0].total, dominantType: scores[0].type,
+          cloudSea, advectionFog, radiationFog,
+          rh, windSpeed, dewSpread, diurnalRange, precipProb,
+        });
+      }
+    }
+
+    // 2) 產生說明文字：一律使用內建模板文字（依規則運算結果組成，不經 AI 改寫）
+    const narrative = templateNarrative(results);
+
+    renderResult(results, narrative, dataSourceLog);
+
+  } catch (e) {
+    document.getElementById('resultArea').innerHTML = `
+      <div class="panel-label">氣象分析報告</div>
+      <div class="error-box">預測失敗：${e.message}</div>
+      ${dataSourceLog.length ? `<div class="data-source-line">${dataSourceLog.join('<br>')}</div>` : ''}`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '開始預測分析';
+  }
+}
+
+function renderResult(results, narrative, dataSourceLog) {
+  let html = '<div class="panel-label">氣象分析報告</div>';
+
+  if (dataSourceLog && dataSourceLog.length) {
+    html += `<div class="data-source-line">${dataSourceLog.join('<br>')}</div>`;
+  }
+
+  if (narrative.summary) html += `<div class="summary-block">${narrative.summary}</div>`;
+
+  // 機率表格
+  html += `<div class="section-heading">雲海 · 平流霧 · 輻射霧機率</div>`;
+  html += `<table class="prob-table"><thead><tr><th>地點 / 時段</th><th>機率（主導機制）</th><th>備註</th></tr></thead><tbody>`;
+  results.forEach(r => {
+    const p = r.probability;
+    const c = getProbColor(p);
+    html += `<tr>
+      <td><div class="loc-name">${r.location}</div><div class="loc-time">${r.timeLabel}</div></td>
+      <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${c.fill}"></div></div><span class="bar-pct" style="color:${c.text}">${p}%</span></div><div class="loc-time">${r.dominantType}機制主導</div></td>
+      <td><div class="note-text">濕度${r.rh}% · 風速${r.windSpeed}m/s · 露點差${r.dewSpread.toFixed(1)}°C${r.precipProb != null ? ' · 降雨機率' + r.precipProb + '%' : ''}</div></td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+
+  // 深度氣象判讀：三種機制個別分數 + 關鍵數值
+  html += `<div class="section-heading">深度氣象判讀</div><div class="analysis-grid">`;
+  results.forEach(r => {
+    const inv = r.cloudSea.detail.inversion;
+    html += `<div class="analysis-card">
+      <div class="analysis-title">${r.location} · ${r.timeLabel.split(' ')[1] || ''}</div>
+      <table class="metric-table">
+        <tr><td>雲海機率</td><td>${r.cloudSea.total}%</td></tr>
+        <tr><td>平流霧機率</td><td>${r.advectionFog.total}%</td></tr>
+        <tr><td>輻射霧機率</td><td>${r.radiationFog.total}%</td></tr>
+        <tr><td>逆溫層底部</td><td>${inv.base != null ? inv.base + 'm（差' + inv.diff + 'm）' : '未偵測到'}</td></tr>
+        <tr><td>日夜溫差</td><td>${r.diurnalRange.toFixed(1)}°C</td></tr>
+      </table>
+    </div>`;
+  });
+  html += `</div>`;
+
+  if (narrative.analysis && narrative.analysis.length) {
+    html += `<div class="section-heading">綜合說明</div><div class="analysis-grid">`;
+    narrative.analysis.forEach(a => { html += `<div class="analysis-card"><div class="analysis-title">${a.title || ''}</div><div class="analysis-body">${a.content || ''}</div></div>`; });
+    html += `</div>`;
+  }
+
+  if (narrative.suggestions && narrative.suggestions.length) {
+    html += `<div class="section-heading">具體攝影建議</div><div class="suggestion-list">`;
+    narrative.suggestions.forEach((s, i) => {
+      html += `<div class="suggestion-card"><div><div class="suggestion-badge">0${i+1}</div></div><div><div class="suggestion-loc">${s.location || ''}</div><div class="suggestion-meta">${s.altitude || ''} &nbsp;·&nbsp; ${s.time || ''}</div><div class="suggestion-desc">${s.description || ''}</div></div></div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (narrative.tips && narrative.tips.length) {
+    html += `<div class="section-heading">注意事項</div><div class="tips-list">`;
+    narrative.tips.forEach(t => { html += `<div class="tip-item">${t}</div>`; });
+    html += `</div>`;
+  }
+
+  if (narrative.closing) html += `<div class="closing-line">${narrative.closing}</div>`;
+
+  document.getElementById('resultArea').innerHTML = html;
+}
+</script>
+</body>
+</html>
