@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣象預測專家 · 雲海預測儀表板（CWA 整合版）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --bg2: #ffffff;
+    --bg3: #f6f8fa;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #1a2332;
+    --text2: #4a5568;
+    --text3: #a0aec0;
+    --accent: #2563eb;
+    --accent2: #1d4ed8;
+    --green: #16a34a;
+    --green-bg: rgba(22,163,74,0.08);
+    --amber: #b45309;
+    --amber-bg: rgba(180,83,9,0.08);
+    --red: #dc2626;
+    --red-bg: rgba(220,38,38,0.08);
+    --teal: #0d9488;
+    --serif: 'Noto Serif TC', serif;
+    --sans: 'Noto Sans TC', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(186,230,253,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 30% at 80% 70%, rgba(199,210,254,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 60% 10%, rgba(224,242,254,0.3) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .logo-mark {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-left: auto;
+    box-shadow: 0 0 6px rgba(22,163,74,0.5);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; box-shadow:0 0 6px rgba(22,163,74,0.5); }
+    50% { opacity:0.5; box-shadow:0 0 2px rgba(22,163,74,0.3); }
+  }
+
+  .status-label {
+    font-size: 12px;
+    color: var(--green);
+    font-family: var(--mono);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 750px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .panel-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    font-family: var(--mono);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section { margin-bottom: 1.5rem; }
+
+  .form-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  input[type="date"] {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s;
+    color-scheme: light;
+  }
+  input[type="date"]:focus { border-color: var(--accent2); }
+
+  .toggle-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: var(--sans);
+    font-weight: 400;
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .toggle-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .toggle-btn.active {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #fff;
+  }
+
+  .chip-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: var(--sans);
+    font-weight: 400;
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.active {
+    background: rgba(37,99,235,0.08);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  input[type="text"]:focus { border-color: var(--accent2); }
+  input[type="text"]::placeholder { color: var(--text3); }
+
+  .predict-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 0.5rem;
+    background: var(--accent2);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+    letter-spacing: 0.02em;
+  }
+  .predict-btn:hover { background: #388bfd; }
+  .predict-btn:active { transform: scale(0.98); }
+  .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .api-note {
+    margin-top: 1rem;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .field-hint {
+    font-size: 10.5px;
+    color: var(--text3);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .field-hint a { color: var(--accent2); }
+
+  .result-panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-height: 500px;
+  }
+
+  .placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 420px;
+    gap: 12px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  .placeholder-glyph {
+    font-family: var(--serif);
+    font-size: 48px;
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .placeholder p { font-size: 13px; line-height: 1.8; }
+
+  .loading-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 420px;
+    gap: 16px;
+  }
+
+  .loader { display: flex; gap: 6px; }
+  .loader span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: bounce .8s ease-in-out infinite;
+  }
+  .loader span:nth-child(2) { animation-delay: .15s; }
+  .loader span:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce {
+    0%,60%,100% { transform: translateY(0); opacity:.5; }
+    30% { transform: translateY(-10px); opacity:1; }
+  }
+
+  .loading-msg { font-size: 13px; color: var(--text2); font-family: var(--mono); }
+
+  .error-box {
+    background: var(--red-bg);
+    border: 0.5px solid rgba(248,81,73,0.3);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    color: var(--red);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .summary-block {
+    background: #eff6ff;
+    border-left: 2px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .section-heading {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 1.5rem 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+  }
+
+  .prob-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 0.5rem;
+  }
+  .prob-table th {
+    text-align: left;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .prob-table td {
+    padding: 10px 10px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: middle;
+    color: var(--text);
+  }
+  .prob-table tr:last-child td { border-bottom: none; }
+  .prob-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .loc-name { font-weight: 500; font-size: 13px; }
+  .loc-time { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
+
+  .bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill { height: 4px; border-radius: 2px; transition: width 0.6s cubic-bezier(.4,0,.2,1); }
+  .bar-pct { font-family: var(--mono); font-size: 13px; font-weight: 500; min-width: 36px; text-align: right; }
+
+  .note-text { font-size: 11px; color: var(--text3); line-height: 1.5; }
+
+  .data-source-line {
+    font-size: 10.5px;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin: 0.25rem 0 1rem;
+    line-height: 1.7;
+  }
+  .data-source-line .ok { color: var(--green); }
+  .data-source-line .warn { color: var(--amber); }
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 0.5rem;
+  }
+  .analysis-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .analysis-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent2);
+    margin-bottom: 6px;
+    font-family: var(--mono);
+  }
+  .analysis-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  .metric-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .metric-table td { padding: 3px 0; color: var(--text2); }
+  .metric-table td:first-child { color: var(--text3); width: 40%; }
+  .metric-table td:last-child { text-align: right; font-family: var(--mono); }
+
+  .suggestion-list { display: flex; flex-direction: column; gap: 8px; }
+  .suggestion-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+  .suggestion-badge {
+    background: rgba(37,99,235,0.08);
+    color: var(--accent2);
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 0.5px solid rgba(37,99,235,0.2);
+  }
+  .suggestion-loc { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .suggestion-meta { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 6px; }
+  .suggestion-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  .tips-list { display: flex; flex-direction: column; gap: 6px; }
+  .tip-item {
+    background: rgba(22,163,74,0.06);
+    border: 0.5px solid rgba(22,163,74,0.25);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #15803d;
+    line-height: 1.7;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .tip-item::before { content: '›'; color: var(--green); font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+
+  .closing-line {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 0.5px solid var(--border);
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--text3);
+    text-align: center;
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  footer {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="logo-mark">雲海預測儀</div>
+    <div class="logo-sub">WEATHER · PHOTOGRAPHY · AUTO-DATA · CWA</div>
+    <div class="status-dot"></div>
+    <div class="status-label">自動氣象資料擷取（Open-Meteo + CWA）· 就緒</div>
+  </header>
+
+  <div class="layout">
+
+    <!-- 左側：控制面板 -->
+    <div class="panel">
+      <div class="panel-label">預測條件</div>
+
+      <div class="form-section">
+        <label class="form-label">預測日期</label>
+        <input type="date" id="dateInput">
+        <div class="field-hint">支援未來約 16 天內的預報（Open-Meteo 模型上限）</div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">拍攝時段</label>
+        <div class="toggle-row">
+          <button class="toggle-btn active" data-val="sunrise">日出前一小時</button>
+          <button class="toggle-btn" data-val="sunset">日落後一小時</button>
+          <button class="toggle-btn" data-val="both">全天（兩者皆列）</button>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">觀測地點（可複選）</label>
+        <div class="chip-row" id="chipRow">
+          <div class="chip active" data-loc="陽明山區">陽明山區</div>
+          <div class="chip active" data-loc="九份/不厭亭">九份/不厭亭</div>
+        </div>
+        <input type="text" id="customLoc" placeholder="自訂地點（如：阿里山、觀霧）自動查座標">
+        <div class="form-section" id="customTownSection" style="display:none; margin-top:10px; margin-bottom:0;">
+          <label class="form-label" style="font-size:11px;">自訂地點所屬縣市／鄉鎮（選填，供中央氣象署資料比對）</label>
+          <select id="customCountyInput" style="width:100%; padding:9px 12px; background:var(--bg3); border:0.5px solid var(--border2); border-radius:8px; color:var(--text); font-family:var(--sans); font-size:13px;">
+            <option value="">請選擇縣市</option>
+            <option>臺北市</option><option>新北市</option><option>桃園市</option><option>臺中市</option>
+            <option>臺南市</option><option>高雄市</option><option>基隆市</option><option>新竹市</option>
+            <option>新竹縣</option><option>苗栗縣</option><option>彰化縣</option><option>南投縣</option>
+            <option>雲林縣</option><option>嘉義市</option><option>嘉義縣</option><option>屏東縣</option>
+            <option>宜蘭縣</option><option>花蓮縣</option><option>臺東縣</option><option>澎湖縣</option>
+            <option>金門縣</option><option>連江縣</option>
+          </select>
+          <input type="text" id="customTownInput" placeholder="例：阿里山鄉（僅需鄉鎮市區名稱，不含縣市）" style="margin-top:8px;">
+          <div class="field-hint">兩項都填才會查中央氣象署資料，只填一項會跳過；且實際涵蓋約未來3-4天（依CWA每日資料量而定，非固定）。</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">中央氣象署 API Key（選填）</label>
+        <input type="text" id="cwaKeyInput" placeholder="CWA-XXXXXXXX-XXXX-...（留空則僅用 Open-Meteo）">
+        <div class="field-hint">金鑰只留在目前分頁的記憶體中，重新整理需重新輸入，不會送到中央氣象署以外的任何伺服器。尚未申請請至 <a href="https://opendata.cwa.gov.tw/" target="_blank" rel="noopener">opendata.cwa.gov.tw</a> 註冊會員。<strong>若已在下方代理伺服器設定 CWA_API_KEY，這欄可以留空。</strong></div>
+        <input type="text" id="cwaProxyInput" placeholder="代理伺服器網址（選填，如 https://xxx.workers.dev）" style="margin-top:8px;">
+        <div class="field-hint">鄉鎮預報是否開放瀏覽器直接呼叫尚未百分之百確認，若已架好 Cloudflare Worker 代理，請把網址填在這裡（結尾不要加斜線，且不要加後面的路徑）；留空則直接呼叫官方網址，失敗時自動氣象站與 Open-Meteo 不受影響，僅鄉鎮預報這部分退回 Open-Meteo。若在 Worker 後台設定了 CWA_API_KEY 環境變數，上方金鑰欄位可留空，由 Worker 自動代入。<strong>這個代理伺服器網址同時也給下方 Groq AI 潤飾功能共用</strong>，不用另外架一支。</div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Groq API Key（選填，AI 潤飾文字說明）</label>
+        <input type="text" id="groqKeyInput" placeholder="gsk_...（留空則使用內建模板文字，或改用下方代理伺服器代管）">
+        <div class="field-hint">填了金鑰後，AI 只會把「已經算好的機率與數值」改寫成更自然的文字，不會重新計算或更動任何數字；機率一律仍由規則運算產生。尚未申請請至 <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com</a> 取得。</div>
+        <label style="display:flex; align-items:center; gap:6px; margin-top:8px; font-size:12px; color:var(--text2); cursor:pointer;">
+          <input type="checkbox" id="groqUseProxyInput" style="width:auto; margin:0;">
+          改用上方代理伺服器代管的金鑰（免填，需已在 Worker 設定 GROQ_API_KEY）
+        </label>
+        <div class="field-hint">兩者都沒填/沒勾就完全不呼叫 AI，直接用內建模板文字。</div>
+      </div>
+
+      <button class="predict-btn" id="predictBtn" onclick="runPrediction()">開始預測分析</button>
+
+      <div class="api-note">資料來源：Open-Meteo（一律自動擷取）<br>+ 中央氣象署（選填金鑰後自動併入濕度／露點／降雨機率）<br>+ Groq AI（選填金鑰後潤飾文字說明，機率仍為規則運算）<br>機率為規則運算結果，僅供攝影規劃參考</div>
+    </div>
+
+    <!-- 右側：分析結果 -->
+    <div class="result-panel" id="resultPanel">
+      <div class="panel-label">氣象分析報告</div>
+      <div id="resultArea">
+        <div class="placeholder">
+          <div class="placeholder-glyph">⛅</div>
+          <p>選擇日期與地點<br>按下「開始預測分析」<br>系統將自動抓取氣象資料並計算機率</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    氣象預測專家 · 雲海攝影助理 · 資料來源：Open-Meteo（自動擷取）+ 中央氣象署（選填金鑰後自動擷取）<br>
+    機率一律由逆溫層、濕度、風速、露點、日夜溫差、降雨機率等指標規則運算而得，不受選填的 Groq AI 文字潤飾影響<br>
+    結果僅供攝影規劃參考，不代表官方氣象預報
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+ * 1. 地點設定：座標與海拔為概估值，需要更精準可自行調整
+ *    county/town 欄位保留供未來若接上中央氣象署資料時比對用
+ * ============================================================ */
+const LOCATIONS = {
+  '陽明山區':     { lat: 25.1637, lon: 121.5407, alt: 800, county: '臺北市', town: '北投區' },
+  '九份/不厭亭':  { lat: 25.1097, lon: 121.8447, alt: 600, county: '新北市', town: '瑞芳區' },
+};
+
+// 垂直剖面採用的氣壓層（hPa），涵蓋台灣中低海拔山區的逆溫層常見高度
+const PRESSURE_LEVELS = [1000, 975, 950, 925, 900, 850, 800];
+
+/* ============================================================
+ * 2. 共用工具
+ * ============================================================ */
+function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+function lerpScore(x, x0, y0, x1, y1) {
+  if (x1 === x0) return y0;
+  const t = clamp((x - x0) / (x1 - x0), 0, 1);
+  return y0 + (y1 - y0) * t;
+}
+function pad2(n) { return String(n).padStart(2, '0'); }
+function fmtDate(d) { return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371, toRad = x => x * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+/* ============================================================
+ * 3. 資料擷取：Open-Meteo（唯一資料來源，免金鑰、免後端）
+ * ============================================================ */
+// 統一包一層 fetch，把瀏覽器丟出的低階網路錯誤（Failed to fetch）
+// 轉成使用者看得懂的訊息，方便判斷是網路問題還是被預覽環境擋住
+async function safeFetch(url, label, options) {
+  try {
+    return await fetch(url, options);
+  } catch (e) {
+    throw new Error(
+      `${label ? label + '：' : ''}無法連線（${e.message}）。` +
+      `若你是在聊天室內的檔案預覽視窗中測試，該預覽通常會封鎖對外連線；` +
+      `請把此 HTML 檔案存到電腦後，直接用瀏覽器開啟（雙擊檔案，或拖進 Chrome 分頁）再試一次。`
+    );
+  }
+}
+
+async function geocodeLocation(name) {
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=zh&format=json`;
+  const res = await safeFetch(url, '地點查詢');
+  if (!res.ok) throw new Error('地點查詢失敗');
+  const data = await res.json();
+  if (!data.results || !data.results.length) throw new Error(`找不到地點「${name}」，請確認地名或改用中文/英文常見寫法`);
+  const r = data.results[0];
+  return { lat: r.latitude, lon: r.longitude, alt: r.elevation ?? 500, county: null, town: null, resolvedName: r.name };
+}
+
+async function fetchOpenMeteo(loc, dateStr) {
+  const hourlyVars = [
+    'temperature_2m', 'relative_humidity_2m', 'dew_point_2m', 'wind_speed_10m',
+    'cloud_cover_low', 'cloud_cover_mid', 'precipitation_probability',
+    ...PRESSURE_LEVELS.flatMap(p => [`temperature_${p}hPa`, `geopotential_height_${p}hPa`]),
+  ].join(',');
+  const dailyVars = 'temperature_2m_max,temperature_2m_min,sunrise,sunset';
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}` +
+    `&hourly=${hourlyVars}&daily=${dailyVars}&timezone=Asia%2FTaipei` +
+    `&start_date=${dateStr}&end_date=${dateStr}`;
+  const res = await safeFetch(url, 'Open-Meteo');
+  if (!res.ok) throw new Error(`Open-Meteo 資料擷取失敗 (HTTP ${res.status})`);
+  return res.json();
+}
+
+// 依據時刻字串（YYYY-MM-DDTHH:00）找出 hourly 陣列的索引，找不到則取最接近者
+function findHourIndex(hourlyTimeArr, targetIso) {
+  let idx = hourlyTimeArr.indexOf(targetIso);
+  if (idx !== -1) return idx;
+  // fallback：找最近的時刻
+  const targetMs = new Date(targetIso).getTime();
+  let best = 0, bestDiff = Infinity;
+  hourlyTimeArr.forEach((t, i) => {
+    const diff = Math.abs(new Date(t).getTime() - targetMs);
+    if (diff < bestDiff) { bestDiff = diff; best = i; }
+  });
+  return best;
+}
+
+function buildProfile(hourly, idx, surfaceAlt, surfaceTemp) {
+  const profile = [{ height: surfaceAlt, temp: surfaceTemp }];
+  PRESSURE_LEVELS.forEach(p => {
+    const h = hourly[`geopotential_height_${p}hPa`]?.[idx];
+    const t = hourly[`temperature_${p}hPa`]?.[idx];
+    if (typeof h === 'number' && typeof t === 'number') profile.push({ height: h, temp: t });
+  });
+  // 依高度排序並去除過於接近地面（<20m 差）以免雜訊
+  return profile.sort((a, b) => a.height - b.height).filter((p, i, arr) => i === 0 || p.height - arr[i-1].height > 20);
+}
+
+/* ============================================================
+ * 3b. 資料擷取：中央氣象署開放資料（選填，需金鑰）
+ *
+ *   涵蓋範圍與取捨（重要，避免日後誤改）：
+ *   - 鄉鎮天氣預報 F-D0047-0XX（分縣市，逐小時溫度/露點/濕度＋3小時降雨機率）：只取用 T（溫度）、
+ *     Td（露點）、RH（相對濕度）、PoP6h/PoP12h（降雨機率）。「Wind」欄位是「風向＋蒲福風級」文字，不是乾淨
+ *     數值，刻意不解析，風速仍全部採用 Open-Meteo。
+ *   - 逆溫層判斷需要高空氣壓層剖面，CWA 這組 API 沒有提供，剖面與逆溫層一律
+ *     仍用 Open-Meteo，不受 CWA 資料影響。
+ *   - 自動氣象站 O-A0001-001：只在「預測日期＝今天」時抓取，用最近測站的即時
+ *     觀測值做「現地觀測參考」，僅供人工比對顯示，不併入機率運算（時間點對不
+ *     齊預測目標時刻，混進計分反而失真）。
+ *   - 任何一步失敗（金鑰錯誤、CORS、逾時等）都只影響「本地點/本項目」，不會
+ *     讓整體預測中斷，會在資料來源紀錄與報告中清楚標示已退回 Open-Meteo。
+ * ============================================================ */
+
+// 由溫度與相對濕度反推露點（Magnus formula），供 CWA 資料缺 Td 欄位時使用
+function dewPointFromTRH(t, rh) {
+  const a = 17.27, b = 237.7;
+  const alpha = ((a * t) / (b + t)) + Math.log(rh / 100);
+  return (b * alpha) / (a - alpha);
+}
+
+// 由溫度與露點反推相對濕度（Magnus formula 正向）
+function relHumidityFromTTd(t, td) {
+  const es = x => 6.112 * Math.exp((17.67 * x) / (x + 243.5));
+  return clamp(100 * es(td) / es(t), 0, 100);
+}
+
+// 用實際金鑰驗證過的真實回應結構（2026-07-03 實測，F-D0047-069 新北市）：
+//   records.Locations[0].Location[] ，每筆 { LocationName, WeatherElement: [...] }
+//   WeatherElement[].Time[] 有兩種形式：
+//     - 逐小時單一時間點：{ DataTime, ElementValue: [{ Temperature: "32" }] }
+//     - 3小時區間：{ StartTime, EndTime, ElementValue: [{ ProbabilityOfPrecipitation: "20" }] }
+//   ElementValue 物件的 key 就是實際氣象量英文名稱（Temperature/DewPoint/
+//   RelativeHumidity/ProbabilityOfPrecipitation/...），不需要透過中文 ElementName
+//   （如「溫度」「露點溫度」）比對，直接掃描每個 WeatherElement 找有沒有該 key
+//   即可，不管它掛在哪個 ElementName 底下，較不受欄位命名調整影響。
+//
+// 注意：實測證實 locationName 這個查詢參數完全沒有作用，官方會回傳「整個縣市」
+// 所有鄉鎮的資料（一個縣市可能上萬行 JSON），要靠這裡自己從陣列中篩出目標鄉鎮。
+function pickCwaValue(weatherElements, fieldKey, targetIso) {
+  const targetMs = new Date(targetIso).getTime();
+  let best = null, bestDiff = Infinity;
+  for (const el of weatherElements || []) {
+    for (const t of el.Time || []) {
+      const raw = t.ElementValue?.[0]?.[fieldKey];
+      if (raw === undefined || raw === null || raw === '') continue;
+      const num = parseFloat(raw);
+      if (!Number.isFinite(num)) continue;
+      let diff;
+      if (t.DataTime) {
+        diff = Math.abs(new Date(t.DataTime).getTime() - targetMs);
+      } else if (t.StartTime) {
+        const s = new Date(t.StartTime).getTime();
+        const e = t.EndTime ? new Date(t.EndTime).getTime() : s;
+        diff = (targetMs >= s && targetMs < e) ? 0 : Math.min(Math.abs(targetMs - s), Math.abs(targetMs - e));
+      } else {
+        continue;
+      }
+      if (diff < bestDiff) { bestDiff = diff; best = num; }
+    }
+  }
+  return best;
+}
+
+// 縣市 → F-D0047 鄉鎮預報代碼對照表。
+// 原本用「F-D0047-093」（全臺灣合併檔）直接查詢會回 404 Resource not found，
+// 研判是這種巨型合併檔案不開放走即時查詢路徑（rest/datastore），只能整包
+// 下載。改用「分縣市」版本，經實測（2026-07-03，F-D0047-069 新北市）證實可行，
+// 但也發現兩個文件沒寫清楚的事：
+// 1. `locationName` 查詢參數完全沒有過濾作用，會拿到整個縣市所有鄉鎮的資料
+//    （前端在 fetchCwaTownForecastRaw 裡自己從陣列找目標鄉鎮）。
+// 2. 實際資料涵蓋約未來 3-4 天（不是舊版文件寫的 2 天），且溫度/露點/濕度是
+//    逐小時解析度，不是 3 小時，比原先預期的更精細也更夠用。
+// 更遠的日期（超過 3-4 天）目前沒有實測過對應的「未來1週」版本（代碼 = 這裡
+// 的值 +2）是否精細到小時，保守起見超出範圍直接跳過 CWA、只用 Open-Meteo。
+const COUNTY_D2_CODE = {
+  '宜蘭縣': '001', '桃園市': '005', '新竹縣': '009', '苗栗縣': '013',
+  '彰化縣': '017', '南投縣': '021', '雲林縣': '025', '嘉義縣': '029',
+  '屏東縣': '033', '臺東縣': '037', '花蓮縣': '041', '澎湖縣': '045',
+  '基隆市': '049', '新竹市': '053', '嘉義市': '057', '臺北市': '061',
+  '高雄市': '065', '新北市': '069', '臺中市': '073', '臺南市': '077',
+  '連江縣': '081', '金門縣': '085',
+};
+
+// 抓取指定縣市的「未來2-3天」鄉鎮預報，回傳目標鄉鎮的 WeatherElement 陣列。
+// 實測證實：官方回應把整個縣市所有鄉鎮的資料一次回傳（locationName 參數沒有
+// 過濾作用），要在 Location 陣列裡自己找目標鄉鎮；資料量可能上萬行 JSON，
+// 抓取需要幾秒鐘是正常現象，不是卡住。
+async function fetchCwaTownForecastRaw(townName, countyName, apiKey, proxyBase) {
+  const code = COUNTY_D2_CODE[countyName];
+  if (!code) throw new Error(`不支援的縣市名稱「${countyName}」，請確認是否為官方標準縣市全名（如「新北市」）`);
+  const base = proxyBase ? proxyBase.replace(/\/+$/, '') : 'https://opendata.cwa.gov.tw';
+  const url = `${base}/api/v1/rest/datastore/F-D0047-${code}` +
+    `?Authorization=${encodeURIComponent(apiKey)}&format=JSON`;
+  const res = await safeFetch(url, `中央氣象署鄉鎮預報（${countyName}${townName}）`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}，請確認金鑰是否正確`);
+  const data = await res.json();
+  if (data?.success === 'false') throw new Error(data?.message || '金鑰驗證失敗，或代理伺服器轉發失敗');
+  const townList = data?.records?.Locations?.[0]?.Location || [];
+  const matched = townList.find(l => l.LocationName === townName);
+  if (!matched) throw new Error(`「${countyName}」的預報資料中查無「${townName}」，請確認鄉鎮市區名稱是否正確`);
+  return matched.WeatherElement || [];
+}
+
+async function fetchCwaTownForecast(townName, countyName, apiKey, proxyBase) {
+  if (!countyName) throw new Error('缺少縣市名稱，無法查詢鄉鎮預報');
+  return await fetchCwaTownForecastRaw(townName, countyName, apiKey, proxyBase);
+}
+
+// 抓取全臺自動氣象站觀測資料（O-A0001-001），同一次預測流程內快取一份，
+// 避免每個地點各打一次（單次回傳資料量較大）
+let cwaStationCache = null;
+async function fetchCwaAllStations(apiKey, proxyBase) {
+  if (cwaStationCache) return cwaStationCache;
+  const base = proxyBase ? proxyBase.replace(/\/+$/, '') : 'https://opendata.cwa.gov.tw';
+  const url = `${base}/api/v1/rest/datastore/O-A0001-001?Authorization=${encodeURIComponent(apiKey)}&format=JSON`;
+  const res = await safeFetch(url, '中央氣象署自動氣象站');
+  if (!res.ok) throw new Error(`HTTP ${res.status}，請確認金鑰是否正確`);
+  const data = await res.json();
+  if (data?.success === 'false') throw new Error(data?.message || '金鑰驗證失敗');
+  const stations = data?.records?.Station;
+  if (!stations || !stations.length) throw new Error('回傳無測站資料，可能是金鑰無效');
+  cwaStationCache = stations;
+  return stations;
+}
+
+// 用經緯度找出最近的自動氣象站，回傳其即時觀測值（僅作參考顯示，不進機率運算）。
+// 注意：CWA 自動站常見缺值以 -99 之類表示，若最近的測站溫度／濕度都是缺值，
+// 直接採用會讓參考資訊變成一堆「—」，因此改成「依距離排序後，取第一個至少有
+// 溫度或濕度其中一項有效值的測站」，而不是單純取距離最近者。
+function nearestCwaStation(stations, lat, lon) {
+  const valid = v => Number.isFinite(v) && v > -90; // CWA 缺值常以 -99 之類表示
+  const candidates = [];
+  stations.forEach(st => {
+    const coords = st.GeoInfo?.Coordinates || [];
+    const coord = coords.find(c => c.CoordinateName === 'WGS84') || coords[0];
+    if (!coord) return;
+    const slat = parseFloat(coord.StationLatitude), slon = parseFloat(coord.StationLongitude);
+    if (!Number.isFinite(slat) || !Number.isFinite(slon)) return;
+    candidates.push({ st, dist: haversine(lat, lon, slat, slon) });
+  });
+  candidates.sort((a, b) => a.dist - b.dist);
+
+  const pick = candidates.find(c => {
+    const we = c.st.WeatherElement || {};
+    return valid(parseFloat(we.AirTemperature)) || valid(parseFloat(we.RelativeHumidity));
+  }) || candidates[0];
+  if (!pick) return null;
+
+  const we = pick.st.WeatherElement || {};
+  const temp = parseFloat(we.AirTemperature);
+  const rh = parseFloat(we.RelativeHumidity);
+  const wind = parseFloat(we.WindSpeed);
+  return {
+    stationName: pick.st.StationName || '未知測站',
+    distanceKm: +pick.dist.toFixed(1),
+    obsTime: pick.st.ObsTime?.DateTime || null,
+    temp: valid(temp) ? temp : null,
+    rh: valid(rh) ? rh : null,
+    windSpeed: valid(wind) ? wind : null,
+  };
+}
+
+/* ============================================================
+ * 4. 規則運算引擎（對應 weather-forecast-expert 技能之閾值）
+ * ============================================================ */
+function findInversions(profile) {
+  const layers = [];
+  for (let i = 0; i < profile.length - 1; i++) {
+    const a = profile[i], b = profile[i + 1];
+    if (b.temp > a.temp + 0.1) layers.push({ base: a.height, top: b.height, deltaT: +(b.temp - a.temp).toFixed(1) });
+  }
+  return layers;
+}
+
+function inversionMatchScore(layers, targetAlt) {
+  if (!layers.length) return { score: 0, base: null, deltaT: 0, diff: null };
+  let best = null, bestDiff = Infinity;
+  layers.forEach(l => { const diff = Math.abs(l.base - targetAlt); if (diff < bestDiff) { bestDiff = diff; best = l; } });
+  let score = 0;
+  if (bestDiff <= 200) score = 45;
+  else if (bestDiff <= 400) score = lerpScore(bestDiff, 200, 45, 400, 25);
+  else if (bestDiff <= 800) score = lerpScore(bestDiff, 400, 25, 800, 0);
+  return { score: Math.round(score), base: best.base, deltaT: best.deltaT, diff: Math.round(bestDiff) };
+}
+
+function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precipProb }) {
+  const inv = inversionMatchScore(findInversions(profile), targetAlt);
+  const rhScore = rh >= 85 ? 25 : lerpScore(rh, 70, 0, 85, 25);
+  const windScore = windSpeed <= 3 ? 15 : lerpScore(windSpeed, 3, 15, 6, 0);
+  const diurnalScore = diurnalRange >= 10 ? 15 : lerpScore(diurnalRange, 5, 0, 10, 15);
+  // 觀景點本身若正在下雨，即使逆溫層條件理想也看不到雲海，同樣套用降雨折減
+  const discount = precipDiscount(precipProb);
+  const total = clamp(Math.round((inv.score + rhScore + windScore + diurnalScore) * discount), 0, 100);
+  return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2) } };
+}
+
+// 降雨機率折減：正在下雨／高降雨機率時，不論多潮濕都不算「觀景級」霧況，
+// 直接大幅折減總分（下雨=視野差、體驗差，跟「站在雲海上方」是完全不同的事）
+function precipDiscount(precipProb) {
+  if (precipProb == null) return 1;
+  if (precipProb >= 50) return 0.3;
+  if (precipProb >= 30) return lerpScore(precipProb, 30, 0.6, 50, 0.3);
+  return 1;
+}
+
+function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb }) {
+  // 露點差與相對濕度都是「接近飽和」的訊號，兩者高度相關（RH≈100% 時露點差必然趨近 0）。
+  // 過去版本把兩者都給滿分、直接相加，等於同一件事算了兩次分數，
+  // 導致終年潮濕的地點（如九份）幾乎每晚都會被算成 100%。
+  // 修正：以露點差為主要判斷（0-40），濕度只作為次要佐證、權重降低且門檻拉高（0-10）。
+  const satScore = dewSpread <= 1 ? 40 : lerpScore(dewSpread, 1, 40, 4, 0);
+  const satBonus = rh >= 95 ? 10 : lerpScore(rh, 85, 0, 95, 10);
+  let windScore;
+  if (windSpeed <= 1) windScore = lerpScore(windSpeed, 0, 5, 1, 15);
+  else if (windSpeed <= 4) windScore = 25;
+  else windScore = lerpScore(windSpeed, 4, 25, 7, 0);
+  const cloudScore = (cloudLow >= 20 && cloudLow <= 80) ? 10 : lerpScore(Math.abs(cloudLow - 50), 30, 10, 60, 0);
+  const discount = precipDiscount(precipProb);
+  const total = clamp(Math.round((satScore + satBonus + windScore + cloudScore) * discount), 0, 100);
+  return { total, detail: { dewSpread, satScore: Math.round(satScore), rh, satBonus: Math.round(satBonus), windSpeed, windScore: Math.round(windScore), cloudLow, cloudScore: Math.round(cloudScore), precipProb, discount: +discount.toFixed(2) } };
+}
+
+function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipProb }) {
+  const clearSky = 100 - Math.max(cloudLow, cloudMid);
+  const clearScore = clearSky >= 80 ? 35 : lerpScore(clearSky, 40, 0, 80, 35);
+  const calmScore = windSpeed <= 2 ? 30 : lerpScore(windSpeed, 2, 30, 5, 0);
+  const dewScore = dewSpread <= 1 ? 35 : lerpScore(dewSpread, 1, 35, 4, 0);
+  const discount = precipDiscount(precipProb);
+  const total = clamp(Math.round((clearScore + calmScore + dewScore) * discount), 0, 100);
+  return { total, detail: { clearSky: Math.round(clearSky), clearScore: Math.round(clearScore), windSpeed, calmScore: Math.round(calmScore), dewSpread, dewScore: Math.round(dewScore), precipProb, discount: +discount.toFixed(2) } };
+}
+
+function classifyLabel(total) {
+  if (total >= 70) return { label: '極佳', color: '#3fb950' };
+  if (total >= 40) return { label: '尚可', color: '#d29922' };
+  return { label: '不佳', color: '#f85149' };
+}
+
+/* ============================================================
+ * 5. 內建模板文字產生器（機率與說明文字全程不經 AI，完全免金鑰運作）
+ * ============================================================ */
+function templateNarrative(results) {
+  const top = results.slice().sort((a, b) => b.probability - a.probability)[0];
+  const anyCwa = results.some(r => r.cwaUsed);
+  const summary = `本次分析共比對 ${results.length} 筆地點／時段資料，機率最高為「${top.location}」${top.timeLabel}（${top.probability}%，${top.dominantType}機制主導）。所有數據均來自即時擷取的氣象模型${anyCwa ? '（Open-Meteo，並已併入中央氣象署鄉鎮預報的濕度／露點／降雨機率資料）' : '（Open-Meteo）'}，機率由逆溫層、濕度、風速、露點等指標規則運算而得。`;
+
+  const analysis = [
+    { title: '雲海形成關鍵：逆溫層', content: results.map(r => {
+      const inv = r.cloudSea.detail.inversion;
+      return inv.base != null
+        ? `${r.location}：偵測到逆溫層底部約 ${inv.base}m，與目標海拔相差 ${inv.diff}m，強度 +${inv.deltaT}°C。`
+        : `${r.location}：此時段垂直剖面未偵測到明顯逆溫層，雲海條件較不利。`;
+    }).join(' ') },
+    { title: '水氣與風力條件', content: results.map(r =>
+        `${r.location}：相對濕度 ${r.rh}%、地面風速 ${r.windSpeed} m/s、露點差 ${r.dewSpread.toFixed(1)}°C${r.precipProb != null ? `、降雨機率 ${r.precipProb}%` : ''}${r.precipProb >= 30 ? '（降雨機率偏高，已對機率做折減）' : ''}${r.cwaUsed ? '（濕度／露點／降雨機率已併入中央氣象署鄉鎮預報資料）' : ''}${r.obsRef ? `。最近測站「${r.obsRef.stationName}」即時觀測：氣溫${r.obsRef.temp ?? '—'}°C、濕度${r.obsRef.rh ?? '—'}%（僅供參考，未納入機率計算）` : ''}`
+      ).join(' ') },
+  ];
+
+  const suggestions = results
+    .filter(r => r.probability >= 40)
+    .sort((a, b) => b.probability - a.probability)
+    .slice(0, 3)
+    .map(r => ({
+      location: r.location,
+      altitude: `約 ${LOCATIONS[r.location]?.alt ?? '—'}m`,
+      time: r.timeLabel,
+      description: `機率 ${r.probability}%（${r.dominantType}為主）。${r.probability >= 70 ? '條件極佳，強烈建議前往。' : '條件尚可，建議出發但需隨機應變，留意最新雲圖變化。'}`
+    }));
+  if (!suggestions.length) {
+    suggestions.push({ location: top.location, altitude: `約 ${LOCATIONS[top.location]?.alt ?? '—'}m`, time: top.timeLabel, description: '本次所有地點條件皆偏弱，建議觀望或改期，可留意逆溫層是否於臨近日期增強。' });
+  }
+
+  const tips = [
+    '本頁機率為自動擷取氣象模型資料後之規則運算結果，非官方預報，建議出發前 12–24 小時再次確認最新預報。',
+    '山區天氣變化快，請注意保暖與行車／登山安全。',
+  ];
+  if (anyCwa) tips.push('已併入中央氣象署鄉鎮預報資料；若中央氣象署資料持續顯示擷取失敗，通常是瀏覽器 CORS 限制或金鑰問題，系統會自動退回僅用 Open-Meteo，不影響其餘功能。');
+
+  const closing = '天氣如畫，快門留情——願您此行捕捉到心中那片最美的琉璃光。';
+
+  return { summary, analysis, suggestions, tips, closing };
+}
+
+/* ============================================================
+ * 5b. AI 文字潤飾（選填，需 Groq 金鑰）
+ *
+ *   重要原則（對應交接文件「不再讓 AI 憑印象猜機率」的精神）：
+ *   - 機率與所有數值一律由前面的規則引擎算完之後才會走到這裡，AI 完全不
+ *     參與、也看不到「算之前」的原始氣象資料，只會拿到「已經算好的結果」。
+ *   - System prompt 明確禁止 AI 更動任何數字，只能改寫文字語氣。
+ *   - 要求回傳結構化 JSON（跟 templateNarrative 回傳的形狀一致），失敗
+ *     （網路、金鑰、格式不符任何一種）就整個放棄，退回內建模板文字，
+ *     不會讓報告開天窗或顯示壞掉的內容。
+ * ============================================================ */
+const GROQ_MODEL = 'llama-3.3-70b-versatile'; // Groq 若下架此模型，改這裡即可
+
+async function polishNarrativeWithGroq(results, template, apiKey, proxyBase) {
+  const dataForPrompt = results.map(r => ({
+    location: r.location, time: r.timeLabel, probability: r.probability, dominantType: r.dominantType,
+    cloudSeaPct: r.cloudSea.total, advectionFogPct: r.advectionFog.total, radiationFogPct: r.radiationFog.total,
+    humidityPct: r.rh, windSpeedMs: r.windSpeed, dewSpreadC: r.dewSpread, precipProbPct: r.precipProb,
+    inversionBaseM: r.cloudSea.detail.inversion.base, inversionDiffM: r.cloudSea.detail.inversion.diff,
+    diurnalRangeC: r.diurnalRange, dataSource: r.cwaUsed ? 'Open-Meteo + CWA' : 'Open-Meteo',
+  }));
+
+  const systemPrompt = `你是雲海攝影氣象顧問的文字編輯。你唯一的任務：把「已經計算完成」的氣象數據改寫成流暢自然的繁體中文說明文字。
+嚴格規則（違反視為失敗）：
+1. 絕對不可更動、四捨五入、估算或新增任何數字（機率、百分比、公尺、公里、攝氏度等），一律照抄原始數值。
+2. 不可自行編造原始資料沒有提到的氣象判斷、地點或建議。
+3. 只能重新組織語句、調整用詞語氣，讓文字更自然、更適合攝影愛好者閱讀，可適度加入攝影角度的描述。
+4. 一律使用繁體中文。
+5. 只能回傳 JSON，不要有任何 JSON 以外的文字或 markdown code fence。
+JSON 格式：{"summary":"string","analysis":[{"title":"string","content":"string"}],"suggestions":[{"location":"string","altitude":"string","time":"string","description":"string"}],"tips":["string"],"closing":"string"}`;
+
+  const userPrompt = `規則運算完成的原始數據（JSON，數字都已確定、不可更動）：\n${JSON.stringify(dataForPrompt)}\n\n` +
+    `內建模板文字（供參考語氣與涵蓋重點，請改寫得更自然，但涵蓋的資訊範圍要相近）：\n${JSON.stringify(template)}`;
+
+  // 代理伺服器路由規則：路徑開頭 /groq/ 轉發到 api.groq.com（見 cwa-cors-proxy-worker.js）
+  const targetUrl = proxyBase
+    ? `${proxyBase.replace(/\/+$/, '')}/groq/openai/v1/chat/completions`
+    : 'https://api.groq.com/openai/v1/chat/completions';
+  const headers = { 'Content-Type': 'application/json' };
+  if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`; // 留空則交給代理伺服器用 GROQ_API_KEY 代管
+
+  const res = await safeFetch(targetUrl, 'Groq', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
+      temperature: 0.4,
+      response_format: { type: 'json_object' },
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`HTTP ${res.status}${errText ? '：' + errText.slice(0, 200) : ''}`);
+  }
+  const data = await res.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content) throw new Error('回傳內容為空');
+  const parsed = JSON.parse(content);
+  if (!parsed.summary || !Array.isArray(parsed.analysis)) throw new Error('回傳格式不符預期');
+  return parsed;
+}
+
+/* ============================================================
+ * 6. UI 互動
+ * ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dateInput').value = fmtDate(new Date());
+});
+
+let selectedTime = 'sunrise';
+let selectedLocs = ['陽明山區', '九份/不厭亭'];
+
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedTime = btn.dataset.val;
+  });
+});
+
+document.getElementById('customLoc').addEventListener('input', (e) => {
+  document.getElementById('customTownSection').style.display = e.target.value.trim() ? 'block' : 'none';
+});
+
+document.getElementById('chipRow').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  const loc = chip.dataset.loc;
+  if (chip.classList.contains('active')) {
+    chip.classList.remove('active');
+    selectedLocs = selectedLocs.filter(l => l !== loc);
+  } else {
+    chip.classList.add('active');
+    selectedLocs.push(loc);
+  }
+});
+
+const timeLabel = { sunrise: '日出前一小時', sunset: '日落後一小時', both: '全天' };
+
+function getProbColor(p) {
+  if (p >= 75) return { fill: '#3fb950', text: '#3fb950' };
+  if (p >= 50) return { fill: '#d29922', text: '#d29922' };
+  return { fill: '#f85149', text: '#f85149' };
+}
+
+function setLoading(msg) {
+  document.getElementById('resultArea').innerHTML = `
+    <div class="panel-label">氣象分析報告</div>
+    <div class="loading-wrap">
+      <div class="loader"><span></span><span></span><span></span></div>
+      <div class="loading-msg">${msg}</div>
+    </div>`;
+}
+
+/* ---- 主流程：抓資料 -> 建立剖面 -> 規則運算 -> 文字產生 -> 渲染 ---- */
+async function runPrediction() {
+  const dateVal = document.getElementById('dateInput').value;
+  const customLoc = document.getElementById('customLoc').value.trim();
+  const customTown = document.getElementById('customTownInput').value.trim();
+  const customCounty = document.getElementById('customCountyInput').value.trim();
+  const apiKey = document.getElementById('cwaKeyInput').value.trim();
+  const cwaProxy = document.getElementById('cwaProxyInput').value.trim();
+  const todayStr = fmtDate(new Date());
+
+  if (!dateVal) { alert('請選擇預測日期'); return; }
+  if (selectedLocs.length === 0 && !customLoc) { alert('請至少選擇一個觀測地點'); return; }
+
+  const btn = document.getElementById('predictBtn');
+  btn.disabled = true;
+  btn.textContent = '分析中...';
+  // 有填金鑰，或有填代理伺服器（代理伺服器上可能已經用 CWA_API_KEY 環境變數代管
+  // 金鑰，前端金鑰欄位可以留空）——兩者其中一項成立就嘗試啟用 CWA 資料
+  const cwaEnabled = Boolean(apiKey || cwaProxy);
+  setLoading('正在自動擷取氣象資料（Open-Meteo' + (cwaEnabled ? ' + 中央氣象署' : '') + '）...');
+
+  const dataSourceLog = [];
+  cwaStationCache = null; // 每次重新預測都清快取，避免拿到上次的舊資料
+
+
+  if (!cwaEnabled) {
+    dataSourceLog.push(`<span class="warn">⚠</span> 未輸入中央氣象署金鑰、也未填代理伺服器網址，本次僅使用 Open-Meteo 資料`);
+  } else if (!cwaProxy) {
+    dataSourceLog.push(`<span class="warn">ℹ</span> 未填代理伺服器網址，將直接呼叫中央氣象署官方網址；若鄉鎮預報出現 CORS 相關錯誤，可在該欄位填入代理伺服器網址解決`);
+  }
+
+  try {
+    // 1) 準備地點清單（含自訂地點自動查座標）
+    const locEntries = [];
+    for (const name of selectedLocs) locEntries.push([name, LOCATIONS[name]]);
+    if (customLoc) {
+      try {
+        const g = await geocodeLocation(customLoc);
+        g.town = customTown || null;
+        g.county = customCounty || null;
+        locEntries.push([`${customLoc}（${g.resolvedName}）`, g]);
+        dataSourceLog.push(`<span class="ok">✓</span> 自訂地點「${customLoc}」座標查詢成功`);
+        if (cwaEnabled && (!customTown || !customCounty)) {
+          dataSourceLog.push(`<span class="warn">⚠</span> 自訂地點「${customLoc}」未完整填寫縣市／鄉鎮，跳過中央氣象署資料`);
+        }
+      } catch (e) {
+        dataSourceLog.push(`<span class="warn">⚠</span> 自訂地點「${customLoc}」查詢失敗：${e.message}`);
+      }
+    }
+    if (!locEntries.length) throw new Error('沒有可用的地點資料');
+
+    const timeSlots = selectedTime === 'both' ? ['sunrise', 'sunset'] : [selectedTime];
+    const results = [];
+
+    for (const [locName, loc] of locEntries) {
+      setLoading(`正在分析 ${locName}...`);
+      const om = await fetchOpenMeteo(loc, dateVal);
+      dataSourceLog.push(`<span class="ok">✓</span> ${locName}：Open-Meteo 資料擷取成功`);
+
+      // --- 中央氣象署鄉鎮預報（選填）---
+      let cwaElements = null;
+      const daysAhead = Math.round((new Date(dateVal) - new Date(todayStr)) / 86400000);
+      if (cwaEnabled && loc.town && loc.county) {
+        if (daysAhead < 0 || daysAhead > 3) {
+          dataSourceLog.push(`<span class="warn">⚠</span> ${locName}：預測日期超出中央氣象署鄉鎮預報實際涵蓋範圍（約今天起3天內），本地點跳過 CWA、僅用 Open-Meteo`);
+        } else {
+          try {
+            cwaElements = await fetchCwaTownForecast(loc.town, loc.county, apiKey, cwaProxy);
+            dataSourceLog.push(`<span class="ok">✓</span> ${locName}：中央氣象署鄉鎮預報（${loc.county}${loc.town}）擷取成功${cwaProxy ? '（經代理伺服器）' : ''}，已併入濕度／露點／降雨機率`);
+          } catch (e) {
+            dataSourceLog.push(`<span class="warn">⚠</span> ${locName}：中央氣象署鄉鎮預報擷取失敗（${e.message}），本地點退回僅用 Open-Meteo`);
+          }
+        }
+      } else if (cwaEnabled && (!loc.town || !loc.county)) {
+        dataSourceLog.push(`<span class="warn">⚠</span> ${locName}：缺少鄉鎮或縣市名稱，跳過中央氣象署資料，僅用 Open-Meteo`);
+      }
+
+      // --- 中央氣象署自動氣象站即時觀測（僅預測日期為今天時抓取，作參考用）---
+      let obsRef = null;
+      if (cwaEnabled && dateVal === todayStr) {
+        try {
+          const stations = await fetchCwaAllStations(apiKey, cwaProxy);
+          obsRef = nearestCwaStation(stations, loc.lat, loc.lon);
+          if (obsRef) {
+            dataSourceLog.push(`<span class="ok">✓</span> ${locName}：已比對最近測站「${obsRef.stationName}」（約${obsRef.distanceKm}km）即時觀測作參考`);
+          }
+        } catch (e) {
+          dataSourceLog.push(`<span class="warn">⚠</span> ${locName}：中央氣象署自動氣象站擷取失敗（${e.message}），略過即時觀測參考`);
+        }
+      }
+
+      const dayIdx = 0; // 只查詢單一日期
+      const diurnalRange = (om.daily.temperature_2m_max[dayIdx] ?? 0) - (om.daily.temperature_2m_min[dayIdx] ?? 0);
+      const surfaceAlt = om.elevation ?? loc.alt;
+
+      for (const slot of timeSlots) {
+        const sunIso = slot === 'sunrise' ? om.daily.sunrise[dayIdx] : om.daily.sunset[dayIdx];
+        const sunDate = new Date(sunIso);
+        const targetDate = new Date(sunDate.getTime() + (slot === 'sunrise' ? -60 : 60) * 60000);
+        targetDate.setMinutes(0, 0, 0);
+        const targetIso = `${fmtDate(targetDate)}T${pad2(targetDate.getHours())}:00`;
+
+        const idx = findHourIndex(om.hourly.time, targetIso);
+        const rh = om.hourly.relative_humidity_2m[idx];
+        const windSpeed = om.hourly.wind_speed_10m[idx];
+        const t2m = om.hourly.temperature_2m[idx];
+        const td2m = om.hourly.dew_point_2m[idx];
+        const dewSpread = t2m - td2m;
+        const cloudLow = om.hourly.cloud_cover_low[idx];
+        const cloudMid = om.hourly.cloud_cover_mid[idx];
+        const precipProb = om.hourly.precipitation_probability?.[idx] ?? null;
+        const profile = buildProfile(om.hourly, idx, surfaceAlt, t2m);
+
+        // --- 併入中央氣象署鄉鎮預報（僅濕度／露點差／降雨機率，風速與雲量仍用 Open-Meteo）---
+        let mergedRh = rh, mergedDewSpread = dewSpread, mergedPrecip = precipProb, cwaNote = null;
+        if (cwaElements) {
+          const cwaT = pickCwaValue(cwaElements, 'Temperature', targetIso);
+          const cwaTd = pickCwaValue(cwaElements, 'DewPoint', targetIso);
+          const cwaRhDirect = pickCwaValue(cwaElements, 'RelativeHumidity', targetIso);
+          const cwaPoP = pickCwaValue(cwaElements, 'ProbabilityOfPrecipitation', targetIso);
+
+          const cwaRh = cwaRhDirect != null ? cwaRhDirect
+            : (cwaT != null && cwaTd != null) ? relHumidityFromTTd(cwaT, cwaTd) : null;
+          const cwaDewSpread = (cwaT != null && cwaTd != null) ? +(cwaT - cwaTd).toFixed(1)
+            : (cwaT != null && cwaRhDirect != null) ? +(cwaT - dewPointFromTRH(cwaT, cwaRhDirect)).toFixed(1) : null;
+
+          if (cwaRh != null) {
+            if (Math.abs(cwaRh - rh) > 15) cwaNote = `濕度：Open-Meteo ${rh}% vs 中央氣象署 ${Math.round(cwaRh)}%，差異較大，已取加權平均後計算`;
+            mergedRh = Math.round(rh * 0.4 + cwaRh * 0.6);
+          }
+          if (cwaDewSpread != null) mergedDewSpread = +(dewSpread * 0.4 + cwaDewSpread * 0.6).toFixed(1);
+          if (cwaPoP != null) mergedPrecip = cwaPoP;
+        }
+
+        const cloudSea = scoreCloudSea({ profile, targetAlt: loc.alt ?? surfaceAlt, rh: mergedRh, windSpeed, diurnalRange, precipProb: mergedPrecip });
+        const advectionFog = scoreAdvectionFog({ dewSpread: mergedDewSpread, windSpeed, rh: mergedRh, cloudLow, precipProb: mergedPrecip });
+        const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip });
+
+        const scores = [
+          { type: '雲海', ...cloudSea },
+          { type: '平流霧', ...advectionFog },
+          { type: '輻射霧', ...radiationFog },
+        ].sort((a, b) => b.total - a.total);
+
+        results.push({
+          location: locName, timeLabel: `${fmtDate(targetDate)} ${timeLabel[slot]}（約${pad2(targetDate.getHours())}:00）`,
+          probability: scores[0].total, dominantType: scores[0].type,
+          cloudSea, advectionFog, radiationFog,
+          rh: mergedRh, windSpeed, dewSpread: mergedDewSpread, diurnalRange, precipProb: mergedPrecip,
+          cwaUsed: !!cwaElements, cwaNote, obsRef,
+        });
+      }
+    }
+
+    // 2) 產生說明文字：預設使用內建模板文字（依規則運算結果組成，不經 AI 改寫）
+    let narrative = templateNarrative(results);
+
+    // 3) 若有提供 Groq 金鑰、或勾選改用代理伺服器代管，嘗試用 AI 把文字潤飾得更自然
+    //    （機率與數值不受影響，AI 只改寫語氣，見 polishNarrativeWithGroq 內的規則）
+    const groqKey = document.getElementById('groqKeyInput').value.trim();
+    const groqUseProxy = document.getElementById('groqUseProxyInput').checked;
+    if (groqUseProxy && !cwaProxy) {
+      dataSourceLog.push(`<span class="warn">⚠</span> 已勾選使用代理伺服器代管 Groq 金鑰，但未填代理伺服器網址，本次略過 AI 潤飾，改用內建模板文字`);
+    }
+    if (groqKey || (groqUseProxy && cwaProxy)) {
+      setLoading('正在請 AI 潤飾文字說明...');
+      try {
+        narrative = await polishNarrativeWithGroq(results, narrative, groqKey, cwaProxy);
+        dataSourceLog.push(`<span class="ok">✓</span> 文字說明已由 Groq AI（${GROQ_MODEL}）潤飾，機率與數值仍為規則運算結果`);
+      } catch (e) {
+        dataSourceLog.push(`<span class="warn">⚠</span> Groq AI 潤飾失敗（${e.message}），已改用內建模板文字`);
+      }
+    }
+
+    renderResult(results, narrative, dataSourceLog);
+
+  } catch (e) {
+    document.getElementById('resultArea').innerHTML = `
+      <div class="panel-label">氣象分析報告</div>
+      <div class="error-box">預測失敗：${e.message}</div>
+      ${dataSourceLog.length ? `<div class="data-source-line">${dataSourceLog.join('<br>')}</div>` : ''}`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '開始預測分析';
+  }
+}
+
+function renderResult(results, narrative, dataSourceLog) {
+  let html = '<div class="panel-label">氣象分析報告</div>';
+
+  if (dataSourceLog && dataSourceLog.length) {
+    html += `<div class="data-source-line">${dataSourceLog.join('<br>')}</div>`;
+  }
+
+  if (narrative.summary) html += `<div class="summary-block">${narrative.summary}</div>`;
+
+  // 機率表格
+  html += `<div class="section-heading">雲海 · 平流霧 · 輻射霧機率</div>`;
+  html += `<table class="prob-table"><thead><tr><th>地點 / 時段</th><th>機率（主導機制）</th><th>備註</th></tr></thead><tbody>`;
+  results.forEach(r => {
+    const p = r.probability;
+    const c = getProbColor(p);
+    html += `<tr>
+      <td><div class="loc-name">${r.location}</div><div class="loc-time">${r.timeLabel}</div></td>
+      <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${c.fill}"></div></div><span class="bar-pct" style="color:${c.text}">${p}%</span></div><div class="loc-time">${r.dominantType}機制主導</div></td>
+      <td><div class="note-text">濕度${r.rh}% · 風速${r.windSpeed}m/s · 露點差${r.dewSpread.toFixed(1)}°C${r.precipProb != null ? ' · 降雨機率' + r.precipProb + '%' : ''}${r.cwaUsed ? ' · <span style="color:var(--teal)">含CWA</span>' : ''}</div></td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+
+  // 深度氣象判讀：三種機制個別分數 + 關鍵數值
+  html += `<div class="section-heading">深度氣象判讀</div><div class="analysis-grid">`;
+  results.forEach(r => {
+    const inv = r.cloudSea.detail.inversion;
+    html += `<div class="analysis-card">
+      <div class="analysis-title">${r.location} · ${r.timeLabel.split(' ')[1] || ''}</div>
+      <table class="metric-table">
+        <tr><td>雲海機率</td><td>${r.cloudSea.total}%</td></tr>
+        <tr><td>平流霧機率</td><td>${r.advectionFog.total}%</td></tr>
+        <tr><td>輻射霧機率</td><td>${r.radiationFog.total}%</td></tr>
+        <tr><td>逆溫層底部</td><td>${inv.base != null ? inv.base + 'm（差' + inv.diff + 'm）' : '未偵測到'}</td></tr>
+        <tr><td>日夜溫差</td><td>${r.diurnalRange.toFixed(1)}°C</td></tr>
+        <tr><td>資料來源</td><td>${r.cwaUsed ? 'Open-Meteo + CWA' : 'Open-Meteo'}</td></tr>
+        ${r.obsRef ? `<tr><td>最近測站參考</td><td>${r.obsRef.stationName}（${r.obsRef.distanceKm}km）</td></tr>` : ''}
+      </table>
+      ${r.cwaNote ? `<div class="note-text" style="color:var(--amber); margin-top:6px;">⚠ ${r.cwaNote}</div>` : ''}
+    </div>`;
+  });
+  html += `</div>`;
+
+  if (narrative.analysis && narrative.analysis.length) {
+    html += `<div class="section-heading">綜合說明</div><div class="analysis-grid">`;
+    narrative.analysis.forEach(a => { html += `<div class="analysis-card"><div class="analysis-title">${a.title || ''}</div><div class="analysis-body">${a.content || ''}</div></div>`; });
+    html += `</div>`;
+  }
+
+  if (narrative.suggestions && narrative.suggestions.length) {
+    html += `<div class="section-heading">具體攝影建議</div><div class="suggestion-list">`;
+    narrative.suggestions.forEach((s, i) => {
+      html += `<div class="suggestion-card"><div><div class="suggestion-badge">0${i+1}</div></div><div><div class="suggestion-loc">${s.location || ''}</div><div class="suggestion-meta">${s.altitude || ''} &nbsp;·&nbsp; ${s.time || ''}</div><div class="suggestion-desc">${s.description || ''}</div></div></div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (narrative.tips && narrative.tips.length) {
+    html += `<div class="section-heading">注意事項</div><div class="tips-list">`;
+    narrative.tips.forEach(t => { html += `<div class="tip-item">${t}</div>`; });
+    html += `</div>`;
+  }
+
+  if (narrative.closing) html += `<div class="closing-line">${narrative.closing}</div>`;
+
+  document.getElementById('resultArea').innerHTML = html;
+}
+</script>
+</body>
+</html>
