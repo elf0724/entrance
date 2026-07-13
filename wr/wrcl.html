@@ -8,30 +8,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* 主視覺：森林綠色系（貼合山林／雲海主題）。
-       注意：主色改綠之後，原本用來表示「機率良好」的語意綠會跟主色撞色，
-       所以主色刻意選「較深沉的森林綠」，語意「良好」則改用明亮度更高、
-       偏黃調的翠綠，兩者在畫面上仍可清楚區分。 */
-    --bg: #eef3ef;
+    /* 主視覺：晨昏紫色系（黎明天空的深紫色調，貼合晨昏攝影主題）。
+       選紫的另一個理由：跟三個語意色（綠=極佳、琥珀=尚可、紅=不佳）
+       完全不撞色，不像先前的綠色主視覺需要妥協調整語意綠。 */
+    --bg: #f2f0f6;
     --bg2: #ffffff;
-    --bg3: #f5f8f6;
+    --bg3: #f7f5fa;
     --border: rgba(0,0,0,0.08);
     --border2: rgba(0,0,0,0.14);
-    --text: #1c2b23;
-    --text2: #4a5a51;
-    --text3: #9aa8a0;
-    --accent: #217a4b;        /* 主色：森林綠 */
-    --accent2: #17603a;       /* 主色深階（hover／漸層用） */
-    --green: #4d9e2a;         /* 語意色：良好（偏黃調翠綠，與主色區隔） */
-    --green-bg: rgba(77,158,42,0.10);
+    --text: #241d33;
+    --text2: #52496a;
+    --text3: #a49bb8;
+    --accent: #5b3a87;        /* 主色：晨昏紫 */
+    --accent2: #472c6d;       /* 主色深階（hover／漸層用） */
+    --green: #2e8b3e;         /* 語意色：良好 */
+    --green-bg: rgba(46,139,62,0.10);
     --amber: #b45309;
     --amber-bg: rgba(180,83,9,0.08);
     --red: #c0392b;
     --red-bg: rgba(192,57,43,0.08);
     --teal: #0f766e;          /* 輔助色：用於「含CWA」等標記 */
-    --accent-bg: rgba(33,122,75,0.08);   /* 主色淡底（chip 選取、badge 底色） */
-    --accent-bg2: rgba(33,122,75,0.20);  /* 主色淡邊框 */
-    --accent-tint: #eaf4ee;              /* 主色極淡底（摘要區塊） */
+    --accent-bg: rgba(91,58,135,0.08);   /* 主色淡底（chip 選取、badge 底色） */
+    --accent-bg2: rgba(91,58,135,0.20);  /* 主色淡邊框 */
+    --accent-tint: #f0ebf7;              /* 主色極淡底（摘要區塊） */
     --serif: 'Noto Serif TC', serif;
     --sans: 'Noto Sans TC', sans-serif;
     --mono: 'DM Mono', monospace;
@@ -536,8 +535,8 @@
       <div class="form-section">
         <label class="form-label">觀測地點（可複選）</label>
         <div class="chip-row" id="chipRow">
-          <div class="chip active" data-loc="陽明山區">陽明山區</div>
           <div class="chip active" data-loc="九份/不厭亭">九份/不厭亭</div>
+          <div class="chip" data-loc="陽明山區">陽明山區</div>
           <div class="chip" data-loc="石碇二格">石碇二格</div>
           <div class="chip" data-loc="五分山雷達站">五分山雷達站</div>
           <div class="chip" data-loc="坪林南山寺">坪林南山寺</div>
@@ -616,8 +615,8 @@
  * 因為那才是「隨便一個低海拔的地方本來就不該有雲海」的情況。
  */
 const LOCATIONS = {
-  '陽明山區':      { lat: 25.1637, lon: 121.5407, alt: 800,  county: '臺北市', town: '北投區', terrain: 'valley' },
   '九份/不厭亭':   { lat: 25.1097, lon: 121.8447, alt: 600,  county: '新北市', town: '瑞芳區', terrain: 'valley' },
+  '陽明山區':      { lat: 25.1637, lon: 121.5407, alt: 800,  county: '臺北市', town: '北投區', terrain: 'valley' },
   '石碇二格':      { lat: 24.9647, lon: 121.6350, alt: 678,  county: '新北市', town: '石碇區', terrain: 'valley' },
   '五分山雷達站':  { lat: 25.0718, lon: 121.7817, alt: 757,  county: '新北市', town: '瑞芳區', terrain: 'valley' },
   '坪林南山寺':    { lat: 24.9203, lon: 121.6903, alt: 450,  county: '新北市', town: '坪林區', terrain: 'valley' },
@@ -977,7 +976,7 @@ function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precip
   // 天花板 92%：雲海是瞬息萬變的機率事件，即使所有指標都完美，仍有地形、
   // 局部環流、當下水氣變化等模型抓不到的變數，不宜給出 100%「保證看得到」
   // 的錯覺。實務上攝影者也普遍認為沒有任何一天能打包票。
-  const total = clamp(Math.round(base * discount * invNecessity * seasonF * slotF * altF), 0, 92);
+  const total = calibrate(base * discount * invNecessity * seasonF * slotF * altF);
   return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2), invNecessity: +invNecessity.toFixed(2), seasonF: +seasonF.toFixed(2), slotF: +slotF.toFixed(2), altF: +altF.toFixed(2) } };
 }
 
@@ -988,6 +987,16 @@ function precipDiscount(precipProb) {
   if (precipProb >= 50) return 0.3;
   if (precipProb >= 30) return lerpScore(precipProb, 30, 0.6, 50, 0.3);
   return 1;
+}
+
+// 全域校準壓縮：使用者實測回報「大部分情境的機率仍普遍偏高，但高分案例
+// （如二寮日出旺季）大致合理」。因此不用「全部乘一個係數」這種會把理想
+// 情境一起砍掉的粗暴做法，改用非線性冪次曲線：高分段幾乎不動、中低分段
+// 明顯下壓（92→92、83→80、60→52、50→40、30→20、12→6）。
+// 指數 1.35 是第一版校準值；若之後回報「還是偏高」調大（如 1.5），
+// 「變得太保守」調小（如 1.2）。
+function calibrate(total) {
+  return Math.round(92 * Math.pow(clamp(total, 0, 92) / 92, 1.35));
 }
 
 function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slot }) {
@@ -1005,7 +1014,7 @@ function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slo
   const discount = precipDiscount(precipProb);
   // 平流霧清晨較易維持，傍晚偏弱（但不像輻射霧那麼絕對，折減較輕）
   const slotF = slot === 'sunrise' ? 1.0 : 0.85;
-  const total = clamp(Math.round((satScore + satBonus + windScore + cloudScore) * discount * slotF), 0, 92);
+  const total = calibrate((satScore + satBonus + windScore + cloudScore) * discount * slotF);
   return { total, detail: { dewSpread, satScore: Math.round(satScore), rh, satBonus: Math.round(satBonus), windSpeed, windScore: Math.round(windScore), cloudLow, cloudScore: Math.round(cloudScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2) } };
 }
 
@@ -1018,7 +1027,7 @@ function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipPro
   // 輻射霧靠的是「夜間長時間輻射冷卻使地面降溫至露點」，所以是清晨限定的現象。
   // 傍晚（日落時段）地面剛結束一天日照、還沒冷卻，幾乎不可能有輻射霧，強力折減。
   const slotF = slot === 'sunrise' ? 1.0 : 0.3;
-  const total = clamp(Math.round((clearScore + calmScore + dewScore) * discount * slotF), 0, 92);
+  const total = calibrate((clearScore + calmScore + dewScore) * discount * slotF);
   return { total, detail: { clearSky: Math.round(clearSky), clearScore: Math.round(clearScore), windSpeed, calmScore: Math.round(calmScore), dewSpread, dewScore: Math.round(dewScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2) } };
 }
 
@@ -1144,7 +1153,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 let selectedTime = 'sunrise';
-let selectedLocs = ['陽明山區', '九份/不厭亭'];
+let selectedLocs = ['九份/不厭亭'];
 
 document.querySelectorAll('.toggle-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1319,9 +1328,12 @@ async function runPrediction() {
 
           if (cwaRh != null) {
             if (Math.abs(cwaRh - rh) > 15) cwaNote = `濕度：Open-Meteo ${rh}% vs 中央氣象署 ${Math.round(cwaRh)}%，差異較大，已取加權平均後計算`;
-            mergedRh = Math.round(rh * 0.4 + cwaRh * 0.6);
+            // CWA 權重 0.75：中央氣象署是台灣本地氣象單位，在地校準較貼近實況，
+            // 取得成功時以它為主；仍保留 0.25 的 Open-Meteo 是為了平滑單一來源
+            // 偶發的異常值，不是不信任 CWA
+            mergedRh = Math.round(rh * 0.25 + cwaRh * 0.75);
           }
-          if (cwaDewSpread != null) mergedDewSpread = +(dewSpread * 0.4 + cwaDewSpread * 0.6).toFixed(1);
+          if (cwaDewSpread != null) mergedDewSpread = +(dewSpread * 0.25 + cwaDewSpread * 0.75).toFixed(1);
           if (cwaPoP != null) mergedPrecip = cwaPoP;
         }
 
