@@ -678,7 +678,7 @@ async function fetchOpenMeteo(loc, dateStr) {
   const hourlyVars = [
     'temperature_2m', 'relative_humidity_2m', 'dew_point_2m', 'wind_speed_10m',
     'cloud_cover_low', 'cloud_cover_mid', 'precipitation_probability',
-    ...PRESSURE_LEVELS.flatMap(p => [`temperature_${p}hPa`, `geopotential_height_${p}hPa`]),
+    ...PRESSURE_LEVELS.flatMap(p => [`temperature_${p}hPa`, `geopotential_height_${p}hPa`, `relative_humidity_${p}hPa`]),
   ].join(',');
   const dailyVars = 'temperature_2m_max,temperature_2m_min,sunrise,sunset';
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}` +
@@ -703,12 +703,20 @@ function findHourIndex(hourlyTimeArr, targetIso) {
   return best;
 }
 
-function buildProfile(hourly, idx, surfaceAlt, surfaceTemp) {
-  const profile = [{ height: surfaceAlt, temp: surfaceTemp }];
+function buildProfile(hourly, idx, surfaceAlt, surfaceTemp, surfaceRh) {
+  // 每一層帶 tdd（溫度露點差，Dew point depression）：判斷該高度層是否接近
+  // 飽和（可成雲）的關鍵指標。參考 enzowen「一起追雲海吧」系列的探空圖方法論：
+  // Tdd < 6°C 的高度層代表水氣可能凝結成雲。
+  const mkEntry = (height, temp, rh) => ({
+    height, temp, rh: rh ?? null,
+    tdd: (rh != null && Number.isFinite(rh)) ? +(temp - dewPointFromTRH(temp, Math.max(rh, 1))).toFixed(1) : null,
+  });
+  const profile = [mkEntry(surfaceAlt, surfaceTemp, surfaceRh)];
   PRESSURE_LEVELS.forEach(p => {
     const h = hourly[`geopotential_height_${p}hPa`]?.[idx];
     const t = hourly[`temperature_${p}hPa`]?.[idx];
-    if (typeof h === 'number' && typeof t === 'number') profile.push({ height: h, temp: t });
+    const r = hourly[`relative_humidity_${p}hPa`]?.[idx];
+    if (typeof h === 'number' && typeof t === 'number') profile.push(mkEntry(h, t, typeof r === 'number' ? r : null));
   });
   // 依高度排序並去除過於接近地面（<20m 差）以免雜訊
   return profile.sort((a, b) => a.height - b.height).filter((p, i, arr) => i === 0 || p.height - arr[i-1].height > 20);
@@ -924,6 +932,57 @@ function altitudeFactor(targetAlt, terrain) {
   return lerpScore(clamp(targetAlt, 0, 300), 0, 0.35, 300, 0.45);
 }
 
+/* ---- 雲頂高度（Cloud Top Height）----
+ * 方法論參考 enzowen「一起追雲海吧（二）：台灣探空預報工具」
+ * （https://www.enzowen.com/archives/240，作者以嘉義山區近20筆雲海實測
+ * 驗證 Tdd 與雲頂高度的關係）：
+ *   - 攝影者拍雲海，拍的是「雲頂」——觀測者必須站在雲頂之上才看得到雲海。
+ *   - 雲頂高度高於觀測點 = 人在雲裡面 = 白牆，不是雲海。這正是過去公式
+ *     高估的典型情境：「濕度高、逆溫層也有，但其實整個人泡在雲霧裡」。
+ *   - 垂直剖面中 Tdd（溫度露點差）< 6°C 的高度層代表水氣可能凝結成雲；
+ *     由下往上掃描，連續濕層的頂部即為推估雲頂。
+ *   - 作者註明「預測雲頂高度通常較實際觀測值低」，因此邊界判斷保留餘裕。
+ */
+const CLOUD_TDD_THRESHOLD = 6; // Tdd < 6°C 視為可成雲的濕層（依上述文章）
+
+// 由剖面推估低層雲的雲頂高度。
+// 回傳：{ base, top } = 找到濕層；null = 資料充足但確實無濕層；
+//       undefined = 濕度資料不足無法判斷（與 null 是不同的情況，呼叫端要區分）
+// 只找「最低的一個連續濕層」：雲海是貼近地面/谷地的低雲，高空另有濕層
+// （例如中高雲）與雲海無關，不予理會。
+function estimateCloudTop(profile) {
+  const usable = profile.filter(p => p.tdd != null);
+  if (usable.length < 2) return undefined; // 濕度資料不足，無法判斷
+  let base = null, top = null;
+  for (const level of usable) {
+    if (level.tdd < CLOUD_TDD_THRESHOLD) {
+      if (base == null) base = level.height;
+      top = level.height;
+    } else if (base != null) {
+      break; // 濕層結束（由下往上第一個連續濕層的頂）
+    }
+  }
+  return base != null ? { base, top } : null;
+}
+
+// 觀測點與雲頂的相對位置因子：
+//   - 雲頂明顯低於觀測點 → 站在雲海之上，理想（1.0）
+//   - 雲頂與觀測點高度接近 → 邊緣情況，雲時淹時退（過渡值）
+//   - 雲頂高於觀測點 → 人在雲裡，看到白牆（重折減 0.25）
+//   - 資料充足但無濕層 → 沒有雲海的材料（一般地點 0.35；谷地型 0.6，因為
+//     氣壓層剖面最低只到約海拔110m，谷地型景點腳下更淺的谷霧本來就看不到，
+//     「剖面上無濕層」不代表谷裡真的沒有霧，不宜重罰）
+//   - 濕度資料不足（undefined）→ 不折減（1.0），寧可保守地不動，也不要用
+//     缺資料去懲罰
+function cloudTopFactor(cloudLayer, targetAlt, terrain) {
+  if (cloudLayer === undefined) return 1.0;   // 資料不足，不判斷
+  if (cloudLayer === null) return terrain === 'valley' ? 0.6 : 0.35; // 無濕層
+  const { top } = cloudLayer;
+  if (top <= targetAlt - 100) return 1.0;      // 雲頂在腳下，理想
+  if (top <= targetAlt + 150) return lerpScore(top, targetAlt - 100, 1.0, targetAlt + 150, 0.45); // 邊緣
+  return 0.25;                                  // 雲頂在頭上：白牆
+}
+
 /* ============================================================
  * 4. 規則運算引擎（對應 weather-forecast-expert 技能之閾值）
  * ============================================================ */
@@ -972,12 +1031,18 @@ function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precip
   const slotF = slotFactor(slot);
   const altF = altitudeFactor(targetAlt, terrain);
 
+  // 雲頂高度因子（參考 enzowen 探空圖方法論）：觀測者必須在雲頂之上才看得到
+  // 雲海；雲頂在頭上就是白牆。這是「濕度高＋有逆溫層，但其實人泡在雲裡」
+  // 這類過去被高估情境的直接剋星。
+  const cloudLayer = estimateCloudTop(profile);
+  const ctF = cloudTopFactor(cloudLayer, targetAlt, terrain);
+
   const base = inv.score + rhScore + windScore + diurnalScore;
   // 天花板 92%：雲海是瞬息萬變的機率事件，即使所有指標都完美，仍有地形、
   // 局部環流、當下水氣變化等模型抓不到的變數，不宜給出 100%「保證看得到」
   // 的錯覺。實務上攝影者也普遍認為沒有任何一天能打包票。
-  const total = calibrate(base * discount * invNecessity * seasonF * slotF * altF);
-  return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2), invNecessity: +invNecessity.toFixed(2), seasonF: +seasonF.toFixed(2), slotF: +slotF.toFixed(2), altF: +altF.toFixed(2) } };
+  const total = calibrate(base * discount * invNecessity * seasonF * slotF * altF * ctF);
+  return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2), invNecessity: +invNecessity.toFixed(2), seasonF: +seasonF.toFixed(2), slotF: +slotF.toFixed(2), altF: +altF.toFixed(2), cloudTop: cloudLayer ? Math.round(cloudLayer.top) : cloudLayer, ctF: +ctF.toFixed(2) } };
 }
 
 // 降雨機率折減：正在下雨／高降雨機率時，不論多潮濕都不算「觀景級」霧況，
@@ -1101,6 +1166,7 @@ async function polishNarrativeWithGroq(results, template, apiKey, proxyBase) {
     cloudSeaPct: r.cloudSea.total, advectionFogPct: r.advectionFog.total, radiationFogPct: r.radiationFog.total,
     humidityPct: r.rh, windSpeedMs: r.windSpeed, dewSpreadC: r.dewSpread, precipProbPct: r.precipProb,
     inversionBaseM: r.cloudSea.detail.inversion.base, inversionDiffM: r.cloudSea.detail.inversion.diff,
+    estimatedCloudTopM: r.cloudSea.detail.cloudTop ?? null,
     diurnalRangeC: r.diurnalRange, dataSource: r.cwaUsed ? 'Open-Meteo + CWA' : 'Open-Meteo',
   }));
 
@@ -1311,7 +1377,7 @@ async function runPrediction() {
         const cloudLow = om.hourly.cloud_cover_low[idx];
         const cloudMid = om.hourly.cloud_cover_mid[idx];
         const precipProb = om.hourly.precipitation_probability?.[idx] ?? null;
-        const profile = buildProfile(om.hourly, idx, surfaceAlt, t2m);
+        const profile = buildProfile(om.hourly, idx, surfaceAlt, t2m, rh);
 
         // --- 併入中央氣象署鄉鎮預報（僅濕度／露點差／降雨機率，風速與雲量仍用 Open-Meteo）---
         let mergedRh = rh, mergedDewSpread = dewSpread, mergedPrecip = precipProb, cwaNote = null;
@@ -1422,6 +1488,13 @@ function renderResult(results, narrative, dataSourceLog) {
     if (d.slotF != null && d.slotF < 1) factors.push('日落時段較不利');
     if (d.altF != null && d.altF < 0.7) factors.push('海拔偏低');
     if (d.discount != null && d.discount < 1) factors.push('降雨機率偏高');
+    if (d.ctF != null && d.ctF <= 0.3) factors.push('推估雲頂高於觀測點（白牆風險）');
+    else if (d.ctF != null && d.ctF < 0.7 && d.cloudTop == null) factors.push('剖面未見明顯濕層');
+    else if (d.ctF != null && d.ctF < 0.9) factors.push('雲頂與觀測點高度接近（時淹時退）');
+    // 雲頂高度顯示文字：undefined=資料不足、null=無濕層、數字=推估高度
+    const cloudTopText = d.cloudTop === undefined ? '資料不足'
+      : d.cloudTop === null ? '未見明顯濕層'
+      : `約 ${d.cloudTop}m`;
     html += `<div class="analysis-card">
       <div class="analysis-title">${r.location} · ${r.timeLabel.split(' ')[1] || ''}</div>
       <table class="metric-table">
@@ -1429,6 +1502,7 @@ function renderResult(results, narrative, dataSourceLog) {
         <tr><td>平流霧機率</td><td>${r.advectionFog.total}%</td></tr>
         <tr><td>輻射霧機率</td><td>${r.radiationFog.total}%</td></tr>
         <tr><td>逆溫層底部</td><td>${inv.base != null ? inv.base + 'm（差' + inv.diff + 'm）' : '未偵測到'}</td></tr>
+        <tr><td>推估雲頂高度</td><td>${cloudTopText}</td></tr>
         <tr><td>日夜溫差</td><td>${r.diurnalRange.toFixed(1)}°C</td></tr>
         <tr><td>資料來源</td><td>${r.cwaUsed ? 'Open-Meteo + CWA' : 'Open-Meteo'}</td></tr>
         ${r.obsRef ? `<tr><td>最近測站參考</td><td>${r.obsRef.stationName}（${r.obsRef.distanceKm}km）</td></tr>` : ''}
