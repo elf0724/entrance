@@ -965,22 +965,36 @@ function estimateCloudTop(profile) {
   return base != null ? { base, top } : null;
 }
 
-// 觀測點與雲頂的相對位置因子：
-//   - 雲頂明顯低於觀測點 → 站在雲海之上，理想（1.0）
-//   - 雲頂與觀測點高度接近 → 邊緣情況，雲時淹時退（過渡值）
-//   - 雲頂高於觀測點 → 人在雲裡，看到白牆（重折減 0.25）
-//   - 資料充足但無濕層 → 沒有雲海的材料（一般地點 0.35；谷地型 0.6，因為
-//     氣壓層剖面最低只到約海拔110m，谷地型景點腳下更淺的谷霧本來就看不到，
-//     「剖面上無濕層」不代表谷裡真的沒有霧，不宜重罰）
-//   - 濕度資料不足（undefined）→ 不折減（1.0），寧可保守地不動，也不要用
-//     缺資料去懲罰
-function cloudTopFactor(cloudLayer, targetAlt, terrain) {
-  if (cloudLayer === undefined) return 1.0;   // 資料不足，不判斷
-  if (cloudLayer === null) return terrain === 'valley' ? 0.6 : 0.35; // 無濕層
-  const { top } = cloudLayer;
-  if (top <= targetAlt - 100) return 1.0;      // 雲頂在腳下，理想
-  if (top <= targetAlt + 150) return lerpScore(top, targetAlt - 100, 1.0, targetAlt + 150, 0.45); // 邊緣
-  return 0.25;                                  // 雲頂在頭上：白牆
+// 觀測點與雲頂的相對位置因子。
+//
+// 【重要：這個因子對三種現象都適用，不是只有雲海】
+// 雲海、平流霧、輻射霧，攝影者要拍的都是「腳下的雲霧」（雲海、琉璃光、雲瀑
+// 都是站在雲霧上方往下拍）。如果雲頂遠高於觀測點，人是被埋在雲層裡面看白牆，
+// 三者一個都拍不到。早期版本只把這個因子套在雲海上，導致白牆日雲海被壓低、
+// 但輻射霧沒被壓，而顯示的機率又是三者取最大值，等於整個修正被繞過去。
+//
+// 白牆懲罰依「埋多深」漸進，而不是一律 0.25：
+//   - 雲頂只高出觀測點一兩百公尺 → 邊緣情況，模式誤差就可能翻盤，不宜重罰
+//   - 雲頂高出近千公尺 → 人在厚雲層深處，幾乎沒有翻盤空間
+// 但**不歸零**：模式的垂直解析度粗（低層氣壓層間距約 200-300m），且
+// enzowen 的實測文章明確指出「預測雲頂高度通常較實際觀測值低」，
+// OUTSiDERS 的文章也提到模式常抓不準那條界線（誤差可達 500m）。
+// 硬歸零等於過度相信模式，不誠實。
+function cloudTopFactor(cloudLayer, targetAlt, terrain, mode = 'cloudsea') {
+  if (cloudLayer === undefined) return 1.0;   // 濕度資料不足，不判斷（不用缺資料懲罰）
+  if (cloudLayer === null) {
+    // 剖面上找不到濕層
+    // 霧是貼近地面的現象，淺層谷霧的厚度可能整個低於氣壓層剖面的垂直解析度，
+    // 「剖面上沒濕層」不代表谷裡沒霧，因此對霧的折減放輕（霧本身另有地面
+    // 露點差、風速、雲量等指標在把關）。
+    if (mode === 'fog') return 0.7;
+    return terrain === 'valley' ? 0.6 : 0.35;
+  }
+  const above = cloudLayer.top - targetAlt; // 雲頂高出觀測點多少公尺（負值=雲頂在腳下）
+  if (above <= -100) return 1.0;                                     // 雲頂在腳下：理想
+  if (above <= 150) return lerpScore(above, -100, 1.0, 150, 0.45);   // 邊緣：時淹時退
+  if (above <= 800) return lerpScore(above, 150, 0.45, 800, 0.12);   // 白牆：埋得越深越沒機會
+  return 0.08;                                                        // 埋在厚雲層深處
 }
 
 /* ============================================================
@@ -1064,7 +1078,7 @@ function calibrate(total) {
   return Math.round(92 * Math.pow(clamp(total, 0, 92) / 92, 1.35));
 }
 
-function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slot }) {
+function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slot, profile, targetAlt, terrain }) {
   // 露點差與相對濕度都是「接近飽和」的訊號，兩者高度相關（RH≈100% 時露點差必然趨近 0）。
   // 過去版本把兩者都給滿分、直接相加，等於同一件事算了兩次分數，
   // 導致終年潮濕的地點（如九份）幾乎每晚都會被算成 100%。
@@ -1079,11 +1093,15 @@ function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slo
   const discount = precipDiscount(precipProb);
   // 平流霧清晨較易維持，傍晚偏弱（但不像輻射霧那麼絕對，折減較輕）
   const slotF = slot === 'sunrise' ? 1.0 : 0.85;
-  const total = calibrate((satScore + satBonus + windScore + cloudScore) * discount * slotF);
-  return { total, detail: { dewSpread, satScore: Math.round(satScore), rh, satBonus: Math.round(satBonus), windSpeed, windScore: Math.round(windScore), cloudLow, cloudScore: Math.round(cloudScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2) } };
+  // 雲頂因子：拍平流霧（琉璃光／雲瀑）一樣要站在霧的上方往下拍，
+  // 人被埋在雲層裡就是白牆，拍不到
+  const cloudLayer = profile ? estimateCloudTop(profile) : undefined;
+  const ctF = cloudTopFactor(cloudLayer, targetAlt, terrain, 'fog');
+  const total = calibrate((satScore + satBonus + windScore + cloudScore) * discount * slotF * ctF);
+  return { total, detail: { dewSpread, satScore: Math.round(satScore), rh, satBonus: Math.round(satBonus), windSpeed, windScore: Math.round(windScore), cloudLow, cloudScore: Math.round(cloudScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2), cloudTop: cloudLayer ? Math.round(cloudLayer.top) : cloudLayer, ctF: +ctF.toFixed(2) } };
 }
 
-function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipProb, slot }) {
+function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipProb, slot, profile, targetAlt, terrain }) {
   const clearSky = 100 - Math.max(cloudLow, cloudMid);
   const clearScore = clearSky >= 80 ? 35 : lerpScore(clearSky, 40, 0, 80, 35);
   const calmScore = windSpeed <= 2 ? 30 : lerpScore(windSpeed, 2, 30, 5, 0);
@@ -1092,8 +1110,12 @@ function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipPro
   // 輻射霧靠的是「夜間長時間輻射冷卻使地面降溫至露點」，所以是清晨限定的現象。
   // 傍晚（日落時段）地面剛結束一天日照、還沒冷卻，幾乎不可能有輻射霧，強力折減。
   const slotF = slot === 'sunrise' ? 1.0 : 0.3;
-  const total = calibrate((clearScore + calmScore + dewScore) * discount * slotF);
-  return { total, detail: { clearSky: Math.round(clearSky), clearScore: Math.round(clearScore), windSpeed, calmScore: Math.round(calmScore), dewSpread, dewScore: Math.round(dewScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2) } };
+  // 雲頂因子：拍輻射霧（如金龍山俯瞰埔里盆地的雲瀑）一樣要站在霧的上方；
+  // 若整層濕到觀測點頭上，人是泡在雲裡，不是在拍腳下的霧
+  const cloudLayer = profile ? estimateCloudTop(profile) : undefined;
+  const ctF = cloudTopFactor(cloudLayer, targetAlt, terrain, 'fog');
+  const total = calibrate((clearScore + calmScore + dewScore) * discount * slotF * ctF);
+  return { total, detail: { clearSky: Math.round(clearSky), clearScore: Math.round(clearScore), windSpeed, calmScore: Math.round(calmScore), dewSpread, dewScore: Math.round(dewScore), precipProb, discount: +discount.toFixed(2), slotF: +slotF.toFixed(2), cloudTop: cloudLayer ? Math.round(cloudLayer.top) : cloudLayer, ctF: +ctF.toFixed(2) } };
 }
 
 function classifyLabel(total) {
@@ -1404,9 +1426,10 @@ async function runPrediction() {
         }
 
         const targetMonth = targetDate.getMonth() + 1; // 1-12
-        const cloudSea = scoreCloudSea({ profile, targetAlt: loc.alt ?? surfaceAlt, rh: mergedRh, windSpeed, diurnalRange, precipProb: mergedPrecip, month: targetMonth, slot, terrain: loc.terrain });
-        const advectionFog = scoreAdvectionFog({ dewSpread: mergedDewSpread, windSpeed, rh: mergedRh, cloudLow, precipProb: mergedPrecip, slot });
-        const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip, slot });
+        const alt = loc.alt ?? surfaceAlt;
+        const cloudSea = scoreCloudSea({ profile, targetAlt: alt, rh: mergedRh, windSpeed, diurnalRange, precipProb: mergedPrecip, month: targetMonth, slot, terrain: loc.terrain });
+        const advectionFog = scoreAdvectionFog({ dewSpread: mergedDewSpread, windSpeed, rh: mergedRh, cloudLow, precipProb: mergedPrecip, slot, profile, targetAlt: alt, terrain: loc.terrain });
+        const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip, slot, profile, targetAlt: alt, terrain: loc.terrain });
 
         const scores = [
           { type: '雲海', ...cloudSea },
@@ -1417,7 +1440,7 @@ async function runPrediction() {
         results.push({
           location: locName, timeLabel: `${fmtDate(targetDate)} ${timeLabel[slot]}（約${pad2(targetDate.getHours())}:00）`,
           probability: scores[0].total, dominantType: scores[0].type,
-          cloudSea, advectionFog, radiationFog,
+          cloudSea, advectionFog, radiationFog, altitude: alt,
           rh: mergedRh, windSpeed, dewSpread: mergedDewSpread, diurnalRange, precipProb: mergedPrecip,
           cwaUsed: !!cwaElements, cwaNote, obsRef,
         });
@@ -1488,13 +1511,19 @@ function renderResult(results, narrative, dataSourceLog) {
     if (d.slotF != null && d.slotF < 1) factors.push('日落時段較不利');
     if (d.altF != null && d.altF < 0.7) factors.push('海拔偏低');
     if (d.discount != null && d.discount < 1) factors.push('降雨機率偏高');
-    if (d.ctF != null && d.ctF <= 0.3) factors.push('推估雲頂高於觀測點（白牆風險）');
-    else if (d.ctF != null && d.ctF < 0.7 && d.cloudTop == null) factors.push('剖面未見明顯濕層');
+    if (d.ctF != null && d.ctF <= 0.2) factors.push('推估雲頂遠高於觀測點（白牆機率高）');
+    else if (d.ctF != null && d.ctF < 0.5 && d.cloudTop != null) factors.push('推估雲頂高於觀測點（白牆風險）');
+    else if (d.ctF != null && d.cloudTop === null) factors.push('剖面未見明顯濕層');
     else if (d.ctF != null && d.ctF < 0.9) factors.push('雲頂與觀測點高度接近（時淹時退）');
     // 雲頂高度顯示文字：undefined=資料不足、null=無濕層、數字=推估高度
+    // 同時標示與觀測點的高低關係，這是「拍不拍得到」最直接的判斷依據
+    const alt = r.altitude;
     const cloudTopText = d.cloudTop === undefined ? '資料不足'
       : d.cloudTop === null ? '未見明顯濕層'
-      : `約 ${d.cloudTop}m`;
+      : alt == null ? `約 ${d.cloudTop}m`
+      : d.cloudTop > alt
+        ? `約 ${d.cloudTop}m（<span style="color:var(--red)">高於觀測點 ${Math.round(d.cloudTop - alt)}m</span>）`
+        : `約 ${d.cloudTop}m（<span style="color:var(--green)">低於觀測點 ${Math.round(alt - d.cloudTop)}m</span>）`;
     html += `<div class="analysis-card">
       <div class="analysis-title">${r.location} · ${r.timeLabel.split(' ')[1] || ''}</div>
       <table class="metric-table">
@@ -1502,6 +1531,7 @@ function renderResult(results, narrative, dataSourceLog) {
         <tr><td>平流霧機率</td><td>${r.advectionFog.total}%</td></tr>
         <tr><td>輻射霧機率</td><td>${r.radiationFog.total}%</td></tr>
         <tr><td>逆溫層底部</td><td>${inv.base != null ? inv.base + 'm（差' + inv.diff + 'm）' : '未偵測到'}</td></tr>
+        <tr><td>觀測點海拔</td><td>${alt != null ? alt + 'm' : '—'}</td></tr>
         <tr><td>推估雲頂高度</td><td>${cloudTopText}</td></tr>
         <tr><td>日夜溫差</td><td>${r.diurnalRange.toFixed(1)}°C</td></tr>
         <tr><td>資料來源</td><td>${r.cwaUsed ? 'Open-Meteo + CWA' : 'Open-Meteo'}</td></tr>
