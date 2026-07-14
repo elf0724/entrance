@@ -581,11 +581,9 @@
         </div>
       </div>
 
-      <div class="field-hint" style="margin-top:-8px; margin-bottom:1.5rem;">中央氣象署與 Groq AI 相關設定已交由外部設定檔（cwa-config.js）自動處理，不需要在這裡輸入金鑰或網址。</div>
-
       <button class="predict-btn" id="predictBtn" onclick="runPrediction()">開始預測分析</button>
 
-      <div class="api-note">資料來源：Open-Meteo（一律自動擷取）<br>+ 中央氣象署（透過代理伺服器自動併入濕度／露點／降雨機率）<br>+ Groq AI（透過代理伺服器自動潤飾文字說明，機率仍為規則運算）<br>機率為規則運算結果，僅供攝影規劃參考</div>
+      <div class="api-note">資料來源：Open-Meteo（一律自動擷取）<br>+ 中央氣象署（透過代理伺服器自動併入濕度／露點／降雨機率，並強化計算權重）<br>+ Groq AI（透過代理伺服器自動潤飾文字說明，機率仍為規則運算）<br>機率為規則運算結果，僅供攝影規劃參考</div>
     </div>
 
     <div class="result-panel" id="resultPanel">
@@ -1232,7 +1230,7 @@ function templateNarrative(results) {
   ];
   if (anyCwa) tips.push('已併入中央氣象署鄉鎮預報資料；若中央氣象署資料持續顯示擷取失敗，通常是瀏覽器 CORS 限制或金鑰問題，系統會自動退回僅用 Open-Meteo，不影響其餘功能。');
 
-  const closing = '天氣如畫，快門留情——願您此行捕捉到心中那片最美的琉璃光。';
+  const closing = '蒼穹如畫，創意隨行——祝此行捕捉到心中最美的那道光。';
 
   return { summary, analysis, suggestions, tips, closing };
 }
