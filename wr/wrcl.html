@@ -5,34 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>氣象預測專家 · 雲海預測儀表板（CWA 整合版）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Quattrocento+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* 主視覺：晨昏紫色系（黎明天空的深紫色調，貼合晨昏攝影主題）。
-       選紫的另一個理由：跟三個語意色（綠=極佳、琥珀=尚可、紅=不佳）
-       完全不撞色，不像先前的綠色主視覺需要妥協調整語意綠。 */
-    --bg: #f2f0f6;
-    --bg2: #ffffff;
-    --bg3: #f7f5fa;
-    --border: rgba(0,0,0,0.08);
-    --border2: rgba(0,0,0,0.14);
-    --text: #241d33;
-    --text2: #52496a;
-    --text3: #a49bb8;
-    --accent: #5b3a87;        /* 主色：晨昏紫 */
-    --accent2: #472c6d;       /* 主色深階（hover／漸層用） */
-    --green: #2e8b3e;         /* 語意色：良好 */
+    /* 簡報風格主視覺：Yellow #ffcd00 | Black #000000 | Grey #cccccc */
+    --bg: #f7f7f7;            /* 淺灰背景 */
+    --bg2: #ffffff;           /* 純白卡片 */
+    --bg3: #f0f0f0;           /* 灰色區塊 */
+    --border: #cccccc;        /* 簡報指定的灰色 */
+    --border2: #e0e0e0;
+    
+    --text: #000000;          /* 簡報指定的黑色 */
+    --text2: #333333;         /* 次要內文 */
+    --text3: #6b6b6b;         /* 輔助文字（比原 #777777 加深，確保11-12px小字對比度穩過4.5:1） */
+    
+    --accent: #ffcd00;        /* 簡報指定的黃色 */
+    --accent2: #e6b800;       /* 主色深階（hover用） */
+    --accent-text: #000000;   /* 黃底上的文字必須是黑色 */
+    
+    /* 語意色保留，供機率狀態顯示使用 */
+    --green: #2e8b3e;         
     --green-bg: rgba(46,139,62,0.10);
     --amber: #b45309;
     --amber-bg: rgba(180,83,9,0.08);
     --red: #c0392b;
     --red-bg: rgba(192,57,43,0.08);
-    --teal: #0f766e;          /* 輔助色：用於「含CWA」等標記 */
-    --accent-bg: rgba(91,58,135,0.08);   /* 主色淡底（chip 選取、badge 底色） */
-    --accent-bg2: rgba(91,58,135,0.20);  /* 主色淡邊框 */
-    --accent-tint: #f0ebf7;              /* 主色極淡底（摘要區塊） */
-    --serif: 'Noto Serif TC', serif;
-    --sans: 'Noto Sans TC', sans-serif;
+    --teal: #0f766e;          
+    
+    --accent-bg: #ffcd00;     
+    --accent-bg2: #000000;  
+    --accent-tint: #fffbe6;   
+    
+    /* 字型對應設定 */
+    --serif: 'Lora', 'Noto Serif TC', serif;
+    --sans: 'Quattrocento Sans', 'Noto Sans TC', sans-serif;
     --mono: 'DM Mono', monospace;
   }
 
@@ -42,23 +48,12 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--sans);
-    font-weight: 300;
+    font-weight: 400;
     min-height: 100vh;
     line-height: 1.6;
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(186,230,253,0.35) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 30% at 80% 70%, rgba(199,210,254,0.25) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 50% at 60% 10%, rgba(224,242,254,0.3) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
+  /* 移除原有的漸層背景，改為簡報般乾淨的純色底 */
   .page-wrap {
     position: relative;
     z-index: 1;
@@ -73,16 +68,28 @@
     gap: 1rem;
     margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
-    border-bottom: 0.5px solid var(--border);
+    border-bottom: 2px solid var(--text); /* 加粗底線強化標題感 */
     flex-wrap: wrap;
   }
 
   .logo-mark {
     font-family: var(--serif);
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--accent);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
     letter-spacing: -0.02em;
+    position: relative;
+  }
+
+  /* 標題加上黃色小裝飾點綴 */
+  .logo-mark::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 6px;
+    width: 6px;
+    height: 24px;
+    background-color: var(--accent);
   }
 
   .logo-sub {
@@ -97,24 +104,24 @@
     border-radius: 50%;
     background: var(--green);
     margin-left: auto;
-    box-shadow: 0 0 6px rgba(22,163,74,0.5);
+    box-shadow: 0 0 6px rgba(46,139,62,0.5);
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%,100% { opacity:1; box-shadow:0 0 6px rgba(22,163,74,0.5); }
-    50% { opacity:0.5; box-shadow:0 0 2px rgba(22,163,74,0.3); }
+    0%,100% { opacity:1; box-shadow:0 0 6px rgba(46,139,62,0.5); }
+    50% { opacity:0.5; box-shadow:0 0 2px rgba(46,139,62,0.3); }
   }
 
   .status-label {
     font-size: 12px;
-    color: var(--green);
+    color: var(--text2);
     font-family: var(--mono);
   }
 
   .layout {
     display: grid;
     grid-template-columns: 300px 1fr;
-    gap: 16px;
+    gap: 20px;
     align-items: start;
   }
 
@@ -124,25 +131,28 @@
 
   .panel {
     background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px; /* 降低圓角，增加簡報方正感 */
     padding: 1.5rem;
+    box-shadow: 4px 4px 0px var(--border2); /* 加上硬陰影 */
   }
 
   .panel-label {
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 700;
     letter-spacing: 0.1em;
-    color: var(--text3);
+    color: var(--text);
     text-transform: uppercase;
-    font-family: var(--mono);
+    font-family: var(--sans);
     margin-bottom: 1.5rem;
   }
 
   .form-section { margin-bottom: 1.5rem; }
 
   .form-label {
-    font-size: 12px;
-    color: var(--text2);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
     margin-bottom: 8px;
     display: block;
   }
@@ -150,9 +160,9 @@
   input[type="date"] {
     width: 100%;
     padding: 9px 12px;
-    background: var(--bg3);
-    border: 0.5px solid var(--border2);
-    border-radius: 8px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
     color: var(--text);
     font-family: var(--mono);
     font-size: 14px;
@@ -160,7 +170,7 @@
     transition: border-color .15s;
     color-scheme: light;
   }
-  input[type="date"]:focus { border-color: var(--accent2); }
+  input[type="date"]:focus { border-color: var(--text); }
 
   .toggle-row {
     display: flex;
@@ -170,21 +180,22 @@
 
   .toggle-btn {
     padding: 6px 14px;
-    font-size: 12px;
+    font-size: 13px;
     font-family: var(--sans);
     font-weight: 400;
-    border: 0.5px solid var(--border2);
-    border-radius: 20px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
     background: transparent;
     color: var(--text2);
     cursor: pointer;
     transition: all .15s;
   }
-  .toggle-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .toggle-btn:hover { border-color: var(--text); color: var(--text); }
   .toggle-btn.active {
-    background: var(--accent2);
-    border-color: var(--accent2);
-    color: #fff;
+    background: var(--accent);
+    border-color: var(--text);
+    color: var(--accent-text);
+    font-weight: 700;
   }
 
   .chip-row {
@@ -195,58 +206,59 @@
 
   .chip {
     padding: 5px 12px;
-    font-size: 12px;
+    font-size: 13px;
     font-family: var(--sans);
     font-weight: 400;
-    border: 0.5px solid var(--border2);
-    border-radius: 20px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
     background: transparent;
     color: var(--text2);
     cursor: pointer;
     transition: all .15s;
   }
-  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip:hover { border-color: var(--text); color: var(--text); }
   .chip.active {
-    background: var(--accent-bg);
-    border-color: var(--accent);
-    color: var(--accent);
+    background: var(--accent);
+    border-color: var(--text);
+    color: var(--accent-text);
+    font-weight: 700;
   }
 
-  input[type="text"] {
+  input[type="text"], select {
     width: 100%;
     padding: 8px 12px;
     margin-top: 8px;
-    background: var(--bg3);
-    border: 0.5px solid var(--border);
-    border-radius: 8px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
     color: var(--text);
     font-family: var(--sans);
-    font-weight: 300;
     font-size: 13px;
     outline: none;
     transition: border-color .15s;
   }
-  input[type="text"]:focus { border-color: var(--accent2); }
+  input[type="text"]:focus, select:focus { border-color: var(--text); }
   input[type="text"]::placeholder { color: var(--text3); }
 
   .predict-btn {
     width: 100%;
     padding: 12px;
     margin-top: 0.5rem;
-    background: var(--accent2);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
+    background: var(--accent);
+    border: 2px solid var(--text);
+    border-radius: 4px;
+    color: var(--accent-text);
     font-family: var(--sans);
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: 700;
+    font-size: 15px;
     cursor: pointer;
     transition: all .15s;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.05em;
+    box-shadow: 3px 3px 0px var(--text);
   }
-  .predict-btn:hover { background: #388bfd; }
-  .predict-btn:active { transform: scale(0.98); }
-  .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .predict-btn:hover { background: var(--accent2); transform: translate(-1px, -1px); box-shadow: 4px 4px 0px var(--text); }
+  .predict-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--text); }
+  .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
 
   .api-note {
     margin-top: 1rem;
@@ -258,19 +270,23 @@
   }
 
   .field-hint {
-    font-size: 10.5px;
+    font-size: 11px;
     color: var(--text3);
     margin-top: 6px;
     line-height: 1.6;
   }
-  .field-hint a { color: var(--accent2); }
+  /* 連結色：原本用 --accent2（黃底色系）當文字色，實測對比度只有 1.87:1
+     （WCAG 門檻 4.5:1），黃色印在白底上幾乎看不清楚，改用黑字底線，
+     對比度 21:1，同時保留品牌感（黑色是本配色的主要文字色）。 */
+  .field-hint a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
 
   .result-panel {
     background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
     padding: 1.5rem;
     min-height: 500px;
+    box-shadow: 4px 4px 0px var(--border2);
   }
 
   .placeholder {
@@ -287,11 +303,12 @@
   .placeholder-glyph {
     font-family: var(--serif);
     font-size: 48px;
-    opacity: 0.3;
+    color: var(--accent);
+    opacity: 0.5;
     line-height: 1;
   }
 
-  .placeholder p { font-size: 13px; line-height: 1.8; }
+  .placeholder p { font-size: 14px; line-height: 1.8; }
 
   .loading-wrap {
     display: flex;
@@ -304,9 +321,10 @@
 
   .loader { display: flex; gap: 6px; }
   .loader span {
-    width: 6px; height: 6px;
-    border-radius: 50%;
+    width: 8px; height: 8px;
+    border-radius: 0;
     background: var(--accent);
+    border: 1px solid var(--text);
     animation: bounce .8s ease-in-out infinite;
   }
   .loader span:nth-child(2) { animation-delay: .15s; }
@@ -316,44 +334,43 @@
     30% { transform: translateY(-10px); opacity:1; }
   }
 
-  .loading-msg { font-size: 13px; color: var(--text2); font-family: var(--mono); }
+  .loading-msg { font-size: 13px; color: var(--text); font-weight: 700; font-family: var(--mono); }
 
   .error-box {
     background: var(--red-bg);
-    border: 0.5px solid rgba(248,81,73,0.3);
-    border-radius: 8px;
+    border: 1px solid var(--red);
     padding: 1rem 1.25rem;
     color: var(--red);
     font-size: 13px;
     line-height: 1.7;
+    font-weight: 700;
   }
 
   .summary-block {
-    background: var(--accent-tint);
-    border-left: 2px solid var(--accent2);
-    border-radius: 0 8px 8px 0;
-    padding: 1rem 1.25rem;
+    background: var(--bg2);
+    border: 2px solid var(--text);
+    border-left: 6px solid var(--accent);
+    padding: 1.25rem;
     margin-bottom: 1.5rem;
-    font-size: 13px;
-    color: var(--text2);
+    font-size: 14px;
+    color: var(--text);
     line-height: 1.8;
   }
 
   .section-heading {
-    font-size: 11px;
-    font-family: var(--mono);
-    color: var(--text3);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin: 1.5rem 0 0.75rem;
+    font-size: 14px;
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--text);
+    margin: 2rem 0 1rem;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
   .section-heading::after {
     content: '';
     flex: 1;
-    height: 0.5px;
+    height: 1px;
     background: var(--border);
   }
 
@@ -361,142 +378,145 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
   .prob-table th {
     text-align: left;
-    padding: 6px 10px;
-    font-size: 11px;
-    font-family: var(--mono);
-    color: var(--text3);
-    font-weight: 400;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-family: var(--sans);
+    color: var(--bg2);
+    background: var(--text);
+    font-weight: 700;
     letter-spacing: 0.05em;
-    border-bottom: 0.5px solid var(--border);
   }
   .prob-table td {
-    padding: 10px 10px;
-    border-bottom: 0.5px solid var(--border);
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
     vertical-align: middle;
     color: var(--text);
   }
-  .prob-table tr:last-child td { border-bottom: none; }
-  .prob-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .prob-table tr:hover td { background: var(--bg3); }
 
-  .loc-name { font-weight: 500; font-size: 13px; }
-  .loc-time { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
+  .loc-name { font-weight: 700; font-size: 14px; }
+  .loc-time { font-size: 12px; color: var(--text3); margin-top: 2px; }
 
   .bar-wrap { display: flex; align-items: center; gap: 10px; }
   .bar-track {
     flex: 1;
-    height: 4px;
-    background: var(--bg3);
-    border-radius: 2px;
+    height: 8px;
+    background: var(--border2);
     overflow: hidden;
   }
-  .bar-fill { height: 4px; border-radius: 2px; transition: width 0.6s cubic-bezier(.4,0,.2,1); }
-  .bar-pct { font-family: var(--mono); font-size: 13px; font-weight: 500; min-width: 36px; text-align: right; }
+  .bar-fill { height: 8px; transition: width 0.6s cubic-bezier(.4,0,.2,1); }
+  .bar-pct { font-family: var(--mono); font-size: 14px; font-weight: 700; min-width: 40px; text-align: right; }
 
-  .note-text { font-size: 11px; color: var(--text3); line-height: 1.5; }
+  .note-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
 
   .data-source-line {
-    font-size: 10.5px;
+    font-size: 11px;
     color: var(--text3);
     font-family: var(--mono);
     margin: 0.25rem 0 1rem;
     line-height: 1.7;
+    background: var(--bg3);
+    padding: 10px;
+    border: 1px dashed var(--border);
   }
-  .data-source-line .ok { color: var(--green); }
-  .data-source-line .warn { color: var(--amber); }
+  .data-source-line .ok { color: var(--green); font-weight: 700;}
+  .data-source-line .warn { color: var(--amber); font-weight: 700;}
 
   .analysis-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 10px;
-    margin-bottom: 0.5rem;
+    gap: 15px;
+    margin-bottom: 1rem;
   }
   .analysis-card {
-    background: var(--bg3);
-    border: 0.5px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem;
+    background: var(--bg2);
+    border: 1px solid var(--text);
+    padding: 1.25rem;
   }
   .analysis-title {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--accent2);
-    margin-bottom: 6px;
-    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-family: var(--serif);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 4px;
+    display: inline-block;
   }
-  .analysis-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .analysis-body { font-size: 14px; color: var(--text2); line-height: 1.7; }
 
   .metric-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
-    margin-top: 6px;
+    font-size: 13px;
+    margin-top: 10px;
   }
-  .metric-table td { padding: 3px 0; color: var(--text2); }
-  .metric-table td:first-child { color: var(--text3); width: 40%; }
-  .metric-table td:last-child { text-align: right; font-family: var(--mono); }
+  .metric-table td { padding: 4px 0; color: var(--text); }
+  .metric-table td:first-child { color: var(--text2); width: 45%; }
+  .metric-table td:last-child { text-align: right; font-family: var(--mono); font-weight: 700; }
 
-  .suggestion-list { display: flex; flex-direction: column; gap: 8px; }
+  .suggestion-list { display: flex; flex-direction: column; gap: 12px; }
   .suggestion-card {
-    background: var(--bg3);
-    border: 0.5px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--text);
+    padding: 1.25rem;
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 0.75rem;
+    gap: 1rem;
     align-items: start;
   }
   .suggestion-badge {
-    background: var(--accent-bg);
-    color: var(--accent2);
-    font-size: 11px;
+    background: var(--accent);
+    color: var(--accent-text);
+    font-size: 12px;
+    font-weight: 700;
     font-family: var(--mono);
-    padding: 3px 8px;
-    border-radius: 4px;
+    padding: 4px 10px;
+    border: 1px solid var(--text);
     white-space: nowrap;
-    border: 0.5px solid var(--accent-bg2);
   }
-  .suggestion-loc { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-  .suggestion-meta { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 6px; }
-  .suggestion-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .suggestion-loc { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; font-family: var(--serif); }
+  .suggestion-meta { font-size: 12px; color: var(--text3); font-family: var(--mono); margin-bottom: 8px; }
+  .suggestion-desc { font-size: 14px; color: var(--text2); line-height: 1.7; }
 
-  .tips-list { display: flex; flex-direction: column; gap: 6px; }
+  .tips-list { display: flex; flex-direction: column; gap: 8px; }
   .tip-item {
-    background: rgba(22,163,74,0.06);
-    border: 0.5px solid rgba(22,163,74,0.25);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 13px;
-    color: #15803d;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    padding: 1rem;
+    font-size: 14px;
+    color: var(--text);
     line-height: 1.7;
     display: flex;
     gap: 8px;
     align-items: flex-start;
   }
-  .tip-item::before { content: '›'; color: var(--green); font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+  .tip-item::before { content: '►'; color: var(--text); font-size: 10px; margin-top: 4px; flex-shrink: 0; }
 
   .closing-line {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 0.5px solid var(--border);
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
     font-family: var(--serif);
-    font-size: 13px;
-    color: var(--text3);
+    font-size: 15px;
+    color: var(--text);
     text-align: center;
     font-style: italic;
     line-height: 1.8;
   }
 
   footer {
-    margin-top: 3rem;
+    margin-top: 4rem;
     text-align: center;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text3);
-    font-family: var(--mono);
+    font-family: var(--sans);
     line-height: 2;
   }
 </style>
@@ -513,7 +533,6 @@
 
   <div class="layout">
 
-    <!-- 左側：控制面板 -->
     <div class="panel">
       <div class="panel-label">預測條件</div>
 
@@ -536,7 +555,7 @@
         <label class="form-label">觀測地點（可複選）</label>
         <div class="chip-row" id="chipRow">
           <div class="chip active" data-loc="九份/不厭亭">九份/不厭亭</div>
-          <div class="chip" data-loc="陽明山區">陽明山區</div>
+          <div class="chip" data-loc="大屯山">大屯山</div>
           <div class="chip" data-loc="石碇二格">石碇二格</div>
           <div class="chip" data-loc="五分山雷達站">五分山雷達站</div>
           <div class="chip" data-loc="坪林南山寺">坪林南山寺</div>
@@ -548,7 +567,7 @@
         <input type="text" id="customLoc" placeholder="自訂地點（如：阿里山、觀霧）自動查座標">
         <div class="form-section" id="customTownSection" style="display:none; margin-top:10px; margin-bottom:0;">
           <label class="form-label" style="font-size:11px;">自訂地點所屬縣市／鄉鎮（選填，供中央氣象署資料比對）</label>
-          <select id="customCountyInput" style="width:100%; padding:9px 12px; background:var(--bg3); border:0.5px solid var(--border2); border-radius:8px; color:var(--text); font-family:var(--sans); font-size:13px;">
+          <select id="customCountyInput">
             <option value="">請選擇縣市</option>
             <option>臺北市</option><option>新北市</option><option>桃園市</option><option>臺中市</option>
             <option>臺南市</option><option>高雄市</option><option>基隆市</option><option>新竹市</option>
@@ -569,7 +588,6 @@
       <div class="api-note">資料來源：Open-Meteo（一律自動擷取）<br>+ 中央氣象署（透過代理伺服器自動併入濕度／露點／降雨機率）<br>+ Groq AI（透過代理伺服器自動潤飾文字說明，機率仍為規則運算）<br>機率為規則運算結果，僅供攝影規劃參考</div>
     </div>
 
-    <!-- 右側：分析結果 -->
     <div class="result-panel" id="resultPanel">
       <div class="panel-label">氣象分析報告</div>
       <div id="resultArea">
@@ -601,22 +619,42 @@
 <script>
 /* ============================================================
  * 1. 地點設定：座標與海拔為概估值，需要更精準可自行調整
- *    county/town 欄位保留供未來若接上中央氣象署資料時比對用
+ * county/town 欄位保留供未來若接上中央氣象署資料時比對用
  * ============================================================ */
 /* 預設地點。
  * terrain 欄位（重要，不是可有可無的裝飾）：
- *   'valley' = 谷地型雲海景點。台灣有一批低海拔卻穩定出雲海的名點（二寮、
- *              南山寺、二格、金龍山、五分山、平溪谷地…），靠的是「谷地地形
- *              把水氣兜住」而不是高山逆溫層，海拔雖低但實際出景率很高。
- *              這類地點不套用海拔懲罰（altitudeFactor 直接給 1.0），否則
- *              會被系統性低估到毫無參考價值。
- *   'alpine' = 典型高山雲海（阿里山這類位於盛行雲霧帶的地點），照常規邏輯走。
+ * 'valley' = 谷地型雲海景點。台灣有一批低海拔卻穩定出雲海的名點（二寮、
+ * 南山寺、二格、金龍山、五分山、平溪谷地…），靠的是「谷地地形
+ * 把水氣兜住」而不是高山逆溫層，海拔雖低但實際出景率很高。
+ * 這類地點不套用海拔懲罰（altitudeFactor 直接給 1.0），否則
+ * 會被系統性低估到毫無參考價值。
+ * 'alpine' = 典型高山雲海（阿里山這類位於盛行雲霧帶的地點），照常規邏輯走。
  * 沒有標 terrain 的地點（例如使用者自訂的任意地點）才會套用海拔懲罰，
  * 因為那才是「隨便一個低海拔的地方本來就不該有雲海」的情況。
  */
 const LOCATIONS = {
   '九份/不厭亭':   { lat: 25.1097, lon: 121.8447, alt: 600,  county: '新北市', town: '瑞芳區', terrain: 'valley' },
-  '陽明山區':      { lat: 25.1637, lon: 121.5407, alt: 800,  county: '臺北市', town: '北投區', terrain: 'valley' },
+  // 2026-07-14 修正：原「陽明山區」改名為「大屯山」，並修正三項查證到的錯誤：
+  //   1. 座標與海拔：原本 alt:800、座標(25.1637,121.5407) 對應的是「大屯遊憩區」
+  //      停車場一帶（陽明山國家公園官網：「大屯遊憩區...海拔約800公尺」），
+  //      不是實際拍攝雲海的地點。真正的觀景台「大屯山助航站觀景台」海拔
+  //      1076m，主峰三角點 1092m（多個健行網站與陽明山國家公園官網互相印證），
+  //      「雲海人」App 也是用 1092m 這個數字。座標改用主峰／助航站一帶的估計值。
+  //   2. terrain 從 'valley' 改成 'alpine'：原本誤把大屯山歸類成跟二寮、南山寺
+  //      一樣的「夏季友善谷地型」，但查證到明確反證——大屯山雲海是「冬季限定
+  //      景色」，season為1-3月機會大（來源：陽明山旅遊部落格「大屯山步道賞
+  //      雲海，冬季限定景色」），跟二寮「端午到中秋才是旺季」完全相反，不該
+  //      套用相同的季節放寬。改回一般高山型的季節曲線（夏季重罰）較符合事實。
+  //   （這次修正是依實際查證的地理／氣候事實而定，不是為了讓數字更接近任何
+  //   特定 App 的預測值——事實上這兩項修正合計後，同一個案例的機率反而從
+  //   6% 降到 2%，離「雲海人」App 當時顯示的 80% 更遠而非更近。見交接文件
+  //   2026-07-14 該次記錄的完整討論。）
+  //   2026-07-14 再追加：使用者提醒夏季午後雷陣雨後轉晴仍有機會起雲霧，
+  //   查證屬實（陽明山國家公園氣候資料：夏季「多為晴朗，午後有雷陣雨」），
+  //   已把 seasonFactor 改成海拔敏感、不再對 1000 出頭公尺的地點套用跟
+  //   2216m 阿里山一樣重的夏季懲罰，細節見該函式內的註解。座標同時更新為
+  //   查證到更精確的引用值（25.1767, 121.5219, 1081m，來源見交接文件）。
+  '大屯山':        { lat: 25.1767, lon: 121.5219, alt: 1092, county: '臺北市', town: '北投區', terrain: 'alpine' },
   '石碇二格':      { lat: 24.9647, lon: 121.6350, alt: 678,  county: '新北市', town: '石碇區', terrain: 'valley' },
   '五分山雷達站':  { lat: 25.0718, lon: 121.7817, alt: 757,  county: '新北市', town: '瑞芳區', terrain: 'valley' },
   '坪林南山寺':    { lat: 24.9203, lon: 121.6903, alt: 450,  county: '新北市', town: '坪林區', terrain: 'valley' },
@@ -725,17 +763,17 @@ function buildProfile(hourly, idx, surfaceAlt, surfaceTemp, surfaceRh) {
 /* ============================================================
  * 3b. 資料擷取：中央氣象署開放資料（選填，需金鑰）
  *
- *   涵蓋範圍與取捨（重要，避免日後誤改）：
- *   - 鄉鎮天氣預報 F-D0047-0XX（分縣市，逐小時溫度/露點/濕度＋3小時降雨機率）：只取用 T（溫度）、
- *     Td（露點）、RH（相對濕度）、PoP6h/PoP12h（降雨機率）。「Wind」欄位是「風向＋蒲福風級」文字，不是乾淨
- *     數值，刻意不解析，風速仍全部採用 Open-Meteo。
- *   - 逆溫層判斷需要高空氣壓層剖面，CWA 這組 API 沒有提供，剖面與逆溫層一律
- *     仍用 Open-Meteo，不受 CWA 資料影響。
- *   - 自動氣象站 O-A0001-001：只在「預測日期＝今天」時抓取，用最近測站的即時
- *     觀測值做「現地觀測參考」，僅供人工比對顯示，不併入機率運算（時間點對不
- *     齊預測目標時刻，混進計分反而失真）。
- *   - 任何一步失敗（金鑰錯誤、CORS、逾時等）都只影響「本地點/本項目」，不會
- *     讓整體預測中斷，會在資料來源紀錄與報告中清楚標示已退回 Open-Meteo。
+ * 涵蓋範圍與取捨（重要，避免日後誤改）：
+ * - 鄉鎮天氣預報 F-D0047-0XX（分縣市，逐小時溫度/露點/濕度＋3小時降雨機率）：只取用 T（溫度）、
+ * Td（露點）、RH（相對濕度）、PoP6h/PoP12h（降雨機率）。「Wind」欄位是「風向＋蒲福風級」文字，不是乾淨
+ * 數值，刻意不解析，風速仍全部採用 Open-Meteo。
+ * - 逆溫層判斷需要高空氣壓層剖面，CWA 這組 API 沒有提供，剖面與逆溫層一律
+ * 仍用 Open-Meteo，不受 CWA 資料影響。
+ * - 自動氣象站 O-A0001-001：只在「預測日期＝今天」時抓取，用最近測站的即時
+ * 觀測值做「現地觀測參考」，僅供人工比對顯示，不併入機率運算（時間點對不
+ * 齊預測目標時刻，混進計分反而失真）。
+ * - 任何一步失敗（金鑰錯誤、CORS、逾時等）都只影響「本地點/本項目」，不會
+ * 讓整體預測中斷，會在資料來源紀錄與報告中清楚標示已退回 Open-Meteo。
  * ============================================================ */
 
 // 由溫度與相對濕度反推露點（Magnus formula），供 CWA 資料缺 Td 欄位時使用
@@ -888,9 +926,9 @@ function nearestCwaStation(stations, lat, lon) {
 }
 
 /* ---- 抑制因子（乘法折減）：雲海是「多條件同時成立」的現象，單靠某一項
- *      （例如濕度高）不該堆出高分。以下因子把「條件不對」的情況壓下來，
- *      依實際攝影經驗與氣象資料（台灣雲海秋冬好發、需中海拔逆溫層、日出
- *      優於日落）校準。每個因子回傳 0~1 的乘數，1 代表完全不折減。 ---- */
+ * （例如濕度高）不該堆出高分。以下因子把「條件不對」的情況壓下來，
+ * 依實際攝影經驗與氣象資料（台灣雲海秋冬好發、需中海拔逆溫層、日出
+ * 優於日落）校準。每個因子回傳 0~1 的乘數，1 代表完全不折減。 ---- */
 
 // 季節因子：台灣高山雲海以秋冬（11-3月）為主，夏季（尤其7-8月）因雲的凝結
 // 高度升到全年最高、常超過山頂，雲海少見。
@@ -904,12 +942,28 @@ function seasonFactor(month, targetAlt, terrain) {
     const valleyByMonth = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.9, 5: 0.85, 6: 0.85, 7: 0.85, 8: 0.85, 9: 0.9, 10: 1.0, 11: 1.0, 12: 1.0 };
     return valleyByMonth[month] ?? 0.9;
   }
-  const isHighAltitude = targetAlt >= 1000;
-  // 典型高山雲海：秋冬（11,12,1,2,3）最佳；4,10 過渡；5-9 較差（夏季凝結高度過高）
-  const highAltByMonth = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.8, 5: 0.6, 6: 0.45, 7: 0.4, 8: 0.4, 9: 0.6, 10: 0.85, 11: 1.0, 12: 1.0 };
+  // 高山型的季節曲線，過去是「一刀切」：>=1000m 一律套用同一張表（以阿里山
+  // 2216m 為校準基準，夏季砍到剩 0.4）。這忽略了一件事：夏季雲海之所以稀少，
+  // 核心原因是夏季「凝結高度」（水氣開始凝結成雲的海拔）整體升高，常超過
+  // 2000-2500m，阿里山這種真高山夏季常常整個露在雲層之上摸不到邊；但這個
+  // 道理對海拔只有1000出頭的地點（如大屯山1092m）不成立——凝結高度只要
+  // 沒有升到1092m以上（比升到2200m以上容易發生得多），一樣有機會成雲。
+  // 查證也證實：陽明山國家公園夏季「多為晴朗，午後有雷陣雨」，雷陣雨後入夜
+  // 若轉晴、輻射冷卻，隔天清晨低處仍有機會起雲霧——是跟冬季東北季風持續性
+  // 水氣不同的「條件式」夏季管道，真實存在但不如冬季穩定。
+  // 所以海拔在 1000~2000m 之間，改成「高山夏季重罰」與「較溫和的中海拔曲線」
+  // 之間線性內插，海拔越高越接近阿里山那種硬砍，海拔越低越接近溫和曲線；
+  // >=2000m 維持原本的高山曲線不變（阿里山不受影響）。
+  const midAltByMonth  = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.85, 5: 0.75, 6: 0.65, 7: 0.6,  8: 0.6,  9: 0.7,  10: 0.9,  11: 1.0, 12: 1.0 };
+  const highAltByMonth = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.8,  5: 0.6,  6: 0.45, 7: 0.4,  8: 0.4,  9: 0.6,  10: 0.85, 11: 1.0, 12: 1.0 };
   // 沒標 terrain 的低海拔地點（多半是使用者自訂的任意地點）：折減幅度中等
   const lowAltByMonth  = { 1: 0.9, 2: 0.9, 3: 0.9, 4: 0.85, 5: 0.8, 6: 0.8, 7: 0.75, 8: 0.75, 9: 0.85, 10: 0.9, 11: 0.9, 12: 0.9 };
-  return (isHighAltitude ? highAltByMonth : lowAltByMonth)[month] ?? 0.7;
+  if (targetAlt < 1000) return lowAltByMonth[month] ?? 0.7;
+  const mid = midAltByMonth[month] ?? 0.75;
+  const high = highAltByMonth[month] ?? 0.7;
+  if (targetAlt >= 2000) return high;
+  const t = (targetAlt - 1000) / 1000; // 1000~2000m 線性內插
+  return +(mid + (high - mid) * t).toFixed(3);
 }
 
 // 時段因子：雲海清晨（日出前後）最易成形，經一夜輻射冷卻、水氣易凝結；
@@ -936,12 +990,12 @@ function altitudeFactor(targetAlt, terrain) {
  * 方法論參考 enzowen「一起追雲海吧（二）：台灣探空預報工具」
  * （https://www.enzowen.com/archives/240，作者以嘉義山區近20筆雲海實測
  * 驗證 Tdd 與雲頂高度的關係）：
- *   - 攝影者拍雲海，拍的是「雲頂」——觀測者必須站在雲頂之上才看得到雲海。
- *   - 雲頂高度高於觀測點 = 人在雲裡面 = 白牆，不是雲海。這正是過去公式
- *     高估的典型情境：「濕度高、逆溫層也有，但其實整個人泡在雲霧裡」。
- *   - 垂直剖面中 Tdd（溫度露點差）< 6°C 的高度層代表水氣可能凝結成雲；
- *     由下往上掃描，連續濕層的頂部即為推估雲頂。
- *   - 作者註明「預測雲頂高度通常較實際觀測值低」，因此邊界判斷保留餘裕。
+ * - 攝影者拍雲海，拍的是「雲頂」——觀測者必須站在雲頂之上才看得到雲海。
+ * - 雲頂高度高於觀測點 = 人在雲裡面 = 白牆，不是雲海。這正是過去公式
+ * 高估的典型情境：「濕度高、逆溫層也有，但其實整個人泡在雲霧裡」。
+ * - 垂直剖面中 Tdd（溫度露點差）< 6°C 的高度層代表水氣可能凝結成雲；
+ * 由下往上掃描，連續濕層的頂部即為推估雲頂。
+ * - 作者註明「預測雲頂高度通常較實際觀測值低」，因此邊界判斷保留餘裕。
  */
 const CLOUD_TDD_THRESHOLD = 6; // Tdd < 6°C 視為可成雲的濕層（依上述文章）
 
@@ -1186,13 +1240,13 @@ function templateNarrative(results) {
 /* ============================================================
  * 5b. AI 文字潤飾（選填，需 Groq 金鑰）
  *
- *   重要原則（對應交接文件「不再讓 AI 憑印象猜機率」的精神）：
- *   - 機率與所有數值一律由前面的規則引擎算完之後才會走到這裡，AI 完全不
- *     參與、也看不到「算之前」的原始氣象資料，只會拿到「已經算好的結果」。
- *   - System prompt 明確禁止 AI 更動任何數字，只能改寫文字語氣。
- *   - 要求回傳結構化 JSON（跟 templateNarrative 回傳的形狀一致），失敗
- *     （網路、金鑰、格式不符任何一種）就整個放棄，退回內建模板文字，
- *     不會讓報告開天窗或顯示壞掉的內容。
+ * 重要原則（對應交接文件「不再讓 AI 憑印象猜機率」的精神）：
+ * - 機率與所有數值一律由前面的規則引擎算完之後才會走到這裡，AI 完全不
+ * 參與、也看不到「算之前」的原始氣象資料，只會拿到「已經算好的結果」。
+ * - System prompt 明確禁止 AI 更動任何數字，只能改寫文字語氣。
+ * - 要求回傳結構化 JSON（跟 templateNarrative 回傳的形狀一致），失敗
+ * （網路、金鑰、格式不符任何一種）就整個放棄，退回內建模板文字，
+ * 不會讓報告開天窗或顯示壞掉的內容。
  * ============================================================ */
 const GROQ_MODEL = 'llama-3.3-70b-versatile'; // Groq 若下架此模型，改這裡即可
 
