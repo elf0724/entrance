@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>雲海預測儀表板</title>
+<title>雲海預測儀</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Quattrocento+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -584,7 +584,7 @@
 
       <button class="predict-btn" id="predictBtn" onclick="runPrediction()">開始預測分析</button>
 
-      <div class="api-note">資料來源：Open-Meteo（一律自動擷取）<br>+ 中央氣象署（透過代理伺服器自動併入濕度／露點／降雨機率，並強化計算權重）<br>+ Groq AI（透過代理伺服器自動潤飾文字說明，機率仍為規則運算）<br>機率為規則運算結果，僅供攝影規劃參考</div>
+      <div class="api-note">資料來源：Open-Meteo（一律自動擷取）<br>+ 中央氣象署（透過代理伺服器自動併入濕度／露點／降雨機率，並強化計算權重）<br>機率為規則運算結果，僅供攝影規劃參考</div>
     </div>
 
     <div class="result-panel" id="resultPanel">
@@ -601,8 +601,7 @@
 
   <footer>
     氣象預測小工具 · 雲海攝影助理 · 資料來源：Open-Meteo（自動擷取）+ 中央氣象署（於資料可提供區間自動擷取）<br>
-    機率一律由逆溫層、濕度、風速、露點、日夜溫差、降雨機率等指標規則運算而得，不受選填的 Groq AI 文字潤飾影響<br>
-    結果僅供攝影規劃參考，不代表官方氣象預報
+    機率一律由逆溫層、濕度、風速、露點、日夜溫差、降雨機率等指標規則運算而得，結果僅供攝影規劃參考，不代表官方氣象預報
   </footer>
 </div>
 
