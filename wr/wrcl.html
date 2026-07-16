@@ -1725,7 +1725,7 @@ function renderResult(results, narrative, dataSourceLog) {
   if (selectedTime === 'both' && topForChart && topForChart.hourlySeries && topForChart.hourlySeries.length >= 2) {
     const srH = topForChart.sunriseHour, ssH = topForChart.sunsetHour;
     html += `<div class="section-heading">24 小時逐小時趨勢（${topForChart.location}）</div>`;
-    html += `<div class="note-text" style="margin-bottom:10px;">下圖以機率最高的「${topForChart.location}」為例，逐小時機率由完整評分引擎（逆溫層、雲頂高度、季節、海拔、校準）在每個整點各算一次而得，非簡化公式。</div>`;
+    html += `<div class="note-text" style="margin-bottom:10px;">下圖以機率最高的「${topForChart.location}」為例，逐小時機率在每個整點由完整評估機制各計算一次而得。</div>`;
     html += renderHourlyChartSVG(topForChart.hourlySeries, srH, ssH);
   }
 
