@@ -398,6 +398,26 @@
   }
   .prob-table tr:hover td { background: var(--bg3); }
 
+  .chart-wrap {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px 10px;
+    margin-bottom: 1.5rem;
+  }
+  .hourly-chart { width: 100%; height: auto; display: block; }
+  .chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text2);
+    font-family: var(--sans);
+  }
+  .chart-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .chart-legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+
   .loc-name { font-weight: 700; font-size: 14px; }
   .loc-time { font-size: 12px; color: var(--text3); margin-top: 2px; }
 
@@ -1371,6 +1391,97 @@ function setLoading(msg) {
     </div>`;
 }
 
+/* 對「某個整點時刻」跑完整評分引擎（逆溫層＋雲頂＋季節＋海拔＋校準全部都算），
+ * 抽成獨立純函式，讓「日出/日落時段」與「24小時逐小時趨勢圖」共用同一套邏輯——
+ * 趨勢圖絕不是另外用一套簡化公式，而是把同一個引擎在24個整點各跑一次。
+ * slotForScoring：把該時刻歸類成 'sunrise'（清晨時段，約03-08時）或 'sunset'
+ *   （其餘），供 slotFactor 使用。趨勢圖每個整點依自己的鐘點歸類，不是全部套同一個。
+ * 回傳 null 代表該時刻資料不齊（例如超出預報範圍）。 */
+function scoreAtHour(om, cwaElements, loc, targetDate, diurnalRange, surfaceAlt) {
+  targetDate = new Date(targetDate);
+  targetDate.setMinutes(0, 0, 0);
+  const targetIso = `${fmtDate(targetDate)}T${pad2(targetDate.getHours())}:00`;
+  const idx = findHourIndex(om.hourly.time, targetIso);
+  if (idx == null || idx < 0 || om.hourly.relative_humidity_2m[idx] == null) return null;
+  // findHourIndex 找不到精確時刻時會 fallback 到「最接近」的索引（對主流程的
+  // 日出/日落時刻很有用，因為那些不是整點）。但逐小時序列要求嚴格對齊整點，
+  // 若 fallback 配到的時刻其實是別天（例如查詢日期超出預報範圍、或當天該整點
+  // 缺值被配到鄰日），這裡明確擋掉，避免趨勢圖出現「看起來完整、其實是鄰時
+  // 假點」的資料。判準：配到的時刻與目標整點誤差不得超過 90 分鐘。
+  const matchedMs = new Date(om.hourly.time[idx]).getTime();
+  if (Math.abs(matchedMs - targetDate.getTime()) > 90 * 60000) return null;
+
+  const rh = om.hourly.relative_humidity_2m[idx];
+  const windSpeed = om.hourly.wind_speed_10m[idx];
+  const t2m = om.hourly.temperature_2m[idx];
+  const td2m = om.hourly.dew_point_2m[idx];
+  const dewSpread = t2m - td2m;
+  const cloudLow = om.hourly.cloud_cover_low[idx];
+  const cloudMid = om.hourly.cloud_cover_mid[idx];
+  const precipProb = om.hourly.precipitation_probability?.[idx] ?? null;
+  const profile = buildProfile(om.hourly, idx, surfaceAlt, t2m, rh);
+
+  // 依整點鐘頭歸類清晨/其他（清晨輻射冷卻後的水氣凝結最有利，對應 slotFactor）
+  const hr = targetDate.getHours();
+  const slotForScoring = (hr >= 3 && hr <= 8) ? 'sunrise' : 'sunset';
+
+  // --- 併入中央氣象署鄉鎮預報（僅濕度／露點差／降雨機率，風速與雲量仍用 Open-Meteo）---
+  let mergedRh = rh, mergedDewSpread = dewSpread, mergedPrecip = precipProb, cwaNote = null;
+  let mergedT = t2m, mergedTd = td2m;
+  if (cwaElements) {
+    const cwaT = pickCwaValue(cwaElements, 'Temperature', targetIso);
+    const cwaTd = pickCwaValue(cwaElements, 'DewPoint', targetIso);
+    const cwaRhDirect = pickCwaValue(cwaElements, 'RelativeHumidity', targetIso);
+    const cwaPoP = pickCwaValue(cwaElements, 'ProbabilityOfPrecipitation', targetIso);
+
+    const cwaRh = cwaRhDirect != null ? cwaRhDirect
+      : (cwaT != null && cwaTd != null) ? relHumidityFromTTd(cwaT, cwaTd) : null;
+    const cwaDewSpread = (cwaT != null && cwaTd != null) ? +(cwaT - cwaTd).toFixed(1)
+      : (cwaT != null && cwaRhDirect != null) ? +(cwaT - dewPointFromTRH(cwaT, cwaRhDirect)).toFixed(1) : null;
+
+    if (cwaRh != null) {
+      if (Math.abs(cwaRh - rh) > 15) cwaNote = `濕度：Open-Meteo ${rh}% vs 中央氣象署 ${Math.round(cwaRh)}%，差異較大，已取加權平均後計算`;
+      // CWA 權重 0.75：中央氣象署是台灣本地氣象單位，在地校準較貼近實況，
+      // 取得成功時以它為主；仍保留 0.25 的 Open-Meteo 是為了平滑單一來源
+      // 偶發的異常值，不是不信任 CWA
+      mergedRh = Math.round(rh * 0.25 + cwaRh * 0.75);
+    }
+    if (cwaDewSpread != null) mergedDewSpread = +(dewSpread * 0.25 + cwaDewSpread * 0.75).toFixed(1);
+    if (cwaPoP != null) mergedPrecip = cwaPoP;
+    // 溫度／露點顯示值：CWA 有值時也做同權重融合，供介面顯示（不影響機率運算）
+    if (cwaT != null) mergedT = +(t2m * 0.25 + cwaT * 0.75).toFixed(1);
+    if (cwaTd != null) mergedTd = +(td2m * 0.25 + cwaTd * 0.75).toFixed(1);
+    else if (cwaDewSpread != null) mergedTd = +(mergedT - mergedDewSpread).toFixed(1);
+  }
+
+  const targetMonth = targetDate.getMonth() + 1;
+  const alt = loc.alt ?? surfaceAlt;
+  const cloudSea = scoreCloudSea({ profile, targetAlt: alt, rh: mergedRh, windSpeed, diurnalRange, precipProb: mergedPrecip, month: targetMonth, slot: slotForScoring, terrain: loc.terrain });
+  const advectionFog = scoreAdvectionFog({ dewSpread: mergedDewSpread, windSpeed, rh: mergedRh, cloudLow, precipProb: mergedPrecip, slot: slotForScoring, profile, targetAlt: alt, terrain: loc.terrain });
+  const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip, slot: slotForScoring, profile, targetAlt: alt, terrain: loc.terrain });
+  const scores = [
+    { type: '雲海', ...cloudSea }, { type: '平流霧', ...advectionFog }, { type: '輻射霧', ...radiationFog },
+  ].sort((a, b) => b.total - a.total);
+
+  return {
+    targetDate, alt, cloudSea, advectionFog, radiationFog, scores,
+    rh: mergedRh, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip,
+    temp: mergedT, dewPoint: mergedTd, cwaNote,
+  };
+}
+
+/* 對整個預測日的 24 個整點各跑一次 scoreAtHour，回傳逐小時的三種機率序列，
+ * 供趨勢圖使用。挑「當天有資料的整點」，超出預報範圍的整點自動略過。 */
+function computeHourlySeries(om, cwaElements, loc, dateVal, diurnalRange, surfaceAlt) {
+  const series = [];
+  for (let h = 0; h < 24; h++) {
+    const d = new Date(`${dateVal}T${pad2(h)}:00:00`);
+    const r = scoreAtHour(om, cwaElements, loc, d, diurnalRange, surfaceAlt);
+    if (r) series.push({ hour: h, cloudSea: r.cloudSea.total, advectionFog: r.advectionFog.total, radiationFog: r.radiationFog.total });
+  }
+  return series;
+}
+
 /* ---- 主流程：抓資料 -> 建立剖面 -> 規則運算 -> 文字產生 -> 渲染 ---- */
 async function runPrediction() {
   const dateVal = document.getElementById('dateInput').value;
@@ -1469,66 +1580,30 @@ async function runPrediction() {
       const diurnalRange = (om.daily.temperature_2m_max[dayIdx] ?? 0) - (om.daily.temperature_2m_min[dayIdx] ?? 0);
       const surfaceAlt = om.elevation ?? loc.alt;
 
+      // 24小時逐小時趨勢（用同一套完整引擎，不是簡化公式）——每個地點都算，
+      // 顯示時以「機率最高的那個地點」為主圖
+      const hourlySeries = computeHourlySeries(om, cwaElements, loc, dateVal, diurnalRange, surfaceAlt);
+
+      // 供趨勢圖畫日出/日落參考線用（取整點）
+      const srHour = new Date(om.daily.sunrise[dayIdx]).getHours();
+      const ssHour = new Date(om.daily.sunset[dayIdx]).getHours();
+
       for (const slot of timeSlots) {
         const sunIso = slot === 'sunrise' ? om.daily.sunrise[dayIdx] : om.daily.sunset[dayIdx];
         const sunDate = new Date(sunIso);
         const targetDate = new Date(sunDate.getTime() + (slot === 'sunrise' ? -60 : 60) * 60000);
-        targetDate.setMinutes(0, 0, 0);
-        const targetIso = `${fmtDate(targetDate)}T${pad2(targetDate.getHours())}:00`;
 
-        const idx = findHourIndex(om.hourly.time, targetIso);
-        const rh = om.hourly.relative_humidity_2m[idx];
-        const windSpeed = om.hourly.wind_speed_10m[idx];
-        const t2m = om.hourly.temperature_2m[idx];
-        const td2m = om.hourly.dew_point_2m[idx];
-        const dewSpread = t2m - td2m;
-        const cloudLow = om.hourly.cloud_cover_low[idx];
-        const cloudMid = om.hourly.cloud_cover_mid[idx];
-        const precipProb = om.hourly.precipitation_probability?.[idx] ?? null;
-        const profile = buildProfile(om.hourly, idx, surfaceAlt, t2m, rh);
-
-        // --- 併入中央氣象署鄉鎮預報（僅濕度／露點差／降雨機率，風速與雲量仍用 Open-Meteo）---
-        let mergedRh = rh, mergedDewSpread = dewSpread, mergedPrecip = precipProb, cwaNote = null;
-        if (cwaElements) {
-          const cwaT = pickCwaValue(cwaElements, 'Temperature', targetIso);
-          const cwaTd = pickCwaValue(cwaElements, 'DewPoint', targetIso);
-          const cwaRhDirect = pickCwaValue(cwaElements, 'RelativeHumidity', targetIso);
-          const cwaPoP = pickCwaValue(cwaElements, 'ProbabilityOfPrecipitation', targetIso);
-
-          const cwaRh = cwaRhDirect != null ? cwaRhDirect
-            : (cwaT != null && cwaTd != null) ? relHumidityFromTTd(cwaT, cwaTd) : null;
-          const cwaDewSpread = (cwaT != null && cwaTd != null) ? +(cwaT - cwaTd).toFixed(1)
-            : (cwaT != null && cwaRhDirect != null) ? +(cwaT - dewPointFromTRH(cwaT, cwaRhDirect)).toFixed(1) : null;
-
-          if (cwaRh != null) {
-            if (Math.abs(cwaRh - rh) > 15) cwaNote = `濕度：Open-Meteo ${rh}% vs 中央氣象署 ${Math.round(cwaRh)}%，差異較大，已取加權平均後計算`;
-            // CWA 權重 0.75：中央氣象署是台灣本地氣象單位，在地校準較貼近實況，
-            // 取得成功時以它為主；仍保留 0.25 的 Open-Meteo 是為了平滑單一來源
-            // 偶發的異常值，不是不信任 CWA
-            mergedRh = Math.round(rh * 0.25 + cwaRh * 0.75);
-          }
-          if (cwaDewSpread != null) mergedDewSpread = +(dewSpread * 0.25 + cwaDewSpread * 0.75).toFixed(1);
-          if (cwaPoP != null) mergedPrecip = cwaPoP;
-        }
-
-        const targetMonth = targetDate.getMonth() + 1; // 1-12
-        const alt = loc.alt ?? surfaceAlt;
-        const cloudSea = scoreCloudSea({ profile, targetAlt: alt, rh: mergedRh, windSpeed, diurnalRange, precipProb: mergedPrecip, month: targetMonth, slot, terrain: loc.terrain });
-        const advectionFog = scoreAdvectionFog({ dewSpread: mergedDewSpread, windSpeed, rh: mergedRh, cloudLow, precipProb: mergedPrecip, slot, profile, targetAlt: alt, terrain: loc.terrain });
-        const radiationFog = scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread: mergedDewSpread, precipProb: mergedPrecip, slot, profile, targetAlt: alt, terrain: loc.terrain });
-
-        const scores = [
-          { type: '雲海', ...cloudSea },
-          { type: '平流霧', ...advectionFog },
-          { type: '輻射霧', ...radiationFog },
-        ].sort((a, b) => b.total - a.total);
+        const s = scoreAtHour(om, cwaElements, loc, targetDate, diurnalRange, surfaceAlt);
+        if (!s) continue;
 
         results.push({
-          location: locName, timeLabel: `${fmtDate(targetDate)} ${timeLabel[slot]}（約${pad2(targetDate.getHours())}:00）`,
-          probability: scores[0].total, dominantType: scores[0].type,
-          cloudSea, advectionFog, radiationFog, altitude: alt,
-          rh: mergedRh, windSpeed, dewSpread: mergedDewSpread, diurnalRange, precipProb: mergedPrecip,
-          cwaUsed: !!cwaElements, cwaNote, obsRef,
+          location: locName, timeLabel: `${fmtDate(s.targetDate)} ${timeLabel[slot]}（約${pad2(s.targetDate.getHours())}:00）`,
+          probability: s.scores[0].total, dominantType: s.scores[0].type,
+          cloudSea: s.cloudSea, advectionFog: s.advectionFog, radiationFog: s.radiationFog, altitude: s.alt,
+          rh: s.rh, windSpeed: s.windSpeed, dewSpread: s.dewSpread, diurnalRange, precipProb: s.precipProb,
+          temp: s.temp, dewPoint: s.dewPoint,
+          cwaUsed: !!cwaElements, cwaNote: s.cwaNote, obsRef, hourlySeries,
+          sunriseHour: srHour, sunsetHour: ssHour,
         });
       }
     }
@@ -1562,6 +1637,64 @@ async function runPrediction() {
   }
 }
 
+/* 用純 SVG 畫 24 小時逐小時趨勢圖（不引入 Chart.js 等外部相依，深色主題自控樣式）。
+ * 三條線分別是雲海／平流霧／輻射霧的逐小時機率。資料來自 computeHourlySeries，
+ * 用的是完整評分引擎（每個整點都算過垂直剖面／逆溫層／雲頂／校準），不是簡化公式。 */
+function renderHourlyChartSVG(series, sunriseHour, sunsetHour) {
+  if (!series || series.length < 2) return '';
+  const W = 680, H = 240, padL = 34, padR = 12, padT = 14, padB = 26;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const xForHour = h => padL + (h / 23) * plotW;
+  const yForPct = p => padT + (1 - p / 100) * plotH;
+
+  // 背景橫格線 + Y 軸標籤（0/25/50/75/100）
+  let grid = '';
+  [0, 25, 50, 75, 100].forEach(v => {
+    const y = yForPct(v);
+    grid += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="0.5"/>`;
+    grid += `<text x="${padL - 6}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text3)" font-family="var(--mono)">${v}</text>`;
+  });
+  // X 軸標籤（每 3 小時）
+  let xlabels = '';
+  for (let h = 0; h <= 23; h += 3) {
+    xlabels += `<text x="${xForHour(h).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="var(--mono)">${pad2(h)}</text>`;
+  }
+  // 日出/日落參考線
+  let sunlines = '';
+  const mkSun = (h, label, color) => {
+    if (h == null || h < 0 || h > 23) return '';
+    const x = xForHour(h);
+    return `<line x1="${x.toFixed(1)}" y1="${padT}" x2="${x.toFixed(1)}" y2="${padT + plotH}" stroke="${color}" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>`
+      + `<text x="${x.toFixed(1)}" y="${padT - 4}" text-anchor="middle" font-size="8" fill="${color}" font-family="var(--mono)">${label}</text>`;
+  };
+  sunlines += mkSun(sunriseHour, '日出', 'var(--amber)');
+  sunlines += mkSun(sunsetHour, '日落', 'var(--accent)');
+
+  // 三條資料線
+  const lineFor = (key, color) => {
+    const pts = series.map(s => `${xForHour(s.hour).toFixed(1)},${yForPct(s[key]).toFixed(1)}`).join(' ');
+    const dots = series.filter(s => s.hour % 3 === 0).map(s =>
+      `<circle cx="${xForHour(s.hour).toFixed(1)}" cy="${yForPct(s[key]).toFixed(1)}" r="2" fill="${color}"/>`).join('');
+    return `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>${dots}`;
+  };
+  const cloudLine = lineFor('cloudSea', 'var(--accent)');
+  const advLine = lineFor('advectionFog', 'var(--teal)');
+  const radLine = lineFor('radiationFog', 'var(--text3)');
+
+  const legend = `<div class="chart-legend">
+    <span><i style="background:var(--accent)"></i>雲海</span>
+    <span><i style="background:var(--teal)"></i>平流霧</span>
+    <span><i style="background:var(--text3)"></i>輻射霧</span>
+  </div>`;
+
+  return `<div class="chart-wrap">
+    <svg viewBox="0 0 ${W} ${H}" class="hourly-chart" preserveAspectRatio="xMidYMid meet" role="img" aria-label="24小時逐小時機率趨勢圖">
+      ${grid}${xlabels}${sunlines}${radLine}${advLine}${cloudLine}
+    </svg>
+    ${legend}
+  </div>`;
+}
+
 function renderResult(results, narrative, dataSourceLog) {
   let html = '<div class="panel-label">氣象分析報告</div>';
 
@@ -1580,10 +1713,21 @@ function renderResult(results, narrative, dataSourceLog) {
     html += `<tr>
       <td><div class="loc-name">${r.location}</div><div class="loc-time">${r.timeLabel}</div></td>
       <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${c.fill}"></div></div><span class="bar-pct" style="color:${c.text}">${p}%</span></div><div class="loc-time">${r.dominantType}機制主導</div></td>
-      <td><div class="note-text">濕度${r.rh}% · 風速${r.windSpeed}m/s · 露點差${r.dewSpread.toFixed(1)}°C${r.precipProb != null ? ' · 降雨機率' + r.precipProb + '%' : ''}${r.cwaUsed ? ' · <span style="color:var(--teal)">含CWA</span>' : ''}</div></td>
+      <td><div class="note-text">氣溫${r.temp != null ? r.temp.toFixed(1) + '°C · ' : ''}露點${r.dewPoint != null ? r.dewPoint.toFixed(1) + '°C · ' : ''}濕度${r.rh}% · 風速${r.windSpeed}m/s · 露點差${r.dewSpread.toFixed(1)}°C${r.precipProb != null ? ' · 降雨機率' + r.precipProb + '%' : ''}${r.cwaUsed ? ' · <span style="color:var(--teal)">含CWA</span>' : ''}</div></td>
     </tr>`;
   });
   html += `</tbody></table>`;
+
+  // 24 小時逐小時趨勢圖：取機率最高的那筆結果的序列來畫（含其日出/日落參考線）。
+  // 只有「全天」模式（selectedTime==='both'）才顯示，日出/日落單一時段模式不畫，
+  // 避免只有一兩個點的圖沒有意義。
+  const topForChart = results.slice().sort((a, b) => b.probability - a.probability)[0];
+  if (selectedTime === 'both' && topForChart && topForChart.hourlySeries && topForChart.hourlySeries.length >= 2) {
+    const srH = topForChart.sunriseHour, ssH = topForChart.sunsetHour;
+    html += `<div class="section-heading">24 小時逐小時趨勢（${topForChart.location}）</div>`;
+    html += `<div class="note-text" style="margin-bottom:10px;">下圖以機率最高的「${topForChart.location}」為例，逐小時機率由完整評分引擎（逆溫層、雲頂高度、季節、海拔、校準）在每個整點各算一次而得，非簡化公式。</div>`;
+    html += renderHourlyChartSVG(topForChart.hourlySeries, srH, ssH);
+  }
 
   // 深度氣象判讀：三種機制個別分數 + 關鍵數值
   html += `<div class="section-heading">深度氣象判讀</div><div class="analysis-grid">`;
@@ -1625,6 +1769,7 @@ function renderResult(results, narrative, dataSourceLog) {
         <tr><td>推估雲頂高度</td><td>${cloudTopText}</td></tr>
         ${cloudBaseText ? `<tr><td>推估雲底高度</td><td>${cloudBaseText}</td></tr>` : ''}
         <tr><td>日夜溫差</td><td>${r.diurnalRange.toFixed(1)}°C</td></tr>
+        <tr><td>氣溫 / 露點</td><td>${r.temp != null ? r.temp.toFixed(1) + '°C' : '—'} / ${r.dewPoint != null ? r.dewPoint.toFixed(1) + '°C' : '—'}</td></tr>
         <tr><td>資料來源</td><td>${r.cwaUsed ? 'Open-Meteo + CWA' : 'Open-Meteo'}</td></tr>
         ${r.obsRef ? `<tr><td>最近測站參考</td><td>${r.obsRef.stationName}（${r.obsRef.distanceKm}km）</td></tr>` : ''}
         ${factors.length ? `<tr><td>主要折減因素</td><td>${factors.join('、')}</td></tr>` : ''}
