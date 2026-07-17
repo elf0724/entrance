@@ -768,6 +768,7 @@ function lerpScore(x, x0, y0, x1, y1) {
 }
 function pad2(n) { return String(n).padStart(2, '0'); }
 function fmtDate(d) { return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function fmtHM(d) { return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
 function haversine(lat1, lon1, lat2, lon2) {
   const R = 6371, toRad = x => x * Math.PI / 180;
   const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
@@ -1640,6 +1641,10 @@ async function runPrediction() {
       // 供趨勢圖畫日出/日落參考線用（取整點）
       const srHour = new Date(om.daily.sunrise[dayIdx]).getHours();
       const ssHour = new Date(om.daily.sunset[dayIdx]).getHours();
+      // 供結果資訊顯示用（HH:MM，逐地點計算——不同地點座標不同，日出日落時間也不同，
+      // 不能只顯示單一全域時間）
+      const sunriseTime = fmtHM(new Date(om.daily.sunrise[dayIdx]));
+      const sunsetTime = fmtHM(new Date(om.daily.sunset[dayIdx]));
 
       for (const slot of timeSlots) {
         const sunIso = slot === 'sunrise' ? om.daily.sunrise[dayIdx] : om.daily.sunset[dayIdx];
@@ -1656,7 +1661,7 @@ async function runPrediction() {
           rh: s.rh, windSpeed: s.windSpeed, dewSpread: s.dewSpread, diurnalRange, precipProb: s.precipProb,
           temp: s.temp, dewPoint: s.dewPoint,
           cwaUsed: !!cwaElements, cwaNote: s.cwaNote, obsRef, hourlySeries,
-          sunriseHour: srHour, sunsetHour: ssHour,
+          sunriseHour: srHour, sunsetHour: ssHour, sunriseTime, sunsetTime,
         });
       }
     }
@@ -1749,6 +1754,13 @@ function renderHourlyChartSVG(series, sunriseHour, sunsetHour) {
 }
 
 function renderResult(results, narrative, dataSourceLog) {
+  // 依機率由高到低排序（使用者要求：多地點/時段同時顯示時，應由高機率排到低）。
+  // 用複製陣列排序，不 mutate 傳入的原始 results——雖然目前呼叫端排序後沒有再用
+  // 原始順序，但保持函式不改動輸入參數是比較安全的寫法。
+  // 這裡排序一次，下面「機率表格」與「深度氣象判讀卡片」兩處都用同一份已排序
+  // 陣列的 forEach，因此兩處會自動保持一致的順序，不用各自排序、也不會走鐘。
+  results = results.slice().sort((a, b) => b.probability - a.probability);
+
   let html = '<div class="panel-label">氣象分析報告</div>';
 
   if (dataSourceLog && dataSourceLog.length) {
@@ -1764,7 +1776,7 @@ function renderResult(results, narrative, dataSourceLog) {
     const p = r.probability;
     const c = getProbColor(p);
     html += `<tr>
-      <td><div class="loc-name">${r.location}</div><div class="loc-time">${r.timeLabel}</div></td>
+      <td><div class="loc-name">${r.location}</div><div class="loc-time">${r.timeLabel}</div><div class="loc-time">日出 ${r.sunriseTime} · 日落 ${r.sunsetTime}</div></td>
       <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${c.fill}"></div></div><span class="bar-pct" style="color:${c.text}">${p}%</span></div><div class="loc-time">${r.dominantType}機制主導</div></td>
       <td><div class="note-text">氣溫${r.temp != null ? r.temp.toFixed(1) + '°C · ' : ''}露點${r.dewPoint != null ? r.dewPoint.toFixed(1) + '°C · ' : ''}濕度${r.rh}% · 風速${r.windSpeed}m/s · 露點差${r.dewSpread.toFixed(1)}°C${r.precipProb != null ? ' · 降雨機率' + r.precipProb + '%' : ''}${r.cwaUsed ? ' · <span style="color:var(--teal)">含CWA</span>' : ''}</div></td>
     </tr>`;
@@ -1819,6 +1831,7 @@ function renderResult(results, narrative, dataSourceLog) {
         <tr><td>輻射霧機率</td><td>${r.radiationFog.total}%</td></tr>
         <tr><td>逆溫層底部</td><td>${inv.base != null ? inv.base + 'm（差' + inv.diff + 'm）' : '未偵測到'}</td></tr>
         <tr><td>觀測點海拔</td><td>${alt != null ? alt + 'm' : '—'}</td></tr>
+        <tr><td>日出 / 日落</td><td>${r.sunriseTime} / ${r.sunsetTime}</td></tr>
         <tr><td>推估雲頂高度</td><td>${cloudTopText}</td></tr>
         ${cloudBaseText ? `<tr><td>推估雲底高度</td><td>${cloudBaseText}</td></tr>` : ''}
         <tr><td>日夜溫差</td><td>${r.diurnalRange.toFixed(1)}°C</td></tr>
