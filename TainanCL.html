@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>臺南古蹟照片輯 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Hero ── */
+    .hero {
+      width: 100%;
+      margin-top: var(--nav-h);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-img {
+      display: block;
+      width: 100%;
+      height: clamp(240px, 40vw, 460px);
+      object-fit: cover;
+      object-position: center 42%;
+      filter: brightness(0.9) saturate(0.85);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom, transparent 35%, rgba(255,255,255,0.4) 68%, rgba(255,255,255,0.92) 100%
+      );
+    }
+
+    .hero-text {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 0 32px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 3.1rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--text-mid);
+    }
+
+    /* ── Wrapper ── */
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 56px 32px 80px;
+    }
+
+    /* ── Section head ── */
+    .section { padding-top: 56px; }
+    .section:first-child { padding-top: 0; }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--rule-light);
+      padding-bottom: 10px;
+      margin-bottom: 28px;
+    }
+
+    .section-label {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .section-count {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+    }
+
+    /* ── Intro text ── */
+    .intro-text {
+      font-weight: 300;
+      font-size: 0.92rem;
+      color: var(--text-mid);
+      line-height: 2;
+      max-width: 640px;
+    }
+
+    .intro-text + .intro-text { margin-top: 1.4em; }
+
+    details.intro-en {
+      margin-top: 28px;
+      border-top: 1px solid var(--rule-light);
+      padding-top: 18px;
+    }
+
+    details.intro-en summary {
+      cursor: pointer;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      transition: color 0.2s;
+      list-style: none;
+    }
+
+    details.intro-en summary::-webkit-details-marker { display: none; }
+    details.intro-en summary::before {
+      content: '＋ ';
+      letter-spacing: 0;
+    }
+    details.intro-en[open] summary::before { content: '－ '; }
+    details.intro-en summary:hover { color: var(--accent-h); }
+
+    details.intro-en .intro-text {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      font-family: 'Lato', sans-serif;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.95;
+      color: var(--text-dim);
+    }
+
+    /* ── Site index grid ── */
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--rule-light);
+      border-left: 1px solid var(--rule-light);
+    }
+
+    .index-cell {
+      border-right: 1px solid var(--rule-light);
+      border-bottom: 1px solid var(--rule-light);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: background 0.2s;
+    }
+
+    .index-cell:hover { background: #faf9f7; }
+
+    .index-num {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+    }
+
+    .index-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .index-zh {
+      text-decoration: none;
+      font-size: 0.92rem;
+      color: var(--text-hi);
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .index-zh:hover { color: var(--accent-h); }
+
+    .index-map {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 9.5px;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .index-map:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    .index-en {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      letter-spacing: 0.01em;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 720px) {
+      .index-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 460px) {
+      .index-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Misc row ── */
+    .misc-row {
+      margin-top: -1px;
+      border: 1px solid var(--rule-light);
+      border-top: none;
+      padding: 14px 18px;
+    }
+
+    .misc-row a {
+      text-decoration: none;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      transition: color 0.2s;
+    }
+    .misc-row a:hover { color: var(--accent-h); }
+
+    /* ── Map note ── */
+    .map-note {
+      font-weight: 300;
+      font-size: 0.86rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+    }
+
+    .map-note a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .map-note a:hover { color: var(--accent-h); border-color: var(--accent-h); }
+
+    /* ── Closing image ── */
+    .closing-img-wrap {
+      margin-top: 56px;
+      overflow: hidden;
+    }
+
+    .closing-img {
+      display: block;
+      width: 100%;
+      height: clamp(200px, 32vw, 380px);
+      object-fit: cover;
+      filter: saturate(0.9);
+    }
+
+    /* ── Back link ── */
+    .back-row { padding-top: 52px; }
+
+    .back-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .back-link::before { content: '← '; letter-spacing: 0; }
+    .back-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      margin-top: 64px;
+      padding: 32px 32px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 480px) {
+      .wrapper, .hero-text, .nav-inner, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-back">入口</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero fade-in" role="img" aria-label="臺南孔廟，全臺首學">
+    <img
+      class="hero-img"
+      src="https://elf0724.github.io/entrance/images/Tainant.jpg"
+      alt="臺南孔廟‧全臺首學"
+      loading="eager"
+    />
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <p class="hero-eyebrow">Selected Works</p>
+      <h1 class="hero-title">臺南古蹟照片輯</h1>
+      <p class="hero-subtitle">The Photo Collection of Tainan Historic Sites</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="wrapper fade-in" style="animation-delay: 0.3s;">
+
+    <!-- 前言 -->
+    <section class="section">
+      <p class="intro-text">
+        臺南市，位於臺灣西南平野，是臺灣開發最早的城市，擁有全島最豐富的人文資源，也是我出生長大的地方。臺南市的古蹟之多，位居全臺灣各縣市之冠，在國家核定的古蹟中，臺南市共有五十幾處之多，由於數目眾多，古蹟的密度很高，因此古蹟與臺南人的生活是密不可分的。記得小時候常在赤崁樓裏跑來跑去，高中聯考前學校老師也會帶著大家一起去孔廟祭拜孔子，而南門城就緊臨著學校後面，大天后宮每年農曆三月的迓媽祖更是兒時最喜歡的廟會迎熱鬧活動⋯⋯諸如此類的生活細節，在從前並不覺得有什麼特別，日子就這樣日復一日地流過。
+      </p>
+      <p class="intro-text">
+        2006 年初，於拍賣網站上買了部二手數位相機，從此打開了我對學習攝影的興趣。每次回臺南最常拍的主題是「古蹟」，隨著拍照經驗一點一滴地累積，發現臺南市擁有這麼多古蹟，對於喜歡攝影的人來說，是件很幸福的事。這個網站便是希望把目前所拍下的臺南市古蹟美麗影像呈現出來，讓更多人可以認識臺南府城古都之美，也歡迎所有喜歡這些照片的人，可以到臺南走走，實地拜訪一下這些珍貴的名勝古蹟。
+      </p>
+
+      <details class="intro-en">
+        <summary>Read in English</summary>
+        <p class="intro-text">
+          I was born and grew up in Tainan City, located in the southwestern plain of Taiwan, home to the region's most abundant historic and literary resources. Over fifty designated historic sites are located within Tainan City — the highest density in Taiwan — making these sites inseparable from everyday life here.
+        </p>
+        <p class="intro-text">
+          In early 2006 I bought a digital camera, which opened up my interest in photography. My favorite subject when visiting Tainan is always "historic sites" — as my experience grew, I realized how fortunate photographers are to have so many here. This site is meant to share what I've photographed of Tainan's historic sites, and to welcome anyone who enjoys these images to visit in person.
+        </p>
+      </details>
+    </section>
+
+    <!-- 古蹟索引 -->
+    <section class="section" aria-labelledby="label-index">
+      <div class="section-head">
+        <span class="section-label" id="label-index">古蹟索引 / Site Index</span>
+        <span class="section-count">30 Sites</span>
+      </div>
+
+      <div class="index-grid">
+
+        <div class="index-cell">
+          <span class="index-num">01</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627134880259" target="_blank" rel="noopener">大天后宮</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%A4%A7%E5%A4%A9%E5%90%8E%E5%AE%AE&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Official Mazu Temple</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">02</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627259210718" target="_blank" rel="noopener">五妃廟</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E4%BA%94%E5%A6%83%E8%A1%97201%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Temple of the Five Concubines</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">03</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627259196466" target="_blank" rel="noopener">孔廟</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%AD%94%E5%AD%90%E5%BB%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Tainan Confucius Temple</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">04</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627259214054" target="_blank" rel="noopener">安平古堡</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%AE%89%E5%B9%B3%E5%8F%A4%E5%A0%A1&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Anping Old Fort</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">05</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627134890463" target="_blank" rel="noopener">赤崁樓</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E8%B5%A4%E5%B4%81%E6%A8%93&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Chihkan Tower</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">06</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627259219624" target="_blank" rel="noopener">延平郡王祠</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%BB%B6%E5%B9%B3%E9%83%A1%E7%8E%8B%E7%A5%A0&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Koxinga Shrine</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">07</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627259223072" target="_blank" rel="noopener">武德殿</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E5%BF%A0%E7%BE%A9%E8%B7%AF%E4%BA%8C%E6%AE%B52%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Bushido Hall</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">08</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627259225904" target="_blank" rel="noopener">祀典武廟</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E7%A5%80%E5%85%B8%E6%AD%A6%E5%BB%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Official God of War Temple</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">09</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627134901827" target="_blank" rel="noopener">南門城</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%8F%B0%E7%81%A3%E5%BA%9C%E5%9F%8E%E5%A4%A7%E5%8D%97%E9%96%80&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Historic City South Gate</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">10</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627134915635" target="_blank" rel="noopener">臺灣國家文學館</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%8F%B0%E7%81%A3%E6%96%87%E5%AD%B8%E9%A4%A8&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Nat'l Museum of Taiwanese Literature</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">11</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627134918065" target="_blank" rel="noopener">億載金城</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%84%84%E8%BC%89%E9%87%91%E5%9F%8E&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Eternal Golden Castle</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">12</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157627134920881" target="_blank" rel="noopener">德記洋行</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%BE%B7%E8%A8%98%E6%B4%8B%E8%A1%8C&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Anping Former Tait &amp; Co</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">13</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872542302" target="_blank" rel="noopener">三山國王廟</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%89%E5%B1%B1%E5%9C%8B%E7%8E%8B%E5%BB%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Temple of the Lords of the Three Mountains</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">14</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872590042" target="_blank" rel="noopener">大觀音亭興濟宮</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%A4%A7%E8%A7%80%E9%9F%B3%E4%BA%AD%E8%88%88%E6%BF%9F%E5%AE%AE&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Grand Guanyin Pavilion Sing-ji Temple</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">15</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157633424537174" target="_blank" rel="noopener">北極殿</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E6%B0%91%E6%AC%8A%E8%B7%AF%E4%BA%8C%E6%AE%B589%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Arctic Temple</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">16</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872184921" target="_blank" rel="noopener">全臺首邑縣城隍廟</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E6%88%90%E5%8A%9F%E8%B7%AF238%E5%B7%B752%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Temple of Tainan County Deity</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">17</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872440845" target="_blank" rel="noopener">吳園</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%90%B3%E5%9C%92&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Tainan Wu's Garden</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">18</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631978156349" target="_blank" rel="noopener">法華寺</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E6%B3%95%E8%8F%AF%E5%AF%BA&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Fa Hua Buddhist Temple</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">19</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872452520" target="_blank" rel="noopener">原臺南合同廳舍</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E4%B8%AD%E6%AD%A3%E8%B7%AF2%E4%B9%8B1%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Heritage of Tainan City Fire Dept.</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">20</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631999335394" target="_blank" rel="noopener">風神廟與接官亭</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E9%A2%A8%E7%A5%9E%E5%BB%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Fongshen Temple &amp; Reception Archway</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">21</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872524640" target="_blank" rel="noopener">首廟天壇</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E9%A6%96%E5%BB%9F%E5%A4%A9%E5%A3%87&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Taiwan's First Temple Tiantan</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">22</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872421011" target="_blank" rel="noopener">原臺南縣知事官邸</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%8E%9F%E8%87%BA%E5%8D%97%E7%B8%A3%E7%9F%A5%E4%BA%8B%E5%AE%98%E9%82%B8&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Old Tainan County Magistrate Residence</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">23</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631998320335" target="_blank" rel="noopener">臺南土地銀行</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E4%B8%AD%E6%AD%A3%E8%B7%AF28%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Tainan Land Bank</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">24</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872255309" target="_blank" rel="noopener">臺南測候所</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E5%85%AC%E5%9C%92%E8%B7%AF21%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Former Tainan Weather Forecasts Bureau</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">25</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631999295164" target="_blank" rel="noopener">臺灣府城隍廟</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E4%B8%AD%E8%A5%BF%E5%8D%80%E9%9D%92%E5%B9%B4%E8%B7%AF133%E8%99%9F&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Temple of Taiwan Capital Deity</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">26</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157631872400299" target="_blank" rel="noopener">德商東興洋行</a>
+            <a class="index-map" href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E5%B8%82%E5%BE%B7%E5%95%86%E6%9D%B1%E8%88%88%E6%B4%8B%E8%A1%8C&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Former Julius Mannich Merchant House</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">27</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157634793487814" target="_blank" rel="noopener">開元寺</a>
+            <a class="index-map" href="https://www.google.com.tw/maps/place/%E9%96%8B%E5%85%83%E5%AF%BA/@23.011241,120.222492,17z/data=%213m1%214b1%214m2%213m1%211s0x346e76e42becb085:0x38f0c975b3c558a5" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Kaiyuan Buddhist Temple</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">28</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157634793493274" target="_blank" rel="noopener">林百貨</a>
+            <a class="index-map" href="https://www.google.com.tw/maps/place/%E6%9E%97%E7%99%BE%E8%B2%A8%28%E4%B8%AD%E6%AD%A3%E8%B7%AF%29/@22.992008,120.202161,17z/data=%214m5%211m2%212m1%211z5p6X55m-6LKo%213m1%211s0x0:0xc783871315fb3c50" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Tainan Old Lin's Department Store</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">29</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157648873356302" target="_blank" rel="noopener">東門城</a>
+            <a class="index-map" href="https://www.google.com.tw/maps/place/%E6%9D%B1%E9%96%80%E5%9F%8E/@22.9879335,120.2153215,17z/data=%214m5%211m2%212m1%211z5Y-w5Y2X5biC5p2x6ZaA5Z-O%213m1%211s0x0:0x44d5156832e63114" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Historic City East Gate</span>
+        </div>
+
+        <div class="index-cell">
+          <span class="index-num">30</span>
+          <div class="index-row">
+            <a class="index-zh" href="http://www.flickr.com/photos/elf0724/sets/72157648873410002" target="_blank" rel="noopener">臺南神學院</a>
+            <a class="index-map" href="https://www.google.com.tw/maps/place/%E5%8F%B0%E5%8D%97%E7%A5%9E%E5%AD%B8%E9%99%A2/@22.988539,120.214037,17z/data=%213m1%214b1%214m2%213m1%211s0x346e768f80f3692f:0xced611af8eb497e4" target="_blank" rel="noopener">地圖</a>
+          </div>
+          <span class="index-en">Tainan Theological College Seminary</span>
+        </div>
+
+      </div>
+
+      <div class="misc-row">
+        <a href="http://www.flickr.com/photos/elf0724/sets/72157627134942759" target="_blank" rel="noopener">其它 — Miscellaneous</a>
+      </div>
+    </section>
+
+    <!-- 地圖說明 -->
+    <section class="section">
+      <p class="map-note">
+        可於 <a href="https://maps.google.com.tw/maps?q=%E5%8F%B0%E5%8D%97%E7%81%AB%E8%BB%8A%E7%AB%99&oe=utf-8&aq=t&rls=org.mozilla:zh-TW:official&client=firefox-a&um=1&ie=UTF-8&hl=zh-TW&sa=N&tab=wl&authuser=0" target="_blank" rel="noopener">Google 地圖</a> 查看臺南市的地理位置；上方每個古蹟名稱旁的「地圖」連結，則可直接查看該古蹟的實際所在地。
+      </p>
+    </section>
+
+    <!-- 結尾照片 -->
+    <div class="closing-img-wrap">
+      <img class="closing-img" src="https://elf0724.github.io/entrance/images/Tainanb.jpg" alt="臺南古蹟街景" loading="lazy" />
+    </div>
+
+    <div class="back-row">
+      <a class="back-link" href="https://elf0724.github.io/entrance/index.html">入口</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>
