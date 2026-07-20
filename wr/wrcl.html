@@ -8,22 +8,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Quattrocento+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* 簡報風格主視覺：Yellow #ffcd00 | Black #000000 | Grey #cccccc */
-    --bg: #f7f7f7;            /* 淺灰背景 */
-    --bg2: #ffffff;           /* 純白卡片 */
-    --bg3: #f0f0f0;           /* 灰色區塊 */
-    --border: #cccccc;        /* 簡報指定的灰色 */
+    
+    --bg: #f7f7f7;            
+    --bg2: #ffffff;           
+    --bg3: #f0f0f0;           
+    --border: #cccccc;        
     --border2: #e0e0e0;
     
-    --text: #000000;          /* 簡報指定的黑色 */
-    --text2: #333333;         /* 次要內文 */
-    --text3: #6b6b6b;         /* 輔助文字（比原 #777777 加深，確保11-12px小字對比度穩過4.5:1） */
+    --text: #000000;          
+    --text2: #333333;         
+    --text3: #6b6b6b;         
     
-    --accent: #ffcd00;        /* 簡報指定的黃色 */
-    --accent2: #e6b800;       /* 主色深階（hover用） */
-    --accent-text: #000000;   /* 黃底上的文字必須是黑色 */
+    --accent: #ffcd00;        
+    --accent2: #e6b800;       
+    --accent-text: #000000;   
     
-    /* 語意色保留，供機率狀態顯示使用 */
+    
     --green: #2e8b3e;         
     --green-bg: rgba(46,139,62,0.10);
     --amber: #b45309;
@@ -36,7 +36,7 @@
     --accent-bg2: #000000;  
     --accent-tint: #fffbe6;   
     
-    /* 字型對應設定 */
+    
     --serif: 'Lora', 'Noto Serif TC', serif;
     --sans: 'Quattrocento Sans', 'Noto Sans TC', sans-serif;
     --mono: 'DM Mono', monospace;
@@ -53,7 +53,7 @@
     line-height: 1.6;
   }
 
-  /* 移除原有的漸層背景，改為簡報般乾淨的純色底 */
+  
   .page-wrap {
     position: relative;
     z-index: 1;
@@ -68,7 +68,7 @@
     gap: 1rem;
     margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
-    border-bottom: 2px solid var(--text); /* 加粗底線強化標題感 */
+    border-bottom: 2px solid var(--text); 
     flex-wrap: wrap;
   }
 
@@ -81,7 +81,7 @@
     position: relative;
   }
 
-  /* 標題加上黃色小裝飾點綴 */
+  
   .logo-mark::before {
     content: '';
     position: absolute;
@@ -132,9 +132,9 @@
   .panel {
     background: var(--bg2);
     border: 1px solid var(--border);
-    border-radius: 4px; /* 降低圓角，增加簡報方正感 */
+    border-radius: 4px; 
     padding: 1.5rem;
-    box-shadow: 4px 4px 0px var(--border2); /* 加上硬陰影 */
+    box-shadow: 4px 4px 0px var(--border2); 
   }
 
   .panel-label {
@@ -275,9 +275,7 @@
     margin-top: 6px;
     line-height: 1.6;
   }
-  /* 連結色：原本用 --accent2（黃底色系）當文字色，實測對比度只有 1.87:1
-     （WCAG 門檻 4.5:1），黃色印在白底上幾乎看不清楚，改用黑字底線，
-     對比度 21:1，同時保留品牌感（黑色是本配色的主要文字色）。 */
+  
   .field-hint a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
 
   .result-panel {
@@ -627,126 +625,21 @@
   </footer>
 </div>
 
-<!--
-  外部設定檔（cwa-config.js）：放代理伺服器網址等個人化設定，跟這支 HTML
-  分開放，這樣才能單獨分享這支 HTML 而不外流你的代理伺服器網址。
-  用法：把 cwa-config.js 跟這支 HTML 放在同一個資料夾，一起用瀏覽器打開
-  即可（file:// 開啟也可以正常載入本機同資料夾的 .js 檔）。
-  如果沒有這個檔案（例如朋友只拿到這支 HTML、沒有拿到 cwa-config.js），
-  程式會自動偵測不到設定、只使用 Open-Meteo 資料，不會報錯中斷。
--->
 <script src="cwa-config.js"></script>
 <script>
-/* ============================================================
- * 1. 地點設定：座標與海拔為概估值，需要更精準可自行調整
- * county/town 欄位保留供未來若接上中央氣象署資料時比對用
- * ============================================================ */
-/* 預設地點。
- * terrain 欄位（重要，不是可有可無的裝飾）：
- * 'valley' = 谷地型雲海景點。台灣有一批低海拔卻穩定出雲海的名點（二寮、
- * 南山寺、二格、金龍山、五分山、平溪谷地…），靠的是「谷地地形
- * 把水氣兜住」而不是高山逆溫層，海拔雖低但實際出景率很高。
- * 這類地點不套用海拔懲罰（altitudeFactor 直接給 1.0），否則
- * 會被系統性低估到毫無參考價值。
- * 'alpine' = 典型高山雲海（阿里山這類位於盛行雲霧帶的地點），照常規邏輯走。
- * 沒有標 terrain 的地點（例如使用者自訂的任意地點）才會套用海拔懲罰，
- * 因為那才是「隨便一個低海拔的地方本來就不該有雲海」的情況。
- */
+
 const LOCATIONS = {
-  // 2026-07-16：原「九份/不厭亭」改名為「九份天公廟」（正式名稱九份開成殿），
-  //   是同一個九份／基隆山雲海系統裡、比不厭亭更低的一個機位。
-  //   座標：Google 地圖分享連結（maps.app.goo.gl/5AhwbcUGkeYEDF1LA）解析出
-  //     25.1079283, 121.8466388（「九份開成殿(天公廟)」）。取四位小數。
-  //   海拔約 380m（估計值，非單一權威數字）：開成殿「毗鄰福山宮、位處九份至
-  //     高點」（新北市觀光旅遊網），而九份在地人繪製的詳細海拔清單裡「九份廟
-  //     中廟（即福山宮）380m」；開成殿緊鄰福山宮且被稱為九份至高點，取 380m，
-  //     落在使用者估的 200~400m 上緣。若日後查到開成殿本身的精確海拔應更新。
-  //   terrain 維持 'valley'：它跟不厭亭是同一個九份／基隆山谷地雲海系統（相距
-  //     僅約 2km），成因機制相同，不該用不同的季節分類。使用者觀察到「這裡
-  //     機率比不厭亭低、大概僅冬春交界少數時候才有」——這個較低的機率不是靠
-  //     改季節懲罰得來的，而是由海拔本身透過 cloudTopFactor 自然產生：觀測點
-  //     只有 380m，要看到雲海需要雲頂壓到 380m 以下，比不厭亭(約520~600m)需要
-  //     雲頂壓到更低才行，是更嚴苛的條件、發生得更少。這正好對應使用者說的
-  //     「如果連這裡（低點）都出景，海拔更高的不厭亭就可推定也會出景」——那句
-  //     話講的就是 cloudTopFactor 的物理（低觀測點需要更低的雲頂）。所以只要
-  //     把海拔設對，機率比不厭亭低這件事會自然成立，不需要額外加懲罰。
-  //   town 維持「瑞芳區」（開成殿位於瑞芳區，多個官方來源確認）。
+
   '九份天公廟':    { lat: 25.1079, lon: 121.8466, alt: 380,  county: '新北市', town: '瑞芳區', terrain: 'valley' },
-  // 2026-07-14 修正：原「陽明山區」改名為「大屯山」，並修正三項查證到的錯誤：
-  //   1. 座標與海拔：原本 alt:800、座標(25.1637,121.5407) 對應的是「大屯遊憩區」
-  //      停車場一帶（陽明山國家公園官網：「大屯遊憩區...海拔約800公尺」），
-  //      不是實際拍攝雲海的地點。真正的觀景台「大屯山助航站觀景台」海拔
-  //      1076m，主峰三角點 1092m（多個健行網站與陽明山國家公園官網互相印證），
-  //      「雲海人」App 也是用 1092m 這個數字。座標改用主峰／助航站一帶的估計值。
-  //   2. terrain 從 'valley' 改成 'alpine'：原本誤把大屯山歸類成跟二寮、南山寺
-  //      一樣的「夏季友善谷地型」，但查證到明確反證——大屯山雲海是「冬季限定
-  //      景色」，season為1-3月機會大（來源：陽明山旅遊部落格「大屯山步道賞
-  //      雲海，冬季限定景色」），跟二寮「端午到中秋才是旺季」完全相反，不該
-  //      套用相同的季節放寬。改回一般高山型的季節曲線（夏季重罰）較符合事實。
-  //   （這次修正是依實際查證的地理／氣候事實而定，不是為了讓數字更接近任何
-  //   特定 App 的預測值——事實上這兩項修正合計後，同一個案例的機率反而從
-  //   6% 降到 2%，離「雲海人」App 當時顯示的 80% 更遠而非更近。見交接文件
-  //   2026-07-14 該次記錄的完整討論。）
-  //   2026-07-14 再追加：使用者提醒夏季午後雷陣雨後轉晴仍有機會起雲霧，
-  //   查證屬實（陽明山國家公園氣候資料：夏季「多為晴朗，午後有雷陣雨」），
-  //   已把 seasonFactor 改成海拔敏感、不再對 1000 出頭公尺的地點套用跟
-  //   2216m 阿里山一樣重的夏季懲罰，細節見該函式內的註解。座標同時更新為
-  //   查證到更精確的引用值（25.1767, 121.5219, 1081m，來源見交接文件）。
+
   '大屯山':        { lat: 25.1767, lon: 121.5219, alt: 1092, county: '臺北市', town: '北投區', terrain: 'alpine' },
-  // 2026-07-14 新增：使用者提供 Google 地圖分享連結解析出的座標（25.1714289,
-  // 121.5600494），海拔沒有查到單一精確數字，是依周邊已知海拔（竹子湖670m、
-  // 冷水坑740-760m、擎天崗770m、小油坑786-805m）估計的中間值，非精確引用，
-  // 之後若查到更準確的數字應更新。
-  //
-  // 2026-07-14 再追加修正：CWA 行政區從「臺北市士林區」改成「新北市金山區」。
-  // 這裡點出一個先前沒想清楚的設計問題：county/town 這兩個欄位是給 CWA
-  // 鄉鎮預報查詢用的，跟決定 Open-Meteo 剖面座標的 lat/lon 是分開的兩件事。
-  // 大部分地點兩者剛好一致（觀測點站的位置跟鏡頭望出去的山谷同屬一個行政
-  // 區），但中湖戰備道路是特例：觀測點本身在士林區的稜線上（海拔700m），
-  // 但拍攝方向是朝北望向北海岸／金山方向的低地——真正想知道「會不會有雲
-  // 海」的地方是金山區那片低地會不會起霧／雲，不是士林區這個範圍橫跨市區
-  // 到高山、行政區劃分本身就很粗的地方。所以 CWA 鄉鎮預報改抓金山區的資料，
-  // 但 Open-Meteo 的剖面座標維持觀測點原本的座標不變（這是判斷「觀測點本身
-  // 有沒有站在雲頂之上」的依據，不該跟著改）。
-  // 這是之後遇到類似「觀測點跟拍攝方向落在不同行政區」的地點時，可以參考
-  // 的判斷原則：county/town 跟著拍攝方向的目標區域走，lat/lon 跟著觀測點本
-  // 身的實際站立位置走，兩者不一定要一致。
+
   '中湖戰備道路':  { lat: 25.1714, lon: 121.5600, alt: 700,  county: '新北市', town: '金山區', terrain: 'alpine' },
   '石碇二格':      { lat: 24.9647, lon: 121.6350, alt: 678,  county: '新北市', town: '石碇區', terrain: 'valley' },
   '五分山雷達站':  { lat: 25.0718, lon: 121.7817, alt: 757,  county: '新北市', town: '瑞芳區', terrain: 'valley' },
   '坪林南山寺':    { lat: 24.9203, lon: 121.6903, alt: 450,  county: '新北市', town: '坪林區', terrain: 'valley' },
   '平溪谷地':      { lat: 25.0258, lon: 121.7420, alt: 300,  county: '新北市', town: '平溪區', terrain: 'valley' },
-  // 2026-07-16 新增、2026-07-16 再拆成兩個機位：
-  //   觀音山硬漢嶺觀景台是北部拍雲海琉璃光的熱門地點，位置極佳、視野幾乎環景，
-  //   向東、向西兩面都能拍，兩個方向的目標低地不同，因此依「中湖戰備道路原則」
-  //   拆成兩個按鈕（同一個站立點、同一組座標與海拔，只有 CWA 鄉鎮不同）：
-  //     ● 「臺北港」＝從觀景台向西拍，目標是淡水河口／臺北港日落後的魔幻時刻，
-  //        臺北港位於八里區 → CWA 鄉鎮取「八里區」。
-  //     ● 「觀音山硬漢嶺觀景台」＝從觀景台向東拍，目標是大臺北盆地日出前大景，
-  //        山腳下往東的低地屬五股區（面台北盆地西緣）→ CWA 鄉鎮取「五股區」。
-  //   兩者的 lat/lon 相同（都是同一個站立點，判斷「站不站得在雲頂之上」的垂直
-  //   剖面與拍攝方向無關，不該跟著改），只有 town 依拍攝方向的目標低地分開，
-  //   這正是中湖戰備道路那次確立的設計原則。命名依使用者要求以「拍攝主體／
-  //   方向」命名，站立點其實都是硬漢嶺觀景台。
-  //
-  //   座標：Google 地圖分享連結（maps.app.goo.gl/QStBtGscep9M9dxL7）解析出的
-  //     標注點 25.135967, 121.4267249（正式名稱「觀音山風景區硬漢嶺觀景台」）。
-  //   海拔 616m：硬漢嶺為觀音山最高峰，616m 是官方查證數字（交通部觀光署
-  //     北海岸及觀音山國家風景區管理處、新北市觀光旅遊網，與多個健行網站
-  //     互相印證），非估計值。觀景台在主峰下方最後一段石階、海拔略低但非常
-  //     接近，差異在雲頂／觀測點判斷上可忽略，兩個機位統一採用主峰的 616m。
-  //   terrain 標 'alpine'（非 valley）：使用者描述「冬季發生機率較高，夏季僅
-  //     午後劇烈雷陣雨後隔日放晴時較有機會」——這正是大屯山那種「冬季為主、
-  //     夏季條件式」的模式，跟二寮谷地型「端午到中秋才是旺季、雨後隔天最易出
-  //     大景」的夏季友善模式相反。且觀音山屬大屯火山群、大屯山系，靠季風海洋
-  //     水氣凝成海霧（坌嶺吐霧），成因與大屯山同源。這與 2026-07-14 把大屯山
-  //     從 valley 改回 alpine 的查證結論一致；若誤標 valley 會重演交接文件警告
-  //     過的「低海拔名點一律當谷地型」而高估的錯誤。海拔 616m<1000m，季節因子
-  //     自然走低海拔溫和曲線（冬 0.9／夏 0.75，冬季略優但夏季不重罰），恰好
-  //     吻合「冬季較高但四季都有機會」的描述。
-  //     （嚴格說它其實是「海岸河口海霧型」，跟純高山雲海不完全相同；現有
-  //     valley/alpine 二分類下 alpine 是最貼近其冬季主導季節性的選擇，若日後
-  //     新增 'coastal' 之類的地形類型，這兩筆是候選改標對象。）
+
   '臺北港':        { lat: 25.1360, lon: 121.4267, alt: 616,  county: '新北市', town: '八里區', terrain: 'alpine' },
   '觀音山硬漢嶺觀景台': { lat: 25.1360, lon: 121.4267, alt: 616, county: '新北市', town: '五股區', terrain: 'alpine' },
   '左鎮二寮':      { lat: 23.0397, lon: 120.4114, alt: 193,  county: '臺南市', town: '左鎮區', terrain: 'valley' },
@@ -754,12 +647,8 @@ const LOCATIONS = {
   '五城（金龍山）': { lat: 23.9089, lon: 120.9308, alt: 820,  county: '南投縣', town: '魚池鄉', terrain: 'valley' },
 };
 
-// 垂直剖面採用的氣壓層（hPa），涵蓋台灣中低海拔山區的逆溫層常見高度
 const PRESSURE_LEVELS = [1000, 975, 950, 925, 900, 850, 800];
 
-/* ============================================================
- * 2. 共用工具
- * ============================================================ */
 function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
 function lerpScore(x, x0, y0, x1, y1) {
   if (x1 === x0) return y0;
@@ -776,11 +665,6 @@ function haversine(lat1, lon1, lat2, lon2) {
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
-/* ============================================================
- * 3. 資料擷取：Open-Meteo（唯一資料來源，免金鑰、免後端）
- * ============================================================ */
-// 統一包一層 fetch，把瀏覽器丟出的低階網路錯誤（Failed to fetch）
-// 轉成使用者看得懂的訊息，方便判斷是網路問題還是被預覽環境擋住
 async function safeFetch(url, label, options) {
   try {
     return await fetch(url, options);
@@ -818,11 +702,10 @@ async function fetchOpenMeteo(loc, dateStr) {
   return res.json();
 }
 
-// 依據時刻字串（YYYY-MM-DDTHH:00）找出 hourly 陣列的索引，找不到則取最接近者
 function findHourIndex(hourlyTimeArr, targetIso) {
   let idx = hourlyTimeArr.indexOf(targetIso);
   if (idx !== -1) return idx;
-  // fallback：找最近的時刻
+
   const targetMs = new Date(targetIso).getTime();
   let best = 0, bestDiff = Infinity;
   hourlyTimeArr.forEach((t, i) => {
@@ -833,9 +716,7 @@ function findHourIndex(hourlyTimeArr, targetIso) {
 }
 
 function buildProfile(hourly, idx, surfaceAlt, surfaceTemp, surfaceRh) {
-  // 每一層帶 tdd（溫度露點差，Dew point depression）：判斷該高度層是否接近
-  // 飽和（可成雲）的關鍵指標。參考 enzowen「一起追雲海吧」系列的探空圖方法論：
-  // Tdd < 6°C 的高度層代表水氣可能凝結成雲。
+
   const mkEntry = (height, temp, rh) => ({
     height, temp, rh: rh ?? null,
     tdd: (rh != null && Number.isFinite(rh)) ? +(temp - dewPointFromTRH(temp, Math.max(rh, 1))).toFixed(1) : null,
@@ -847,51 +728,21 @@ function buildProfile(hourly, idx, surfaceAlt, surfaceTemp, surfaceRh) {
     const r = hourly[`relative_humidity_${p}hPa`]?.[idx];
     if (typeof h === 'number' && typeof t === 'number') profile.push(mkEntry(h, t, typeof r === 'number' ? r : null));
   });
-  // 依高度排序並去除過於接近地面（<20m 差）以免雜訊
+
   return profile.sort((a, b) => a.height - b.height).filter((p, i, arr) => i === 0 || p.height - arr[i-1].height > 20);
 }
 
-/* ============================================================
- * 3b. 資料擷取：中央氣象署開放資料（選填，需金鑰）
- *
- * 涵蓋範圍與取捨（重要，避免日後誤改）：
- * - 鄉鎮天氣預報 F-D0047-0XX（分縣市，逐小時溫度/露點/濕度＋3小時降雨機率）：只取用 T（溫度）、
- * Td（露點）、RH（相對濕度）、PoP6h/PoP12h（降雨機率）。「Wind」欄位是「風向＋蒲福風級」文字，不是乾淨
- * 數值，刻意不解析，風速仍全部採用 Open-Meteo。
- * - 逆溫層判斷需要高空氣壓層剖面，CWA 這組 API 沒有提供，剖面與逆溫層一律
- * 仍用 Open-Meteo，不受 CWA 資料影響。
- * - 自動氣象站 O-A0001-001：只在「預測日期＝今天」時抓取，用最近測站的即時
- * 觀測值做「現地觀測參考」，僅供人工比對顯示，不併入機率運算（時間點對不
- * 齊預測目標時刻，混進計分反而失真）。
- * - 任何一步失敗（金鑰錯誤、CORS、逾時等）都只影響「本地點/本項目」，不會
- * 讓整體預測中斷，會在資料來源紀錄與報告中清楚標示已退回 Open-Meteo。
- * ============================================================ */
-
-// 由溫度與相對濕度反推露點（Magnus formula），供 CWA 資料缺 Td 欄位時使用
 function dewPointFromTRH(t, rh) {
   const a = 17.27, b = 237.7;
   const alpha = ((a * t) / (b + t)) + Math.log(rh / 100);
   return (b * alpha) / (a - alpha);
 }
 
-// 由溫度與露點反推相對濕度（Magnus formula 正向）
 function relHumidityFromTTd(t, td) {
   const es = x => 6.112 * Math.exp((17.67 * x) / (x + 243.5));
   return clamp(100 * es(td) / es(t), 0, 100);
 }
 
-// 用實際金鑰驗證過的真實回應結構（2026-07-03 實測，F-D0047-069 新北市）：
-//   records.Locations[0].Location[] ，每筆 { LocationName, WeatherElement: [...] }
-//   WeatherElement[].Time[] 有兩種形式：
-//     - 逐小時單一時間點：{ DataTime, ElementValue: [{ Temperature: "32" }] }
-//     - 3小時區間：{ StartTime, EndTime, ElementValue: [{ ProbabilityOfPrecipitation: "20" }] }
-//   ElementValue 物件的 key 就是實際氣象量英文名稱（Temperature/DewPoint/
-//   RelativeHumidity/ProbabilityOfPrecipitation/...），不需要透過中文 ElementName
-//   （如「溫度」「露點溫度」）比對，直接掃描每個 WeatherElement 找有沒有該 key
-//   即可，不管它掛在哪個 ElementName 底下，較不受欄位命名調整影響。
-//
-// 注意：實測證實 locationName 這個查詢參數完全沒有作用，官方會回傳「整個縣市」
-// 所有鄉鎮的資料（一個縣市可能上萬行 JSON），要靠這裡自己從陣列中篩出目標鄉鎮。
 function pickCwaValue(weatherElements, fieldKey, targetIso) {
   const targetMs = new Date(targetIso).getTime();
   let best = null, bestDiff = Infinity;
@@ -917,17 +768,6 @@ function pickCwaValue(weatherElements, fieldKey, targetIso) {
   return best;
 }
 
-// 縣市 → F-D0047 鄉鎮預報代碼對照表。
-// 原本用「F-D0047-093」（全臺灣合併檔）直接查詢會回 404 Resource not found，
-// 研判是這種巨型合併檔案不開放走即時查詢路徑（rest/datastore），只能整包
-// 下載。改用「分縣市」版本，經實測（2026-07-03，F-D0047-069 新北市）證實可行，
-// 但也發現兩個文件沒寫清楚的事：
-// 1. `locationName` 查詢參數完全沒有過濾作用，會拿到整個縣市所有鄉鎮的資料
-//    （前端在 fetchCwaTownForecastRaw 裡自己從陣列找目標鄉鎮）。
-// 2. 實際資料涵蓋約未來 3-4 天（不是舊版文件寫的 2 天），且溫度/露點/濕度是
-//    逐小時解析度，不是 3 小時，比原先預期的更精細也更夠用。
-// 更遠的日期（超過 3-4 天）目前沒有實測過對應的「未來1週」版本（代碼 = 這裡
-// 的值 +2）是否精細到小時，保守起見超出範圍直接跳過 CWA、只用 Open-Meteo。
 const COUNTY_D2_CODE = {
   '宜蘭縣': '001', '桃園市': '005', '新竹縣': '009', '苗栗縣': '013',
   '彰化縣': '017', '南投縣': '021', '雲林縣': '025', '嘉義縣': '029',
@@ -937,10 +777,6 @@ const COUNTY_D2_CODE = {
   '連江縣': '081', '金門縣': '085',
 };
 
-// 抓取指定縣市的「未來2-3天」鄉鎮預報，回傳目標鄉鎮的 WeatherElement 陣列。
-// 實測證實：官方回應把整個縣市所有鄉鎮的資料一次回傳（locationName 參數沒有
-// 過濾作用），要在 Location 陣列裡自己找目標鄉鎮；資料量可能上萬行 JSON，
-// 抓取需要幾秒鐘是正常現象，不是卡住。
 async function fetchCwaTownForecastRaw(townName, countyName, apiKey, proxyBase) {
   const code = COUNTY_D2_CODE[countyName];
   if (!code) throw new Error(`不支援的縣市名稱「${countyName}」，請確認是否為官方標準縣市全名（如「新北市」）`);
@@ -962,8 +798,6 @@ async function fetchCwaTownForecast(townName, countyName, apiKey, proxyBase) {
   return await fetchCwaTownForecastRaw(townName, countyName, apiKey, proxyBase);
 }
 
-// 抓取全臺自動氣象站觀測資料（O-A0001-001），同一次預測流程內快取一份，
-// 避免每個地點各打一次（單次回傳資料量較大）
 let cwaStationCache = null;
 async function fetchCwaAllStations(apiKey, proxyBase) {
   if (cwaStationCache) return cwaStationCache;
@@ -979,12 +813,8 @@ async function fetchCwaAllStations(apiKey, proxyBase) {
   return stations;
 }
 
-// 用經緯度找出最近的自動氣象站，回傳其即時觀測值（僅作參考顯示，不進機率運算）。
-// 注意：CWA 自動站常見缺值以 -99 之類表示，若最近的測站溫度／濕度都是缺值，
-// 直接採用會讓參考資訊變成一堆「—」，因此改成「依距離排序後，取第一個至少有
-// 溫度或濕度其中一項有效值的測站」，而不是單純取距離最近者。
 function nearestCwaStation(stations, lat, lon) {
-  const valid = v => Number.isFinite(v) && v > -90; // CWA 缺值常以 -99 之類表示
+  const valid = v => Number.isFinite(v) && v > -90;
   const candidates = [];
   stations.forEach(st => {
     const coords = st.GeoInfo?.Coordinates || [];
@@ -1016,137 +846,68 @@ function nearestCwaStation(stations, lat, lon) {
   };
 }
 
-/* ---- 抑制因子（乘法折減）：雲海是「多條件同時成立」的現象，單靠某一項
- * （例如濕度高）不該堆出高分。以下因子把「條件不對」的情況壓下來，
- * 依實際攝影經驗與氣象資料（台灣雲海秋冬好發、需中海拔逆溫層、日出
- * 優於日落）校準。每個因子回傳 0~1 的乘數，1 代表完全不折減。 ---- */
-
-// 季節因子：台灣高山雲海以秋冬（11-3月）為主，夏季（尤其7-8月）因雲的凝結
-// 高度升到全年最高、常超過山頂，雲海少見。
-// 但谷地型景點（terrain='valley'，如二寮、南山寺、二格、金龍山）不吃這一套：
-// 這些地方靠谷地兜住水氣，實測（登山社群長期追雲紀錄）顯示春夏照樣頻繁出景，
-// 二寮甚至是「端午到中秋」才是旺季、雨後隔天最容易出大景。因此谷地型只給
-// 溫和的季節起伏，不做重罰。
 function seasonFactor(month, targetAlt, terrain) {
   if (terrain === 'valley') {
-    // 谷地型：秋冬仍略優（水氣＋輻射冷卻條件較好），但夏季不重罰
+
     const valleyByMonth = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.9, 5: 0.85, 6: 0.85, 7: 0.85, 8: 0.85, 9: 0.9, 10: 1.0, 11: 1.0, 12: 1.0 };
     return valleyByMonth[month] ?? 0.9;
   }
-  // 高山型的季節曲線，過去是「一刀切」：>=1000m 一律套用同一張表（以阿里山
-  // 2216m 為校準基準，夏季砍到剩 0.4）。這忽略了一件事：夏季雲海之所以稀少，
-  // 核心原因是夏季「凝結高度」（水氣開始凝結成雲的海拔）整體升高，常超過
-  // 2000-2500m，阿里山這種真高山夏季常常整個露在雲層之上摸不到邊；但這個
-  // 道理對海拔只有1000出頭的地點（如大屯山1092m）不成立——凝結高度只要
-  // 沒有升到1092m以上（比升到2200m以上容易發生得多），一樣有機會成雲。
-  // 查證也證實：陽明山國家公園夏季「多為晴朗，午後有雷陣雨」，雷陣雨後入夜
-  // 若轉晴、輻射冷卻，隔天清晨低處仍有機會起雲霧——是跟冬季東北季風持續性
-  // 水氣不同的「條件式」夏季管道，真實存在但不如冬季穩定。
-  // 所以海拔在 1000~2000m 之間，改成「高山夏季重罰」與「較溫和的中海拔曲線」
-  // 之間線性內插，海拔越高越接近阿里山那種硬砍，海拔越低越接近溫和曲線；
-  // >=2000m 維持原本的高山曲線不變（阿里山不受影響）。
+
   const midAltByMonth  = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.85, 5: 0.75, 6: 0.65, 7: 0.6,  8: 0.6,  9: 0.7,  10: 0.9,  11: 1.0, 12: 1.0 };
   const highAltByMonth = { 1: 1.0, 2: 1.0, 3: 0.95, 4: 0.8,  5: 0.6,  6: 0.45, 7: 0.4,  8: 0.4,  9: 0.6,  10: 0.85, 11: 1.0, 12: 1.0 };
-  // 沒標 terrain 的低海拔地點（多半是使用者自訂的任意地點）：折減幅度中等
+
   const lowAltByMonth  = { 1: 0.9, 2: 0.9, 3: 0.9, 4: 0.85, 5: 0.8, 6: 0.8, 7: 0.75, 8: 0.75, 9: 0.85, 10: 0.9, 11: 0.9, 12: 0.9 };
   if (targetAlt < 1000) return lowAltByMonth[month] ?? 0.7;
   const mid = midAltByMonth[month] ?? 0.75;
   const high = highAltByMonth[month] ?? 0.7;
   if (targetAlt >= 2000) return high;
-  const t = (targetAlt - 1000) / 1000; // 1000~2000m 線性內插
+  const t = (targetAlt - 1000) / 1000;
   return +(mid + (high - mid) * t).toFixed(3);
 }
 
-// 時段因子：雲海清晨（日出前後）最易成形，經一夜輻射冷卻、水氣易凝結；
-// 傍晚（日落）雖也可能有，但普遍較不穩定、機率較低。
 function slotFactor(slot) {
   return slot === 'sunrise' ? 1.0 : 0.75;
 }
 
-// 海拔因子：一般而言雲海需要觀測點位於雲層之上（台灣盛行雲霧帶約1500-2500m），
-// 低海拔的隨機地點通常看不到，所以要折減。
-// 但「谷地型雲海景點」是重大例外：二寮(193m)、南山寺(450m)、二格(678m)、
-// 五分山(757m)、金龍山(820m) 全都是海拔很低卻公認的雲海名點，靠的是谷地
-// 地形兜住水氣。對這些地點套用海拔懲罰會把它們系統性壓到毫無參考價值，
-// 所以直接不折減，讓它們的機率由「水氣、風速、逆溫層、降雨」等實際條件決定。
 function altitudeFactor(targetAlt, terrain) {
-  if (terrain === 'valley') return 1.0; // 谷地型景點：地形本身就是雲海成因，不因海拔低而懲罰
+  if (terrain === 'valley') return 1.0;
   if (targetAlt >= 1500) return 1.0;
   if (targetAlt >= 800) return lerpScore(targetAlt, 800, 0.75, 1500, 1.0);
   if (targetAlt >= 300) return lerpScore(targetAlt, 300, 0.45, 800, 0.75);
   return lerpScore(clamp(targetAlt, 0, 300), 0, 0.35, 300, 0.45);
 }
 
-/* ---- 雲頂高度（Cloud Top Height）----
- * 方法論參考 enzowen「一起追雲海吧（二）：台灣探空預報工具」
- * （https://www.enzowen.com/archives/240，作者以嘉義山區近20筆雲海實測
- * 驗證 Tdd 與雲頂高度的關係）：
- * - 攝影者拍雲海，拍的是「雲頂」——觀測者必須站在雲頂之上才看得到雲海。
- * - 雲頂高度高於觀測點 = 人在雲裡面 = 白牆，不是雲海。這正是過去公式
- * 高估的典型情境：「濕度高、逆溫層也有，但其實整個人泡在雲霧裡」。
- * - 垂直剖面中 Tdd（溫度露點差）< 6°C 的高度層代表水氣可能凝結成雲；
- * 由下往上掃描，連續濕層的頂部即為推估雲頂。
- * - 作者註明「預測雲頂高度通常較實際觀測值低」，因此邊界判斷保留餘裕。
- */
-const CLOUD_TDD_THRESHOLD = 6; // Tdd < 6°C 視為可成雲的濕層（依上述文章）
+const CLOUD_TDD_THRESHOLD = 6;
 
-// 由剖面推估低層雲的雲頂高度。
-// 回傳：{ base, top } = 找到濕層；null = 資料充足但確實無濕層；
-//       undefined = 濕度資料不足無法判斷（與 null 是不同的情況，呼叫端要區分）
-// 只找「最低的一個連續濕層」：雲海是貼近地面/谷地的低雲，高空另有濕層
-// （例如中高雲）與雲海無關，不予理會。
 function estimateCloudTop(profile) {
   const usable = profile.filter(p => p.tdd != null);
-  if (usable.length < 2) return undefined; // 濕度資料不足，無法判斷
+  if (usable.length < 2) return undefined;
   let base = null, top = null;
   for (const level of usable) {
     if (level.tdd < CLOUD_TDD_THRESHOLD) {
       if (base == null) base = level.height;
       top = level.height;
     } else if (base != null) {
-      break; // 濕層結束（由下往上第一個連續濕層的頂）
+      break;
     }
   }
   return base != null ? { base, top } : null;
 }
 
-// 觀測點與雲頂的相對位置因子。
-//
-// 【重要：這個因子對三種現象都適用，不是只有雲海】
-// 雲海、平流霧、輻射霧，攝影者要拍的都是「腳下的雲霧」（雲海、琉璃光、雲瀑
-// 都是站在雲霧上方往下拍）。如果雲頂遠高於觀測點，人是被埋在雲層裡面看白牆，
-// 三者一個都拍不到。早期版本只把這個因子套在雲海上，導致白牆日雲海被壓低、
-// 但輻射霧沒被壓，而顯示的機率又是三者取最大值，等於整個修正被繞過去。
-//
-// 白牆懲罰依「埋多深」漸進，而不是一律 0.25：
-//   - 雲頂只高出觀測點一兩百公尺 → 邊緣情況，模式誤差就可能翻盤，不宜重罰
-//   - 雲頂高出近千公尺 → 人在厚雲層深處，幾乎沒有翻盤空間
-// 但**不歸零**：模式的垂直解析度粗（低層氣壓層間距約 200-300m），且
-// enzowen 的實測文章明確指出「預測雲頂高度通常較實際觀測值低」，
-// OUTSiDERS 的文章也提到模式常抓不準那條界線（誤差可達 500m）。
-// 硬歸零等於過度相信模式，不誠實。
 function cloudTopFactor(cloudLayer, targetAlt, terrain, mode = 'cloudsea') {
-  if (cloudLayer === undefined) return 1.0;   // 濕度資料不足，不判斷（不用缺資料懲罰）
+  if (cloudLayer === undefined) return 1.0;
   if (cloudLayer === null) {
-    // 剖面上找不到濕層
-    // 霧是貼近地面的現象，淺層谷霧的厚度可能整個低於氣壓層剖面的垂直解析度，
-    // 「剖面上沒濕層」不代表谷裡沒霧，因此對霧的折減放輕（霧本身另有地面
-    // 露點差、風速、雲量等指標在把關）。
+
     if (mode === 'fog') return 0.7;
     return terrain === 'valley' ? 0.6 : 0.35;
   }
-  const above = cloudLayer.top - targetAlt; // 雲頂高出觀測點多少公尺（負值=雲頂在腳下）
-  if (above <= -100) return 1.0;                                     // 雲頂在腳下：理想
-  if (above <= 150) return lerpScore(above, -100, 1.0, 150, 0.45);   // 邊緣：時淹時退
-  if (above <= 800) return lerpScore(above, 150, 0.45, 800, 0.12);   // 白牆：埋得越深越沒機會
-  return 0.08;                                                        // 埋在厚雲層深處
+  const above = cloudLayer.top - targetAlt;
+  if (above <= -100) return 1.0;
+  if (above <= 150) return lerpScore(above, -100, 1.0, 150, 0.45);
+  if (above <= 800) return lerpScore(above, 150, 0.45, 800, 0.12);
+  return 0.08;
 }
 
-// 雲層厚度可靠度：偵測到的濕層若薄到只涵蓋一兩個氣壓層間距（現有剖面解析度
-// 約 100-300m 一層），比較可能是單一資料點雜訊，不是真的一整層雲，信心打折。
-// 注意：這不是「薄雲比較不好看」的美學判斷（厚薄各有經典構圖，滿溢山谷的
-// 雲海跟纏繞山腰的雲帶都很常見，沒有證據支持哪個該加分），純粹是資料品質
-// 考量：偵測到的層越薄，越可能是雜訊而非穩定的雲層。
 function layerReliabilityFactor(cloudLayer) {
   if (!cloudLayer) return 1.0;
   const thickness = cloudLayer.top - cloudLayer.base;
@@ -1154,9 +915,6 @@ function layerReliabilityFactor(cloudLayer) {
   return lerpScore(thickness, 0, 0.85, 150, 1.0);
 }
 
-/* ============================================================
- * 4. 規則運算引擎（對應 weather-forecast-expert 技能之閾值）
- * ============================================================ */
 function findInversions(profile) {
   const layers = [];
   for (let i = 0; i < profile.length - 1; i++) {
@@ -1184,15 +942,6 @@ function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precip
   const diurnalScore = diurnalRange >= 10 ? 15 : lerpScore(diurnalRange, 5, 0, 10, 15);
   const discount = precipDiscount(precipProb);
 
-  // 逆溫層必要性：雲海的物理前提是「雲頂被逆溫層壓在觀測點高度附近」。若在
-  // 觀測點高度附近完全找不到合適的逆溫層（inv.score 很低），代表水氣即使多
-  // 也會直接發展成一般雲或往上散掉，不會形成「腳下的雲海」。過去版本只是
-  // 少加 inv 那份分數，但濕度／風速／溫差三項仍能堆到 55 分，導致「濕度高
-  // 但根本沒有逆溫層」的低海拔悶熱天氣被誤判成雲海。改成：把逆溫層匹配度
-  // 當成一個乘法必要條件，匹配度低時大幅折減總分。
-  //   inv.score 45=完美貼合、25=尚可、0=無匹配
-  // 谷地型景點的機制是「雲霧在谷地裡累積、人站在谷緣往下看」，不像高山那樣
-  // 嚴格要求逆溫層貼合觀測點高度，因此懲罰放寬（地板從 0.25 提高到 0.5）。
   const invFloor = terrain === 'valley' ? 0.5 : 0.25;
   const invNecessity = inv.score >= 45 ? 1.0
     : inv.score >= 25 ? lerpScore(inv.score, 25, 0.6, 45, 1.0)
@@ -1202,23 +951,16 @@ function scoreCloudSea({ profile, targetAlt, rh, windSpeed, diurnalRange, precip
   const slotF = slotFactor(slot);
   const altF = altitudeFactor(targetAlt, terrain);
 
-  // 雲頂高度因子（參考 enzowen 探空圖方法論）：觀測者必須在雲頂之上才看得到
-  // 雲海；雲頂在頭上就是白牆。這是「濕度高＋有逆溫層，但其實人泡在雲裡」
-  // 這類過去被高估情境的直接剋星。
   const cloudLayer = estimateCloudTop(profile);
   const ctF = cloudTopFactor(cloudLayer, targetAlt, terrain);
   const relF = layerReliabilityFactor(cloudLayer);
 
   const base = inv.score + rhScore + windScore + diurnalScore;
-  // 天花板 92%：雲海是瞬息萬變的機率事件，即使所有指標都完美，仍有地形、
-  // 局部環流、當下水氣變化等模型抓不到的變數，不宜給出 100%「保證看得到」
-  // 的錯覺。實務上攝影者也普遍認為沒有任何一天能打包票。
+
   const total = calibrate(base * discount * invNecessity * seasonF * slotF * altF * ctF * relF);
   return { total, detail: { inversion: inv, rh, rhScore: Math.round(rhScore), windSpeed, windScore: Math.round(windScore), diurnalRange, diurnalScore: Math.round(diurnalScore), precipProb, discount: +discount.toFixed(2), invNecessity: +invNecessity.toFixed(2), seasonF: +seasonF.toFixed(2), slotF: +slotF.toFixed(2), altF: +altF.toFixed(2), cloudTop: cloudLayer ? Math.round(cloudLayer.top) : cloudLayer, cloudBase: cloudLayer ? Math.round(cloudLayer.base) : cloudLayer, ctF: +ctF.toFixed(2), relF: +relF.toFixed(2) } };
 }
 
-// 降雨機率折減：正在下雨／高降雨機率時，不論多潮濕都不算「觀景級」霧況，
-// 直接大幅折減總分（下雨=視野差、體驗差，跟「站在雲海上方」是完全不同的事）
 function precipDiscount(precipProb) {
   if (precipProb == null) return 1;
   if (precipProb >= 50) return 0.3;
@@ -1226,21 +968,12 @@ function precipDiscount(precipProb) {
   return 1;
 }
 
-// 全域校準壓縮：使用者實測回報「大部分情境的機率仍普遍偏高，但高分案例
-// （如二寮日出旺季）大致合理」。因此不用「全部乘一個係數」這種會把理想
-// 情境一起砍掉的粗暴做法，改用非線性冪次曲線：高分段幾乎不動、中低分段
-// 明顯下壓（92→92、83→80、60→52、50→40、30→20、12→6）。
-// 指數 1.35 是第一版校準值；若之後回報「還是偏高」調大（如 1.5），
-// 「變得太保守」調小（如 1.2）。
 function calibrate(total) {
   return Math.round(92 * Math.pow(clamp(total, 0, 92) / 92, 1.35));
 }
 
 function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slot, profile, targetAlt, terrain }) {
-  // 露點差與相對濕度都是「接近飽和」的訊號，兩者高度相關（RH≈100% 時露點差必然趨近 0）。
-  // 過去版本把兩者都給滿分、直接相加，等於同一件事算了兩次分數，
-  // 導致終年潮濕的地點（如九份）幾乎每晚都會被算成 100%。
-  // 修正：以露點差為主要判斷（0-40），濕度只作為次要佐證、權重降低且門檻拉高（0-10）。
+
   const satScore = dewSpread <= 1 ? 40 : lerpScore(dewSpread, 1, 40, 4, 0);
   const satBonus = rh >= 95 ? 10 : lerpScore(rh, 85, 0, 95, 10);
   let windScore;
@@ -1249,11 +982,9 @@ function scoreAdvectionFog({ dewSpread, windSpeed, rh, cloudLow, precipProb, slo
   else windScore = lerpScore(windSpeed, 4, 25, 7, 0);
   const cloudScore = (cloudLow >= 20 && cloudLow <= 80) ? 10 : lerpScore(Math.abs(cloudLow - 50), 30, 10, 60, 0);
   const discount = precipDiscount(precipProb);
-  // 平流霧清晨較易維持，傍晚偏弱（但不像輻射霧那麼絕對，折減較輕）
+
   const slotF = slot === 'sunrise' ? 1.0 : 0.85;
-  // 雲頂因子：拍平流霧（琉璃光／雲瀑）一樣要站在霧的上方往下拍，
-  // 人被埋在雲層裡就是白牆，拍不到。（不套用雲層厚度可靠度折減：霧本身
-  // 常常就是薄薄一層貼地，「薄」對霧來說是正常現象，不是雜訊訊號）
+
   const cloudLayer = profile ? estimateCloudTop(profile) : undefined;
   const ctF = cloudTopFactor(cloudLayer, targetAlt, terrain, 'fog');
   const total = calibrate((satScore + satBonus + windScore + cloudScore) * discount * slotF * ctF);
@@ -1266,11 +997,9 @@ function scoreRadiationFog({ cloudLow, cloudMid, windSpeed, dewSpread, precipPro
   const calmScore = windSpeed <= 2 ? 30 : lerpScore(windSpeed, 2, 30, 5, 0);
   const dewScore = dewSpread <= 1 ? 35 : lerpScore(dewSpread, 1, 35, 4, 0);
   const discount = precipDiscount(precipProb);
-  // 輻射霧靠的是「夜間長時間輻射冷卻使地面降溫至露點」，所以是清晨限定的現象。
-  // 傍晚（日落時段）地面剛結束一天日照、還沒冷卻，幾乎不可能有輻射霧，強力折減。
+
   const slotF = slot === 'sunrise' ? 1.0 : 0.3;
-  // 雲頂因子：拍輻射霧（如金龍山俯瞰埔里盆地的雲瀑）一樣要站在霧的上方；
-  // 若整層濕到觀測點頭上，人是泡在雲裡，不是在拍腳下的霧
+
   const cloudLayer = profile ? estimateCloudTop(profile) : undefined;
   const ctF = cloudTopFactor(cloudLayer, targetAlt, terrain, 'fog');
   const total = calibrate((clearScore + calmScore + dewScore) * discount * slotF * ctF);
@@ -1283,9 +1012,6 @@ function classifyLabel(total) {
   return { label: '不佳', color: 'var(--red)' };
 }
 
-/* ============================================================
- * 5. 內建模板文字產生器（機率與說明文字全程不經 AI，完全免金鑰運作）
- * ============================================================ */
 function templateNarrative(results) {
   const top = results.slice().sort((a, b) => b.probability - a.probability)[0];
   const anyCwa = results.some(r => r.cwaUsed);
@@ -1328,18 +1054,7 @@ function templateNarrative(results) {
   return { summary, analysis, suggestions, tips, closing };
 }
 
-/* ============================================================
- * 5b. AI 文字潤飾（選填，需 Groq 金鑰）
- *
- * 重要原則（對應交接文件「不再讓 AI 憑印象猜機率」的精神）：
- * - 機率與所有數值一律由前面的規則引擎算完之後才會走到這裡，AI 完全不
- * 參與、也看不到「算之前」的原始氣象資料，只會拿到「已經算好的結果」。
- * - System prompt 明確禁止 AI 更動任何數字，只能改寫文字語氣。
- * - 要求回傳結構化 JSON（跟 templateNarrative 回傳的形狀一致），失敗
- * （網路、金鑰、格式不符任何一種）就整個放棄，退回內建模板文字，
- * 不會讓報告開天窗或顯示壞掉的內容。
- * ============================================================ */
-const GROQ_MODEL = 'llama-3.3-70b-versatile'; // Groq 若下架此模型，改這裡即可
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
 async function polishNarrativeWithGroq(results, template, apiKey, proxyBase) {
   const dataForPrompt = results.map(r => ({
@@ -1364,12 +1079,11 @@ JSON 格式：{"summary":"string","analysis":[{"title":"string","content":"strin
   const userPrompt = `規則運算完成的原始數據（JSON，數字都已確定、不可更動）：\n${JSON.stringify(dataForPrompt)}\n\n` +
     `內建模板文字（供參考語氣與涵蓋重點，請改寫得更自然，但涵蓋的資訊範圍要相近）：\n${JSON.stringify(template)}`;
 
-  // 代理伺服器路由規則：路徑開頭 /groq/ 轉發到 api.groq.com（見 cwa-cors-proxy-worker.js）
   const targetUrl = proxyBase
     ? `${proxyBase.replace(/\/+$/, '')}/groq/openai/v1/chat/completions`
     : 'https://api.groq.com/openai/v1/chat/completions';
   const headers = { 'Content-Type': 'application/json' };
-  if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`; // 留空則交給代理伺服器用 GROQ_API_KEY 代管
+  if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
 
   const res = await safeFetch(targetUrl, 'Groq', {
     method: 'POST',
@@ -1393,9 +1107,6 @@ JSON 格式：{"summary":"string","analysis":[{"title":"string","content":"strin
   return parsed;
 }
 
-/* ============================================================
- * 6. UI 互動
- * ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('dateInput').value = fmtDate(new Date());
 });
@@ -1445,23 +1156,13 @@ function setLoading(msg) {
     </div>`;
 }
 
-/* 對「某個整點時刻」跑完整評分引擎（逆溫層＋雲頂＋季節＋海拔＋校準全部都算），
- * 抽成獨立純函式，讓「日出/日落時段」與「24小時逐小時趨勢圖」共用同一套邏輯——
- * 趨勢圖絕不是另外用一套簡化公式，而是把同一個引擎在24個整點各跑一次。
- * slotForScoring：把該時刻歸類成 'sunrise'（清晨時段，約03-08時）或 'sunset'
- *   （其餘），供 slotFactor 使用。趨勢圖每個整點依自己的鐘點歸類，不是全部套同一個。
- * 回傳 null 代表該時刻資料不齊（例如超出預報範圍）。 */
 function scoreAtHour(om, cwaElements, loc, targetDate, diurnalRange, surfaceAlt) {
   targetDate = new Date(targetDate);
   targetDate.setMinutes(0, 0, 0);
   const targetIso = `${fmtDate(targetDate)}T${pad2(targetDate.getHours())}:00`;
   const idx = findHourIndex(om.hourly.time, targetIso);
   if (idx == null || idx < 0 || om.hourly.relative_humidity_2m[idx] == null) return null;
-  // findHourIndex 找不到精確時刻時會 fallback 到「最接近」的索引（對主流程的
-  // 日出/日落時刻很有用，因為那些不是整點）。但逐小時序列要求嚴格對齊整點，
-  // 若 fallback 配到的時刻其實是別天（例如查詢日期超出預報範圍、或當天該整點
-  // 缺值被配到鄰日），這裡明確擋掉，避免趨勢圖出現「看起來完整、其實是鄰時
-  // 假點」的資料。判準：配到的時刻與目標整點誤差不得超過 90 分鐘。
+
   const matchedMs = new Date(om.hourly.time[idx]).getTime();
   if (Math.abs(matchedMs - targetDate.getTime()) > 90 * 60000) return null;
 
@@ -1475,11 +1176,9 @@ function scoreAtHour(om, cwaElements, loc, targetDate, diurnalRange, surfaceAlt)
   const precipProb = om.hourly.precipitation_probability?.[idx] ?? null;
   const profile = buildProfile(om.hourly, idx, surfaceAlt, t2m, rh);
 
-  // 依整點鐘頭歸類清晨/其他（清晨輻射冷卻後的水氣凝結最有利，對應 slotFactor）
   const hr = targetDate.getHours();
   const slotForScoring = (hr >= 3 && hr <= 8) ? 'sunrise' : 'sunset';
 
-  // --- 併入中央氣象署鄉鎮預報（僅濕度／露點差／降雨機率，風速與雲量仍用 Open-Meteo）---
   let mergedRh = rh, mergedDewSpread = dewSpread, mergedPrecip = precipProb, cwaNote = null;
   let mergedT = t2m, mergedTd = td2m;
   if (cwaElements) {
@@ -1495,14 +1194,12 @@ function scoreAtHour(om, cwaElements, loc, targetDate, diurnalRange, surfaceAlt)
 
     if (cwaRh != null) {
       if (Math.abs(cwaRh - rh) > 15) cwaNote = `濕度：Open-Meteo ${rh}% vs 中央氣象署 ${Math.round(cwaRh)}%，差異較大，已取加權平均後計算`;
-      // CWA 權重 0.75：中央氣象署是台灣本地氣象單位，在地校準較貼近實況，
-      // 取得成功時以它為主；仍保留 0.25 的 Open-Meteo 是為了平滑單一來源
-      // 偶發的異常值，不是不信任 CWA
+
       mergedRh = Math.round(rh * 0.25 + cwaRh * 0.75);
     }
     if (cwaDewSpread != null) mergedDewSpread = +(dewSpread * 0.25 + cwaDewSpread * 0.75).toFixed(1);
     if (cwaPoP != null) mergedPrecip = cwaPoP;
-    // 溫度／露點顯示值：CWA 有值時也做同權重融合，供介面顯示（不影響機率運算）
+
     if (cwaT != null) mergedT = +(t2m * 0.25 + cwaT * 0.75).toFixed(1);
     if (cwaTd != null) mergedTd = +(td2m * 0.25 + cwaTd * 0.75).toFixed(1);
     else if (cwaDewSpread != null) mergedTd = +(mergedT - mergedDewSpread).toFixed(1);
@@ -1524,8 +1221,6 @@ function scoreAtHour(om, cwaElements, loc, targetDate, diurnalRange, surfaceAlt)
   };
 }
 
-/* 對整個預測日的 24 個整點各跑一次 scoreAtHour，回傳逐小時的三種機率序列，
- * 供趨勢圖使用。挑「當天有資料的整點」，超出預報範圍的整點自動略過。 */
 function computeHourlySeries(om, cwaElements, loc, dateVal, diurnalRange, surfaceAlt) {
   const series = [];
   for (let h = 0; h < 24; h++) {
@@ -1536,18 +1231,14 @@ function computeHourlySeries(om, cwaElements, loc, dateVal, diurnalRange, surfac
   return series;
 }
 
-/* ---- 主流程：抓資料 -> 建立剖面 -> 規則運算 -> 文字產生 -> 渲染 ---- */
 async function runPrediction() {
   const dateVal = document.getElementById('dateInput').value;
   const customLoc = document.getElementById('customLoc').value.trim();
   const customTown = document.getElementById('customTownInput').value.trim();
   const customCounty = document.getElementById('customCountyInput').value.trim();
-  // 代理伺服器網址與是否啟用 CWA / Groq，一律從外部設定檔（cwa-config.js）讀取，
-  // 不再從畫面上的輸入框讀取——金鑰已經代管在 Worker 裡，前端完全不碰金鑰。
-  // 找不到設定檔（例如分享出去的 HTML 少了 cwa-config.js）時全部安全地退回
-  // 空值／false，程式會自動只用 Open-Meteo，不會報錯。
+
   const appConfig = window.CWA_APP_CONFIG || {};
-  const apiKey = ''; // 金鑰一律交給代理伺服器代管，前端永遠不持有金鑰
+  const apiKey = '';
   const cwaProxy = appConfig.proxyBase || '';
   const todayStr = fmtDate(new Date());
 
@@ -1557,12 +1248,12 @@ async function runPrediction() {
   const btn = document.getElementById('predictBtn');
   btn.disabled = true;
   btn.textContent = '分析中...';
-  // 設定檔裡有代理伺服器網址、且沒有明確關閉，就啟用 CWA 資料
+
   const cwaEnabled = Boolean(cwaProxy) && appConfig.enableCwa !== false;
   setLoading('正在自動擷取氣象資料（Open-Meteo' + (cwaEnabled ? ' + 中央氣象署' : '') + '）...');
 
   const dataSourceLog = [];
-  cwaStationCache = null; // 每次重新預測都清快取，避免拿到上次的舊資料
+  cwaStationCache = null;
 
   if (!cwaProxy) {
     dataSourceLog.push(`<span class="warn">ℹ</span> 未偵測到代理伺服器設定（cwa-config.js 不存在或未設定 proxyBase），本次僅使用 Open-Meteo 資料`);
@@ -1571,7 +1262,7 @@ async function runPrediction() {
   }
 
   try {
-    // 1) 準備地點清單（含自訂地點自動查座標）
+
     const locEntries = [];
     for (const name of selectedLocs) locEntries.push([name, LOCATIONS[name]]);
     if (customLoc) {
@@ -1598,7 +1289,6 @@ async function runPrediction() {
       const om = await fetchOpenMeteo(loc, dateVal);
       dataSourceLog.push(`<span class="ok">✓</span> ${locName}：Open-Meteo 資料擷取成功`);
 
-      // --- 中央氣象署鄉鎮預報（選填）---
       let cwaElements = null;
       const daysAhead = Math.round((new Date(dateVal) - new Date(todayStr)) / 86400000);
       if (cwaEnabled && loc.town && loc.county) {
@@ -1616,7 +1306,6 @@ async function runPrediction() {
         dataSourceLog.push(`<span class="warn">⚠</span> ${locName}：缺少鄉鎮或縣市名稱，跳過中央氣象署資料，僅用 Open-Meteo`);
       }
 
-      // --- 中央氣象署自動氣象站即時觀測（僅預測日期為今天時抓取，作參考用）---
       let obsRef = null;
       if (cwaEnabled && dateVal === todayStr) {
         try {
@@ -1630,19 +1319,15 @@ async function runPrediction() {
         }
       }
 
-      const dayIdx = 0; // 只查詢單一日期
+      const dayIdx = 0;
       const diurnalRange = (om.daily.temperature_2m_max[dayIdx] ?? 0) - (om.daily.temperature_2m_min[dayIdx] ?? 0);
       const surfaceAlt = om.elevation ?? loc.alt;
 
-      // 24小時逐小時趨勢（用同一套完整引擎，不是簡化公式）——每個地點都算，
-      // 顯示時以「機率最高的那個地點」為主圖
       const hourlySeries = computeHourlySeries(om, cwaElements, loc, dateVal, diurnalRange, surfaceAlt);
 
-      // 供趨勢圖畫日出/日落參考線用（取整點）
       const srHour = new Date(om.daily.sunrise[dayIdx]).getHours();
       const ssHour = new Date(om.daily.sunset[dayIdx]).getHours();
-      // 供結果資訊顯示用（HH:MM，逐地點計算——不同地點座標不同，日出日落時間也不同，
-      // 不能只顯示單一全域時間）
+
       const sunriseTime = fmtHM(new Date(om.daily.sunrise[dayIdx]));
       const sunsetTime = fmtHM(new Date(om.daily.sunset[dayIdx]));
 
@@ -1666,11 +1351,8 @@ async function runPrediction() {
       }
     }
 
-    // 2) 產生說明文字：預設使用內建模板文字（依規則運算結果組成，不經 AI 改寫）
     let narrative = templateNarrative(results);
 
-    // 3) 設定檔裡有代理伺服器網址、且沒有明確關閉，就自動嘗試用 AI 把文字潤飾得更
-    //    自然（機率與數值不受影響，AI 只改寫語氣，見 polishNarrativeWithGroq 內的規則）
     const groqEnabled = Boolean(cwaProxy) && appConfig.enableGroq !== false;
     if (groqEnabled) {
       setLoading('正在請 AI 潤飾文字說明...');
@@ -1695,9 +1377,6 @@ async function runPrediction() {
   }
 }
 
-/* 用純 SVG 畫 24 小時逐小時趨勢圖（不引入 Chart.js 等外部相依，深色主題自控樣式）。
- * 三條線分別是雲海／平流霧／輻射霧的逐小時機率。資料來自 computeHourlySeries，
- * 用的是完整評分引擎（每個整點都算過垂直剖面／逆溫層／雲頂／校準），不是簡化公式。 */
 function renderHourlyChartSVG(series, sunriseHour, sunsetHour) {
   if (!series || series.length < 2) return '';
   const W = 680, H = 240, padL = 34, padR = 12, padT = 14, padB = 26;
@@ -1705,19 +1384,18 @@ function renderHourlyChartSVG(series, sunriseHour, sunsetHour) {
   const xForHour = h => padL + (h / 23) * plotW;
   const yForPct = p => padT + (1 - p / 100) * plotH;
 
-  // 背景橫格線 + Y 軸標籤（0/25/50/75/100）
   let grid = '';
   [0, 25, 50, 75, 100].forEach(v => {
     const y = yForPct(v);
     grid += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="0.5"/>`;
     grid += `<text x="${padL - 6}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text3)" font-family="var(--mono)">${v}</text>`;
   });
-  // X 軸標籤（每 3 小時）
+
   let xlabels = '';
   for (let h = 0; h <= 23; h += 3) {
     xlabels += `<text x="${xForHour(h).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9" fill="var(--text3)" font-family="var(--mono)">${pad2(h)}</text>`;
   }
-  // 日出/日落參考線
+
   let sunlines = '';
   const mkSun = (h, label, color) => {
     if (h == null || h < 0 || h > 23) return '';
@@ -1728,7 +1406,6 @@ function renderHourlyChartSVG(series, sunriseHour, sunsetHour) {
   sunlines += mkSun(sunriseHour, '日出', 'var(--amber)');
   sunlines += mkSun(sunsetHour, '日落', 'var(--accent)');
 
-  // 三條資料線
   const lineFor = (key, color) => {
     const pts = series.map(s => `${xForHour(s.hour).toFixed(1)},${yForPct(s[key]).toFixed(1)}`).join(' ');
     const dots = series.filter(s => s.hour % 3 === 0).map(s =>
@@ -1754,11 +1431,7 @@ function renderHourlyChartSVG(series, sunriseHour, sunsetHour) {
 }
 
 function renderResult(results, narrative, dataSourceLog) {
-  // 依機率由高到低排序（使用者要求：多地點/時段同時顯示時，應由高機率排到低）。
-  // 用複製陣列排序，不 mutate 傳入的原始 results——雖然目前呼叫端排序後沒有再用
-  // 原始順序，但保持函式不改動輸入參數是比較安全的寫法。
-  // 這裡排序一次，下面「機率表格」與「深度氣象判讀卡片」兩處都用同一份已排序
-  // 陣列的 forEach，因此兩處會自動保持一致的順序，不用各自排序、也不會走鐘。
+
   results = results.slice().sort((a, b) => b.probability - a.probability);
 
   let html = '<div class="panel-label">氣象分析報告</div>';
@@ -1769,7 +1442,6 @@ function renderResult(results, narrative, dataSourceLog) {
 
   if (narrative.summary) html += `<div class="summary-block">${narrative.summary}</div>`;
 
-  // 機率表格
   html += `<div class="section-heading">雲海 · 平流霧 · 輻射霧機率</div>`;
   html += `<table class="prob-table"><thead><tr><th>地點 / 時段</th><th>機率（主導機制）</th><th>備註</th></tr></thead><tbody>`;
   results.forEach(r => {
@@ -1783,9 +1455,6 @@ function renderResult(results, narrative, dataSourceLog) {
   });
   html += `</tbody></table>`;
 
-  // 24 小時逐小時趨勢圖：取機率最高的那筆結果的序列來畫（含其日出/日落參考線）。
-  // 只有「全天」模式（selectedTime==='both'）才顯示，日出/日落單一時段模式不畫，
-  // 避免只有一兩個點的圖沒有意義。
   const topForChart = results.slice().sort((a, b) => b.probability - a.probability)[0];
   if (selectedTime === 'both' && topForChart && topForChart.hourlySeries && topForChart.hourlySeries.length >= 2) {
     const srH = topForChart.sunriseHour, ssH = topForChart.sunsetHour;
@@ -1794,12 +1463,11 @@ function renderResult(results, narrative, dataSourceLog) {
     html += renderHourlyChartSVG(topForChart.hourlySeries, srH, ssH);
   }
 
-  // 深度氣象判讀：三種機制個別分數 + 關鍵數值
   html += `<div class="section-heading">深度氣象判讀</div><div class="analysis-grid">`;
   results.forEach(r => {
     const inv = r.cloudSea.detail.inversion;
     const d = r.cloudSea.detail;
-    // 把明顯拉低雲海機率的因子列出來，讓使用者理解數字為何偏低（透明度）
+
     const factors = [];
     if (d.invNecessity != null && d.invNecessity < 0.6) factors.push('缺乏貼合的逆溫層');
     if (d.seasonF != null && d.seasonF < 0.7) factors.push('非雲海好發季節');
@@ -1811,8 +1479,7 @@ function renderResult(results, narrative, dataSourceLog) {
     else if (d.ctF != null && d.cloudTop === null) factors.push('剖面未見明顯濕層');
     else if (d.ctF != null && d.ctF < 0.9) factors.push('雲頂與觀測點高度接近（時淹時退）');
     if (d.relF != null && d.relF < 0.95) factors.push('偵測到的濕層偏薄（資料可靠度較低）');
-    // 雲頂高度顯示文字：undefined=資料不足、null=無濕層、數字=推估高度
-    // 同時標示與觀測點的高低關係，這是「拍不拍得到」最直接的判斷依據
+
     const alt = r.altitude;
     const cloudTopText = d.cloudTop === undefined ? '資料不足'
       : d.cloudTop === null ? '未見明顯濕層'
@@ -1820,7 +1487,7 @@ function renderResult(results, narrative, dataSourceLog) {
       : d.cloudTop > alt
         ? `約 ${d.cloudTop}m（<span style="color:var(--red)">高於觀測點 ${Math.round(d.cloudTop - alt)}m</span>）`
         : `約 ${d.cloudTop}m（<span style="color:var(--green)">低於觀測點 ${Math.round(alt - d.cloudTop)}m</span>）`;
-    // 雲底：跟雲頂搭配看才有意義（雲底~雲頂＝雲層厚度）；沒有雲頂就不用談雲底
+
     const cloudBaseText = (d.cloudTop == null || d.cloudTop === undefined) ? null
       : `約 ${d.cloudBase}m（厚度約 ${d.cloudTop - d.cloudBase}m）`;
     html += `<div class="analysis-card">
