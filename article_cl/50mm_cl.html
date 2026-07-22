@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>50mm標準鏡頭 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.1rem;
+      color: var(--text-hi); letter-spacing: 0.1em; margin: 3em 0 1em;
+    }
+    .article-body h2::before { content: '〈 '; color: var(--accent); }
+    .article-body h2::after { content: ' 〉'; color: var(--accent); }
+    .article-body h2:first-of-type { margin-top: 2em; }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .shoot-info {
+      display: flex; flex-wrap: wrap; gap: 8px 28px;
+      margin: 1.4em 0 1.8em; padding: 14px 20px;
+      background: #faf9f7; border-left: 2px solid var(--rule);
+    }
+    .shoot-info div { display: flex; flex-direction: column; gap: 2px; }
+    .shoot-info .si-label {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 9.5px;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim);
+    }
+    .shoot-info .si-value { font-size: 0.84rem; color: var(--text-hi); }
+    .photo-block { margin: 1.6em 0 2.2em; }
+    .photo-block figure { margin: 0 0 1.2em; }
+    .photo-cap {
+      font-size: 0.86rem; color: var(--text-mid); margin-bottom: 8px;
+    }
+    .photo-cap .p-num {
+      font-family: 'Lato', sans-serif; color: var(--accent); margin-right: 4px;
+    }
+    .photo-block img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      filter: saturate(0.96);
+    }
+    .photo-block a { display: block; overflow: hidden; }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 0.4em 0 2em; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2011.07.13 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">50mm 標準鏡頭</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>談起標準鏡頭，其實是個古老的話題，在 135 相機系統中，從 40mm~60mm 都可以算是所謂的標準鏡頭，意思就是指這個焦段的鏡頭在 135 相機上所涵蓋的視角，是最接近人眼所見，在 135 相機發展之初，標準鏡頭大概就是最基本的配備，也因為發展得早，所以這個焦段的鏡頭製作技術可以說是最純熟的，各家廠商幾乎都有著素質精良，價格合理，容易取得的標準鏡頭任君選擇。</p>
+
+    <p class="divider-note">點選圖片可連回<a href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener" style="color:var(--accent);border-bottom:1px solid var(--rule);text-decoration:none;">我的 Flickr</a>看大圖</p>
+
+    <h2>臺北龍山寺即興隨拍</h2>
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+      <div><span class="si-label">底片</span><span class="si-value">Kodak Tri-X400</span></div>
+    </div>
+    <div class="photo-block">
+      <p class="photo-cap"><span class="p-num">1.</span>神的視角</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5488939110/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5016/5488939110_e930e54ab9_z.jpg" alt="201102KodakTrix400OM4Ti50mmTaipei03" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">2.</span>信徒的視角</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5488939316/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5255/5488939316_fbec8696a1_z.jpg" alt="201102KodakTrix400OM4Ti50mmTaipei02" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">3.</span>第三者的視角</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5488342959/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5092/5488342959_fd3bbb331c_z.jpg" alt="201102KodakTrix400OM4Ti50mmTaipei01" loading="lazy" /></a></figure>
+    </div>
+
+    <p>由於接近人眼所見視角的特性，標準鏡頭拍出來的照片很容易讓人覺得平淡無奇，畢竟標準鏡頭說廣不廣，要遠不遠，簡直就像杯白開水，缺乏感官的刺激，常常咕嚕一下就被直接吞飲下肚，既不像擁有綜合果汁般調和多種元素的廣角鏡頭容易拍出大場面的張力，也不像具有濃縮咖啡特性的望遠鏡頭可以透過壓縮感製造特殊的視覺效果，標準鏡頭往往被認為是種拍什麼都不好拍的攝影器材。</p>
+
+    <h2>圖象捕捉</h2>
+    <div class="photo-block">
+      <div class="shoot-info">
+        <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+        <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+        <div><span class="si-label">底片</span><span class="si-value">efke KB100</span></div>
+      </div>
+      <p class="photo-cap"><span class="p-num">1.</span>方格</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5917780473/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6011/5917780473_00197bcd4a_z.jpg" alt="201105efkb100OM4Ti50mmSanfo08" loading="lazy" /></a></figure>
+
+      <div class="shoot-info">
+        <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+        <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+        <div><span class="si-label">底片</span><span class="si-value">Kodak Tri-X400</span></div>
+      </div>
+      <p class="photo-cap"><span class="p-num">2.</span>斜線</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/4661260667/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4038/4661260667_98d3e8f8f6_z.jpg" alt="KodakTrix400_OM4Ti50mm01" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">3.</span>瞳</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/4661260889/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4040/4661260889_f352e08441_z.jpg" alt="KodakTrix400_OM4Ti50mm03" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">4.</span>平行</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5918347846/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6008/5918347846_ab022811b3_z.jpg" alt="201104KodakTrix400OM4Ti50mmSanfo01" loading="lazy" /></a></figure>
+    </div>
+
+    <p>然而，什麼都不好拍，倒過來說它就也什麼都能拍，就像是白開水，即使只是如此簡單的存在，但地理水文的不同，得出來的白開水就會有細微的差異，感覺夠敏銳的人，在飲用時若仔細地品嘗，其間的差別好壞必能有所分辨，而標準鏡頭的運用也是如此，在看似平凡無奇的視線下，正好也反映著攝影者眼中對這個世界的敏銳度和觀察力，順喉即過或是入口甘甜，端看攝影者對這世界的觀察及技巧的展現，許多攝影書籍介紹標準鏡頭常強調它所擁有的高素質和平實好用的特性，剛接觸攝影時也許難以體會，總是想著廣角鏡綜合果汁般的七彩滋味，又或者憧憬著望遠鏡頭如濃縮咖啡般所帶來的異種風情，但隨著攝影經驗不斷地累積，許多攝影人到後來都會重新認識並愛上標準鏡頭的使用。</p>
+
+    <h2>舊金山泛美金字塔夜色</h2>
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+      <div><span class="si-label">底片</span><span class="si-value">Fuji T64</span></div>
+    </div>
+    <div class="photo-block">
+      <figure><a href="http://www.flickr.com/photos/elf0724/5145773862/" target="_blank" rel="noopener"><img src="https://farm2.static.flickr.com/1053/5145773862_e943413d06_z.jpg" alt="201009RTP64SanFrancisco03" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>下班</h2>
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">OM-1n</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+      <div><span class="si-label">底片</span><span class="si-value">Konica Centuria100</span></div>
+    </div>
+    <div class="photo-block">
+      <figure><a href="http://www.flickr.com/photos/elf0724/4661880574/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4034/4661880574_cd120eacbf_z.jpg" alt="20080615KonicaCenturia100Taipei01" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>舊金山街景</h2>
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">Canon 5DII</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">Fujinon 55mm F1.6</span></div>
+    </div>
+    <div class="photo-block">
+      <figure><a href="http://www.flickr.com/photos/elf0724/5548929113/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5252/5548929113_f097e6ee92_z.jpg" alt="20110321SanFrancisco01" loading="lazy" /></a></figure>
+    </div>
+
+    <p>一般而言，標準鏡頭容易有平價、大光圈、低變形、水準之上的成像素質⋯⋯等特性，偶爾缺乏靈感時，不妨換上標準鏡頭外出兜上一圈，以它平實的視角重新審視一遍這個世界，也許，一杯平凡的白開水會為你帶來不同的新體驗。</p>
+
+    <h2>舊金山雨中即景</h2>
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+      <div><span class="si-label">底片</span><span class="si-value">efke KB100</span></div>
+    </div>
+    <div class="photo-block">
+      <p class="photo-cap"><span class="p-num">1.</span>雨中的旅人</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5917788889/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6024/5917788889_9be47f1b56_z.jpg" alt="201105efkb100OM4Ti50mmSanfo01" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">2.</span>雨中的傘客</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5438826364/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5257/5438826364_14a324d4df_z.jpg" alt="201012efkb100OM4Ti50mmSanfo01" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">3.</span>雨中的街頭</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5918345254/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6150/5918345254_9af1f39e2a_z.jpg" alt="201105efkb100OM4Ti50mmSanfo02" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>即興隨拍</h2>
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+      <div><span class="si-label">底片</span><span class="si-value">Kodak Tri-X400</span></div>
+    </div>
+    <div class="photo-block">
+      <p class="photo-cap"><span class="p-num">1.</span>赫氏古堡內部</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5438829990/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5297/5438829990_9465e7ec78_z.jpg" alt="201012KodakTrix400OM4Ti50mmSanfo01" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">2.</span>框圓</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5917785813/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6004/5917785813_1a5ebaa426_z.jpg" alt="201104KodakTrix400OM4Ti50mmSanfo02" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">3.</span>水泵</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5918337322/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6012/5918337322_7d914de11d_z.jpg" alt="201103KodakTrix400OM4Ti50mmTainan02" loading="lazy" /></a></figure>
+      <p class="photo-cap"><span class="p-num">4.</span>臺南孔廟之泮宮牌坊</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5917778505/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6138/5917778505_96c51dd42e_z.jpg" alt="201103KodakTrix400OM4Ti50mmTainan03" loading="lazy" /></a></figure>
+
+      <div class="shoot-info">
+        <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+        <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC</span></div>
+        <div><span class="si-label">底片</span><span class="si-value">Fuji Neopan1600</span></div>
+      </div>
+      <p class="photo-cap"><span class="p-num">5.</span>吧內</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/4668088991/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4004/4668088991_7cd9cef310_z.jpg" alt="20081216FUJINeopan1600Taipei03" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>冬日海邊</h2>
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">Canon 5DII</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">Fujinon 55mm F1.6</span></div>
+    </div>
+    <div class="photo-block">
+      <figure><a href="http://www.flickr.com/photos/elf0724/5298572770/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5289/5298572770_7db0d66ac2_z.jpg" alt="20101227SanFrancisco01" loading="lazy" /></a></figure>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

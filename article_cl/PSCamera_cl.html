@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>幾部輕便型底片機實拍 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .gear-gallery {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 16px; margin: 1.6em 0 2em;
+    }
+    .gear-gallery figure { margin: 0; }
+    .gear-gallery img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .gear-gallery figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.72rem;
+      color: var(--text-dim); text-align: center; margin-top: 6px;
+    }
+    @media (max-width: 560px) { .gear-gallery { grid-template-columns: 1fr; } }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 1.6em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    .photo-gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin: 0.4em 0 2em;
+    }
+    .gallery-item { margin: 0; }
+    .gallery-item img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      filter: saturate(0.96); transition: transform 0.3s ease;
+    }
+    .gallery-item a { display: block; overflow: hidden; }
+    .gallery-item:hover img { transform: scale(1.02); }
+    @media (max-width: 560px) { .photo-gallery { grid-template-columns: repeat(2, 1fr); } }
+    .spec-note {
+      font-size: 0.88rem; color: var(--text-mid); margin: 1.2em 0 1.6em;
+      padding: 14px 18px; background: #faf9f7; border-left: 2px solid var(--rule); line-height: 1.9;
+    }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2011.02.22 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">幾部輕便型底片機實拍</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>開始拍底片時是在 eBay 上買了部 Olympus 的 SLR — OM-2n，之後都是以 135 單眼相機為主，後來因緣際會之下買了一部也是 Olympus 出產的 Stylus Epic Limited（即 Mju II 北美限量版）入手開拍之後，對於這種輕便型底片機真是愛不釋手，每天出門帶在身上沒什麼負擔，有些單眼相機不方便使用的場合，換上輕便型底片機就比較沒什麼問題。後來除了 Mju II 之外，也忍不住開始想要試試不同的機子，並且決定先從價格平實的機種開始找起，前一陣子就陸續買了幾部輕便型底片機，分別是 Rollei AFM35、Pentax UC1 和 Konica Lexio70，入手之後連同 Mju II 一起，每部相機各別拍了 1 捲 RVP100。</p>
+
+    <div class="gear-gallery">
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraAFM01.jpg" alt="Rollei AFM35 正面" loading="lazy" /><figcaption>Rollei AFM35 正面</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraAFM02.jpg" alt="Rollei AFM35 上背面" loading="lazy" /><figcaption>Rollei AFM35 上背面</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraUC01.jpg" alt="Pentax UC1 正面" loading="lazy" /><figcaption>Pentax UC1 正面</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraUC02.jpg" alt="Pentax UC1 上背面" loading="lazy" /><figcaption>Pentax UC1 上背面</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraKL01.jpg" alt="Konica Lexio70 正面" loading="lazy" /><figcaption>Konica Lexio70 正面</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraKL02.jpg" alt="Konica Lexio70 上背面" loading="lazy" /><figcaption>Konica Lexio70 上背面</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraMJU01.jpg" alt="Olympus MjuII 正面" loading="lazy" /><figcaption>先前入手 Olympus MjuII 隨便拍的機身照</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCameraMJU02.jpg" alt="Olympus MjuII 背面" loading="lazy" /><figcaption>背面</figcaption></figure>
+    </div>
+
+    <p>4 部相機的色調在使用 RVP100 的拍攝結果相較之下，AFM35 色調較暖，Pentax UC-1 次之，Konica Lexio70 較冷，MjuII 色調最冷。</p>
+
+    <div class="gear-gallery">
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera03_KL_03.jpg" alt="Konica Lexio70" loading="lazy" /><figcaption>Konica Lexio70</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera03_LPUC1_03.jpg" alt="Pentax UC1" loading="lazy" /><figcaption>Pentax UC1</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera03_MJUII_03.jpg" alt="Olympus MjuII" loading="lazy" /><figcaption>Olympus MjuII</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera03_R35_03.jpg" alt="Rollei AFM35" loading="lazy" /><figcaption>Rollei AFM35</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera02_KL_02.jpg" alt="Konica Lexio70" loading="lazy" /><figcaption>Konica Lexio70</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera02_LPUC1_02.jpg" alt="Pentax UC1" loading="lazy" /><figcaption>Pentax UC1</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera02_MJUII_02.jpg" alt="Olympus MjuII" loading="lazy" /><figcaption>Olympus MjuII</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera02_R35_02.jpg" alt="Rollei AFM35" loading="lazy" /><figcaption>Rollei AFM35</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera01_KL_01.jpg" alt="Konica Lexio70" loading="lazy" /><figcaption>Konica Lexio70</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera01_LPUC1_01.jpg" alt="Pentax UC1" loading="lazy" /><figcaption>Pentax UC1</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera01_MJUII_01.jpg" alt="Olympus MjuII" loading="lazy" /><figcaption>Olympus MjuII</figcaption></figure>
+      <figure><img src="https://elf0724.github.io/entrance/images/PSCamera01_R35_01.jpg" alt="Rollei AFM35" loading="lazy" /><figcaption>Rollei AFM35</figcaption></figure>
+    </div>
+
+    <h2>Konica Lexio70</h2>
+    <p>Konica Lexio70 的焦段為 28mm F3.4~70mm F7.9，最近對焦距離 70cm，快門速度 1.3-1/500s，可作 +1.5EV 背光補償，ISO 25-3200 底片自動偵側，自動上片回片，亦可手動退片，大小 108.5mm×59.5mm×34mm，重量 180g（不含電池），體積不大，和 Mju II 差不多，輕便型底片傻瓜相機有 28mm 的廣角很好用，變形也控制得很不錯，難以想像它只是一部傻瓜相機，而且還是變焦鏡頭，雖說如此，但它的鏡頭素質也是不差的，望遠端有 70mm，但最大光圈只剩 F7.9，聊勝於無，偶爾派上用場時還是可以讓拍照更有彈性，最重要的是價格便宜，比起現在被炒高的 Mju II 算是經濟實惠多了。</p>
+
+    <p class="divider-note">點選圖片可連回<a href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener" style="color:var(--accent);border-bottom:1px solid var(--rule);text-decoration:none;">我的 Flickr</a>看大圖</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452841135/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5217/5452841135_05277a5887.jpg" alt="201101FujiRVP100SanFoKonicaLexio03" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5453482980/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5095/5453482980_34deb0fe70.jpg" alt="201101FujiRVP100SanFoKonicaLexio01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452841019/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5132/5452841019_62bf540538.jpg" alt="201101FujiRVP100SanFoKonicaLexio02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5453454778/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5255/5453454778_57e0eb2f53.jpg" alt="201101FujiRVP100SanFoKonicaLexio05" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452841859/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5133/5452841859_f5c20228db.jpg" alt="201101FujiRVP100SanFoKonicaLexio07" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5453455090/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5212/5453455090_84433e48c5.jpg" alt="201101FujiRVP100SanFoKonicaLexio04" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5453455242/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5297/5453455242_d1d9b6ca31.jpg" alt="201101FujiRVP100SanFoKonicaLexio06" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452841521/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5015/5452841521_163704d70c.jpg" alt="201101FujiRVP100SanFoKonicaLexio08" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>Pentax UC-1</h2>
+    <p>Pentax UC-1（即北美版的 Espio Mini）在網路上已獲得不少人的讚賞，它和陽光對幹的照片，抗耀光表現真不是蓋的，比 MjuII 強多了，Pentax 的鍍膜技術果然有一套！畫質表現上和 Mju II 不相上下，焦段為 32mm F3.5 比 Mju II 略廣但光圈略小，被動式對焦，最近對焦距離 30cm，快門速度 1/400-1/2s，0.5 秒以下為 B 快門，最長達 5 分鐘，ISO 25-3200 底片自動偵側，無 DX coded 的底片會自動設定為 ISO25，大小 107mm×58mm×35mm，重量 155g（不含電池），實拍結果感覺它的測光似乎稍嫌保守，拍出來的結果比較不是我所喜好的，如果讓我選我還是比較喜歡 Mju II 多一些。</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452879729/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5258/5452879729_212bc5ae19.jpg" alt="201101FujiRVP100SanFoPentaxUC101" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452856689/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5251/5452856689_10129617fa.jpg" alt="201101FujiRVP100SanFoPentaxUC103" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452856585/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5053/5452856585_0a48aab0eb.jpg" alt="201101FujiRVP100SanFoPentaxUC102" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>Rollei AFM35</h2>
+    <p>Rollei AFM35 焦段最窄，但光圈最大，38mm F2.6，和 Fuji Klasse 一代是同型機，兩臺只差在鍍膜，Klasse 是 Fuji 的 EBC 鍍膜，AFM35 則是 Rollei 的 HFT 鍍膜，鏡頭結構是 S‧Apogon，紅外光束輔助對焦，最近對焦距離為 40cm，快門速度 1/2-1/1000s，有 B 快門 1-60 秒，大小 123mm × 63mm × 33.5mm，重量 260g（不含電池），拍出來的畫質滿不錯的，和一般 SLR 相去不遠，和其它 3 部相機有明顯不同的差異，網路縮圖也許不太有感覺，放大看細節比較容易看出來。</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452880941/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5019/5452880941_c6b783d1e6.jpg" alt="201101FujiRVP100SanFoRolleiAFM01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5453488378/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5174/5453488378_7467d9dbbe.jpg" alt="201102FujiRVP100TainanRolleiAFM01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452861131/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5218/5452861131_299baed87a.jpg" alt="201102FujiRVP100TainanRolleiAFM02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5453473440/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5097/5453473440_a0f2fb0588.jpg" alt="201101FujiRVP100SanFoRolleiAFM02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5452860785/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5299/5452860785_2d63c955f6.jpg" alt="201102FujiRVP100TainanRolleiAFM05" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5453474166/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5132/5453474166_df7d00d8ed.jpg" alt="201102FujiRVP100TainanRolleiAFM04" loading="lazy" /></a></figure>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

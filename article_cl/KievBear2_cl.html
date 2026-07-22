@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>俄國間諜相機Kiev Bear2(Vega2)簡介及實拍 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.7rem, 5vw, 2.5rem); font-weight: 400; color: var(--text-hi); line-height: 1.25;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body h2:first-child { margin-top: 0; }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body figure { margin: 2.2em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .spec-table { width: 100%; border-collapse: collapse; margin: 2em 0; font-size: 0.88rem; }
+    .spec-table tr { border-bottom: 1px solid var(--rule-light); }
+    .spec-table td { padding: 10px 4px; }
+    .spec-table td:first-child {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); width: 30%;
+    }
+    .spec-table td:last-child { color: var(--text-hi); }
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 2.2em 0;
+    }
+    .two-col figure { margin: 0; }
+    @media (max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+    .photo-gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin: 0.4em 0 2em;
+    }
+    .gallery-item { margin: 0; }
+    .gallery-item img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      filter: saturate(0.96); transition: filter 0.3s ease, transform 0.3s ease;
+    }
+    .gallery-item a { display: block; overflow: hidden; }
+    .gallery-item:hover img { transform: scale(1.02); }
+    @media (max-width: 560px) { .photo-gallery { grid-template-columns: repeat(2, 1fr); } }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 2.4em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2012.09.09 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">俄國間諜相機 Kiev Bear2(Vega2) 簡介及實拍</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>今天要介紹的相機是所謂的迷你相機，所謂迷你相機就是採用「迷你片幅」（Subminiature Format）的相機，以下先針對片幅（Frame）作一些簡單的介紹。</p>
+
+    <p>在攝影歷史的發展上，片幅演變的趨勢是由大往小逐步邁進的，從早期的大片幅（Large Format），到後來出現的中片幅（Medium Format），之後再跟進的 135 底片在一開始則被稱為「小片幅」（Miniature Format），不過由於 135 底片的大小剛好位在一個特殊的位置，採用這種規格所製造出來的相機在相對上握持較為合宜，故在 1960 年代後慢慢成為主流並廣受歡迎，這也是一般人最常見的底片。而在 135 底片成為主流之後，就比較少人使用小片幅這個詞來形容它了，不過除了 135 片幅規格外，其實還有其它片幅更小的底片，於是這些底片就被通稱為「迷你片幅」（Subminiature Format），例如 135 半幅、110 底片和 16mm 底片、8mm 底片等，今天要介紹的這部 Kiev Bear2 則是一部採用 16mm 底片的迷你相機。</p>
+
+    <p>其實這部相機的英文名稱應該叫作 Kiev Vega2，雖然機身上的字樣是 Bear2，但實際上它是俄文 Киïв Вега2 丟進 Google 翻譯試試看，它就會被翻成英文 Kiev Vega2，這算是使用這部相機過程中的一點小插曲。</p>
+
+    <p>這部相機是由烏克蘭基輔（Kiev）的 Arsenal 廠所製造，其實是個山寨版，冷戰時期的蘇聯就如同今日的中國，是山寨大國，這部相機的原型來自於 Minolta 16，不過 Kiev 的工程師倒是在設計上把它作了些許改變，這種相機因體積小易藏匿，很適合交給 KGB 的間諜作為偵察攝影之用，後來 KGB 確實也有加以改製成打火機外型的機種，成為名符其實的間諜相機。</p>
+
+    <h2>規格</h2>
+    <table class="spec-table">
+      <tr><td>底片</td><td>16mm</td></tr>
+      <tr><td>鏡頭</td><td>Industar-M 23mm F3.5</td></tr>
+      <tr><td>光圈</td><td>F3.5、F4、F5.6、F8、F11</td></tr>
+      <tr><td>快門</td><td>1/30 秒、1/60 秒、1/200 秒</td></tr>
+      <tr><td>機身</td><td>鋁製</td></tr>
+      <tr><td>其它特色</td><td>閃光同步、過片計數、抽拉式上弦及過片、旁軸觀景窗</td></tr>
+    </table>
+
+    <figure>
+      <a href="http://www.flickr.com/photos/elf0724/7479862180/" target="_blank" rel="noopener">
+        <img src="https://farm8.staticflickr.com/7118/7479862180_9d18d54725_c.jpg" alt="KievBear2" loading="lazy" />
+      </a>
+      <figcaption>KievBear2</figcaption>
+    </figure>
+
+    <p>操作上，這部相機必須在抽拉出來上弦及過片時才能透過觀景窗取景，鏡頭並沒有對焦連動機制，拍攝方式是採估焦，可以看到下圖有 ∞ 這個符號的地方，即表示此時相機對焦至無限遠處，另外還有 2 公尺和 1 公尺兩個選項可以調整；測光功能也是沒有的，光圈大小和快門速度的決定是全手動，機身上倒是作了一些天氣圖示，可以作為曝光參考，其應用方式，首先把兩個轉盤分別轉到「底片感光度」及「天氣圖示」上，便能得到約略的曝光組合，以下圖為例，轉盤下方的數字表示底片感光度，圖中係指在 65 和 32 之間，此即表示底片感光度約以 50 度為準，而另一個箭頭則指著天氣圖示為多雲的狀態，此時可以看到轉盤上方的數字組合，即為合適的拍攝光圈快門組合，其數值大概為 F8 1/30 秒或 F5.6 1/60 秒，這種簡易測光方式就像「陽光16法則」一樣，在沒有內建測光表功能的相機上還算滿具有實用性；最後快門的啟動鈕是位在 ∞ 旁的那個小按鈕，壓下它快門就會啟動開閤拍照，若沒有壓下快門就再次抽拉相機，則底片依然會轉過去 1 張，也就是浪費掉了，要特別注意。</p>
+
+    <figure>
+      <img src="https://elf0724.github.io/entrance/images/KievBear2_03.jpg" alt="KievBear2 開啟狀態" loading="lazy" />
+      <figcaption>KievBear2 開啟狀態</figcaption>
+    </figure>
+
+    <p>順道也簡單介紹一下 16mm 底片，它是由 Kodak 公司於 1923 年所提出的一種底片規格，主要作為影片拍攝之用，比常見的 35mm 底片（即俗稱的 135 底片）小，比 8mm 家用攝影機的底片大，由於在底片的取得成本上較 35mm 底片經濟，在電視、獨立製片甚至家用攝影機的市場上廣受歡迎，不過在拍攝靜態影像的照相機上，就比較少見；下面兩張圖，左邊是 16mm 電影底片、十元硬幣、Kiev Bear2 片盒及這部相機本身的大小示意圖，右邊則是 4x5 底片和 135 底片的大小比較圖，兩邊比例雖然不是很精確，但可以約略地看出其間大小關係的呈現。另外，對於大片幅的 4x5 底片有興趣者可參考先前此文——「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/LF_cl.html">底片大型相機之抉擇</a>」</p>
+
+    <div class="two-col">
+      <figure>
+        <img src="https://elf0724.github.io/entrance/images/KievBear2_01.jpg" alt="KievBear2 大小示意圖" loading="lazy" />
+        <figcaption>KievBear2 大小示意圖</figcaption>
+      </figure>
+      <figure>
+        <img src="https://elf0724.github.io/entrance/images/KievBear2_02.jpg" alt="大小底片比較示意圖" loading="lazy" />
+        <figcaption>大小底片比較示意圖</figcaption>
+      </figure>
+    </div>
+
+    <p>使用這部相機最大的問題是底片的取得，其次是拍完後的沖洗，在臺灣要買到裝在這種相機所用片盒裏的 16mm 底片十分困難，幾經資料的搜尋，終於從 eBay 上一位美國的賣家取得，這位賣家是以 135 底片自己裁切成 16mm 規格大小的底片，再自行裝入片盒，有幾種不同選擇，最後買了 Fuji Superia200 彩色負片和 Ilford FP-4 黑白底片，至於沖片，eBay 上那位美國賣家提到，只要能沖 110 底片的店家，請他們把 16mm 底片當作 110 底片下去沖就可以了，最後是送到提供 110 底片沖掃服務的「<a class="inline-link" href="http://www.ecolor.tw/" target="_blank" rel="noopener">台灣沖印網</a>」處理，經實際詢問店家表示可以沖片，但無法掃描，價格和 110 底片沖掃一樣是 80 元（黑白為 100 元），畢竟這規格還是特殊了點，能把片子沖好就算不錯了，在取得沖好的片子之後，回家自行掃描，由於沒有這種規格的片夾，掃描過程也是頗為麻煩，而且還不小心夾斷了底片，幸好大致上都有取得影像，以 1200dpi 下去掃，得到結果每幅影像約為 40 萬畫素，至於成像品質可參考以下實拍照片。</p>
+
+    <p>這款相機的取得其實純綷是個意外，最初拿到它時原本也沒有想到有辦法靠它獲得影像，畢竟關於相機所用底片和沖掃的資訊一開始都是空白的，後來卻逐一實現，想來也是很神奇的事。和自己所拍過最大片幅的 4x5 底片相比，這種迷你相機十分不引人注目，拿在手上大概沒什麼人知道它是相機，再加上相對容易獲得足夠的景深，只要稍微熟悉後，很容易成為在不驚動被拍攝對象下直接獲取畫面的好幫手，在這個底片日益萎縮的時代，能夠從大片幅玩到 16mm 這種迷你片幅的底片，實在也算是件很幸運的事了。</p>
+
+    <p class="divider-note">點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <h2>底片—彩負 Fuji Superia200</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7937381682/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8031/7937381682_d8f5c720ab_o.jpg" alt="20120901FujiSuperia200KievBear2Taipei02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7937381994/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8312/7937381994_1210e60659_o.jpg" alt="20120901FujiSuperia200KievBear2Taipei01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7937357018/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8174/7937357018_a0dbed6a2d_o.jpg" alt="20120901FujiSuperia200KievBear2Taipei07" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7937356496/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8301/7937356496_184e50c47b_o.jpg" alt="20120901FujiSuperia200KievBear2Taipei09" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7937358128/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8310/7937358128_f91d8a339a_o.jpg" alt="20120901FujiSuperia200KievBear2Taipei03" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>底片—黑白 Ilford FP4</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7982793943/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8452/7982793943_389d69177a_o.jpg" alt="20120908IlfordFP4KievBear2Taipei05" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7982798312/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8317/7982798312_bcdb4ccaaf_o.jpg" alt="20120908IlfordFP4KievBear2Taipei01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7982794239/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8182/7982794239_652f3fd851_o.jpg" alt="20120908IlfordFP4KievBear2Taipei02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7982798086/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8452/7982798086_36fa9c2394_o.jpg" alt="20120908IlfordFP4KievBear2Taipei03" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7982797988/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8444/7982797988_7219122996_o.jpg" alt="20120908IlfordFP4KievBear2Taipei04" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7982778981/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8441/7982778981_f874efc24e_o.jpg" alt="20120908IlfordFP4KievBear2Taipei06" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/7982798436/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8171/7982798436_ce0751f391_o.jpg" alt="20120908IlfordFP4KievBear2Taipei08" loading="lazy" /></a></figure>
+    </div>
+
+    <p>我的 Flickr 上所有 Kiev Bear2 照片：<a class="inline-link" href="http://www.flickriver.com/photos/elf0724/tags/kievbear2/" target="_blank" rel="noopener">flickriver – Kiev Bear2</a></p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

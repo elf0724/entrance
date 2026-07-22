@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>樂園 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body h2:first-child { margin-top: 0; }
+    .article-body h3 {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.9rem;
+      letter-spacing: 0.1em; color: var(--accent-h); margin: 2.2em 0 0.8em;
+    }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body ol, .article-body ul.plain-list { margin: 0 0 1.4em 1.2em; }
+    .article-body li { font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.8em; line-height: 1.9; }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .article-body figure { margin: 2em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .article-body table {
+      width: 100%; border-collapse: collapse; margin: 1.6em 0; font-size: 0.85rem;
+    }
+    .article-body td { border: 1px solid var(--rule-light); padding: 14px 16px; color: var(--text-main); line-height: 1.8; }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 1.6em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    /* ── column themes ── */
+    .theme-block { margin: 0 0 2.6em; }
+    .theme-title {
+      font-family: 'IM Fell English', Georgia, serif; font-style: italic;
+      font-size: 1.3rem; color: var(--text-hi); margin-bottom: 16px;
+    }
+    .theme-block figure { margin: 1.2em 0; }
+    .theme-block a.photo-link { display: block; overflow: hidden; }
+    .theme-block img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(0.96); }
+    .reflection {
+      margin-top: 1.2em; padding: 16px 20px; background: #faf9f7;
+      border-left: 2px solid var(--rule); font-size: 0.86rem; color: var(--text-mid); line-height: 1.9;
+    }
+    .reflection .rf-label {
+      display: block; font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+    .theme-divider { border: none; border-top: 1px dashed var(--rule); margin: 2.6em 0; }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Digiphoto 攝影眼專欄 ・ 2014.07.05</p>
+    <h1 class="article-title">樂園</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+
+    <p>先前於 2011 及 2012 年受 DIGIPHOTO 雜誌邀約撰寫「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/gradation_cl.html">層次</a>」及「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/frame_cl.html">框景</a>」兩篇短文，並分別刊登於該刊 2011 年 7.8 月號 NO.50 及 2012 年 9.10 月號 NO.57「攝影眼的培養」系列專欄，此次再度應邀替該刊 2014 年 7.8 月號 NO.68 攝影眼專欄寫作「樂園」這個主題，以下為此次筆者受邀時提交之圖文。</p>
+
+    <div class="theme-block">
+      <p class="theme-title">關於「樂園」的想法</p>
+      <p>凌晨 3 時的黑夜裏，乘著摩托車向那不熟悉的遠方而去，仿佛是在探險般，心情既興奮又刺激，不久晨光微露，騎在左彎右拐的山路上已不再令人恐懼，之前只在電影、電視才見得到的影像，此刻成為真實，並且超越真實，親臨現場的感受，那一草一木，那風吹過身上的柔和，那居高臨下的俯瞰，豈是隔著螢幕的傳達所能比擬！初次見面的美好印象留下深刻的烙印，此後這個在嘉南平原長大，從沒見過山與海景色如此融洽和諧的十八歲少年，就沈醉在這座鍾愛的山城小鎮，將它在心中構築成自己的樂園。</p>
+    </div>
+
+    <p class="divider-note">以下為圖例及說明 ・ 點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <div class="theme-block">
+      <p>九份最吸引人的當然就是夕陽西沈，夜幕開始升起時的華麗景觀了，山城建築櫛比鱗次，基隆八斗子一帶的港灣和海上漁火點點，山海特色交織成一片璀燦，為了盡可能表達出九份夜景之美，以寬景圖來呈現是最適合不過了。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/12119966986/" target="_blank" rel="noopener"><img src="https://farm8.staticflickr.com/7325/12119966986_6398c69395_b.jpg" alt="20140124TaipeiPanorama01" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>帶支長焦鏡吧，別以為九份的風景只有廣角鏡才能拍出它的開闊，從高點遠眺的山海層次絕對不同於平地景觀，特別是在這種夕陽豔紅，卻又帶點霧霾的日子裏，透過長焦鏡的截取便能輕易拍出國畫般虛無飄渺的圖像。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/9115401181/" target="_blank" rel="noopener"><img src="https://farm8.staticflickr.com/7422/9115401181_60f2256ef8_z.jpg" alt="20130623Taipei09" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>基隆山是構成九份景觀的主要特色之一，多數時候走在九份熱鬧的商業市街上，總是只能仰望著欣賞這座聳起的地標，如果有機會的話，不妨移動到它的另一面，就能從俯視的視角看到不一樣的景象。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/8986613020/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8553/8986613020_7ea9ac6832_z.jpg" alt="20130608Taipei03" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>位處東北角的關係，九份這座山城一年當中大約有一半的時間受到季風影響，濕濕冷冷，被大霧籠罩更是常有的事，白茫茫的霧滲透在空氣中，將周遭化成模糊，讓原本淒清的景色更顯迷濛。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/8472494583/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8516/8472494583_d121786670_z.jpg" alt="20130203KodakColorPlus200Taipei08" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>北部最有名的貓村是猴硐，但其實更早以前九份的貓也就是它的招牌之一了，這裏的貓雖然不像猴硐那麼聚集，但同樣都有懶洋洋，不太怕人的特性，這隻花貓打盹的模樣和遠處互相依偎的小情侶正好形成一幅有趣的畫面。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/8472493411/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8387/8472493411_bf185556d8_z.jpg" alt="20130203KodakColorPlus200Taipei02" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>一般到九份旅遊主要是踩著它所謂的老街行進，街上人來人往，熱鬧繁華，然而我卻總愛往老街旁分歧的巷弄走去，除了可以避開擁擠的人潮外，在這些靜瑟的角落裏，往往有更貼近印象中九份該有的清寂。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/6989867261/" target="_blank" rel="noopener"><img src="https://farm8.staticflickr.com/7060/6989867261_c36efa6fcc_z.jpg" alt="20120317Taipei04" loading="lazy" /></a>
+      </figure>
+            <div class="reflection"><span class="rf-label">心得感想</span>比較熟識的朋友和身邊的攝影同好大概都知道我還滿常跑九份，除了驚訝及贊歎於我去的頻率之高以外，也曾有人猜測是否有什麼特殊原因？其實九份的自然和人文景觀本來就很具特色，一點也不遜於世界上其他景點，而且對於向來靜不下來的我，臺北到九份的路途剛好是足以沈澱心靈的距離，如果要我列出喜愛臺北的理由，九份肯定是名列前茅。當一個地方可以經年累月地吸引你一去再去，相信只要稍微用心一點，必定能觀察到和別人所見不同之處，那麼，要拍出具有特色的照片，也就不是件太困難的事了，不是嗎？</div>
+    </div>
+
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/digiphoto_cl.html">回專欄目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

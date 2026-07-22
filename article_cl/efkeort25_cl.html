@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>efke PL25 ORT黑白底片正色片與dr5黑白正片沖洗程序簡介 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.6rem, 4.6vw, 2.3rem); font-weight: 400; color: var(--text-hi); line-height: 1.3;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body figure { margin: 2.2em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .warn-note {
+      margin: 2em 0; padding: 16px 20px; background: #faf9f7;
+      border-left: 2px solid #c0392b; font-size: 0.86rem; color: var(--text-main);
+    }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 2em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    .photo-block { margin: 1.6em 0 2.2em; }
+    .photo-block figure { margin: 0 0 1.6em; }
+    .photo-cap { font-size: 0.86rem; color: var(--text-mid); margin-bottom: 8px; }
+    .photo-block img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(0.96); }
+    .photo-block a { display: block; overflow: hidden; }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2011.04.27 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">efke PL25 ORT 黑白底片正色片與 dr5 黑白正片沖洗程序簡介</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>這次要介紹的是 efke PL25 ORT 這款底片，和它同款但名稱不同的是「ADOX ORTHO25」，兩者都是由位在克羅埃西的 efke 公司所生產的 Orthochromatic film 黑白底片，先前有寫過一篇介紹它所生產的 135 黑白底片「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/efke_cl.html">efke KB100</a>」，這是一家仍然在使用和現代新式薄殼粒子不太一樣的 ADOX 配方傳統乳劑製造黑白底片的公司，在數位相機當道的今日，殊為不易。</p>
+
+    <figure>
+      <img src="https://elf0724.github.io/entrance/images/efkeort25.jpg" alt="efke PL25 ORT" loading="lazy" />
+      <figcaption>efke PL25 ORT</figcaption>
+    </figure>
+
+    <p>Orthochromatic film 的中文名稱為正色片，和目前多數的黑白底片為全色片（Panchromatic film）不同，只對光譜上從綠色到藍色段感光，而對紅色不感光，其實更早期的黑白底片甚至只對光譜上的藍色段感光，直到染料技術的發展，於 1879 年開始才有正色片的產生，而至 1920 年才有全色片的黑白底片；由於正片色的這種特性，是故當使用正色片來拍照時，藍色物體會顯得較為明亮，而紅色物體則會顯得較為暗沈，在 19 世紀末到 20 世紀初的黑白照片基本上就是這種調性，在 21 世紀的今天回頭使用這種底片拍照，不知是否會有類似的感覺。根據資料顯示，如果在使用目前一般的全色片黑白底片拍攝時，在鏡頭前加上一片青綠色的顏色濾鏡，拍出來的結果就會類似正色片黑白底片的效果，而在「<a class="inline-link" href="http://www.adox.de/english/ADOX%20Films/Art/ADOX_Films/ORTHO25/Ortho25.html" target="_blank" rel="noopener">原廠的網頁（ADOX ORTHO 25）</a>」基本資料說明也提到，由於正色片毌須對紅色光源感光，所以和其它黑白底片比起來，它可以提供顆粒十分細緻、更銳利、更多細節和更高解析度的拍攝結果，特別適合拿來作人像拍攝使用，同時這也是一款很適合拿來沖成黑白正片的底片。</p>
+
+    <p>在看過一些有關黑白正片的資料之後，決定買下 efke PL25 ORT 這款底片回來試拍，一方面嘗試看看黑白正色片和一般黑白全色片的差異在哪，一方面也想瞭解黑白正片究竟長什麼樣，一盒 25 張的 4x5 底片，在半設定主題狀況下拍了 23 張，然後就打包寄到位於科羅拉多州的 <a class="inline-link" href="http://www.dr5.com/" target="_blank" rel="noopener">dr5-chrome®Lab</a> 進行 dr5 黑白正片沖洗程序，在底片寄出的同時，筆者也寫了一封 e-mail 給他們，大意係告知已寄出這樣一盒底片並附上包裹追蹤碼，若有其它須要注意的事項，煩請再告知筆者，e-mail 寄出不久即收到他們的回信，信中表明 efke PL25 ORT 是一種很不好控制的底片，對比很高，在不熟悉其特性的情形下第一次拍攝就用這種底片並打算作 dr5 正片沖洗程序，沖出來的結果可能會不如預期，除非原本就有意拿它來製造特殊效果，否則希望筆者要有心理準備，既然對方這麼說，於是這次的拍攝內容只好當作是一次經驗的學習，作為日後改進的依據，且讓我們來看看沖出來的成果如何，不過在此之前，先來介紹一下 dr5 黑白正片沖洗的程序。</p>
+
+    <h2>dr5 沖洗程序</h2>
+
+    <p><a class="inline-link" href="http://www.dr5.com/" target="_blank" rel="noopener">dr5-chrome®Lab</a> 是一家位於美國科羅拉多州丹佛的私人實驗室，也是世界上唯一提供 dr5 黑白正片沖洗程序的私人實驗室，在它們的網頁上有提到 dr5 並不是 Kodak 或 AGFA 的正片沖洗方式，而是它們自家所獨創的，適用於目前市面上「多數」的黑白底片和黑白正片，在這個網頁「<a class="inline-link" href="http://www.dr5.com/blackandwhiteslide/filmreview.html" target="_blank" rel="noopener">FILM REVIEW</a>」裏，它們提供了可以進行 dr5 黑白正片沖洗程序的底片種類以及它們所沖出來的特色，遺憾的是，<strong>Fujifilm 富士公司所生產的 ACROS 系列黑白底片無法進行 dr5 黑白正片沖洗程序</strong>，這點要特別注意。有關收費部分，除了一般 135、120 底片依捲數收費，大型頁式底片依張數收費，以及增感的額外收費外（減感不額外收費），最重要的還分為 TIER A、B 兩種方式，選擇 TIER B 的話只須付基本價格，但必須等累積到一定的量他們才會一併沖洗，所以等待時間較久，通常要 2~4 個星期，但也無法保證，選擇 TIER A 的話，則須付出稍微高一些的費用，但在收到底片之後就會直接進行沖洗，時間上會比較快，另外請注意 dr5 黑白正片沖洗程序可以沖成一般的黑白正片 DEV-1，也可以選擇沖成 DEV2-SEPIA 帶深褐色復古色調的正片，但後者不提供 TIER A 的選項，有關詳細的價目表，請參考它們網站上所提供的 PDF 檔「<a class="inline-link" href="http://www.dr5.com/dr5price.pdf" target="_blank" rel="noopener">PRICE LIST</a>」。</p>
+
+    <div class="warn-note">
+      dr5 實驗室要求所有寄送過去待沖洗的底片都要附上一張「<a class="inline-link" href="http://www.dr5.com/writeup.html" target="_blank" rel="noopener">write-up</a>（算是訂購單吧）」，若資料有遺漏之處會延遲底片處理的時間。dr5 實驗室建議不要用一般信封包裝底片，最好用盒裝比較保險。郵寄地址為「701 WEST 6TH AVENUE, DENVER, CO 80204, U.S.A.」，電話為「1-303-534-2375」。
+    </div>
+
+    <p>在經過兩個星期的等待後，這批黑白正片終於回到筆者手上，在收到成品之前，dr5 實驗室有再次來信提到筆者這批底片的曝光還不錯，不過對比偏強，建議之後若繼續採用此款底片，並希望在 dr5 處理程序之下能有較連續性的階調表現，可將 ISO 值設定為 10 來拍攝，其實在 dr5 的底片特性介紹網頁上有提到這款底片要作 dr5 沖洗程序之 ISO 建議值為 20 而非原本的 25，可見 dr5 的黑白階調處理結果和一般黑白負片一樣會受到增減感的影響，將 ISO 設定為 25 拍攝的情況下，這批底片對比確實顯得強烈，原片透光看是還不錯，有黑白照片那種特殊的深沈厚重感，但掃描就不容易掃出原味了，且因為是正片之故，掃描及調整都不容易，所以下面的實拍照片若不盡人意，還請讀者多多包涵。</p>
+
+    <p>先來看一張黑白正片拿在手上的模樣，簡單手持拍了一下，其實感覺還滿奇特的。</p>
+
+    <figure>
+      <img src="https://elf0724.github.io/entrance/images/BWonHand.jpg" alt="BWonHand" loading="lazy" />
+      <figcaption>黑白正片手持一景</figcaption>
+    </figure>
+
+    <p class="divider-note">接下來是掃描出來的照片檔案。點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <div class="photo-block">
+      <p class="photo-cap">臺南古蹟兌悅門</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5667389561/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5029/5667389561_940f2c70d9_z.jpg" alt="20110223efkeORT25Tainan02" loading="lazy" /></a></figure>
+
+      <p class="photo-cap">舊金山金門大橋</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5667389921/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5221/5667389921_674fe58e43_z.jpg" alt="20110404efkeORT25SanFo02" loading="lazy" /></a></figure>
+
+      <p class="photo-cap">廢棄舊屋</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5667961164/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5103/5667961164_abac464d2a_z.jpg" alt="20110223efkeORT25Tainan03" loading="lazy" /></a></figure>
+
+      <p class="photo-cap">臺南原林百貨公司背面</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5663270338/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5269/5663270338_e15b94404d_z.jpg" alt="20110304efkeORT25Tainan02" loading="lazy" /></a></figure>
+
+      <p class="photo-cap">臺南安平古堡</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5663270382/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5186/5663270382_0448dfc823_z.jpg" alt="20110304efkeORT25Tainan03" loading="lazy" /></a></figure>
+
+      <p class="photo-cap">廢廟</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5667960514/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5063/5667960514_5978d2a60a_z.jpg" alt="20110218efkeORT25Tainan03" loading="lazy" /></a></figure>
+
+      <p class="photo-cap">臺南安平港</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5662703225/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5184/5662703225_8487697705_z.jpg" alt="20110213efkeORT25Tainan01" loading="lazy" /></a></figure>
+
+      <p class="photo-cap">重複曝光——舊金山渡輪大廈與海灣大橋</p>
+      <figure><a href="http://www.flickr.com/photos/elf0724/5663270164/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5064/5663270164_6f4ff2f569_z.jpg" alt="20110405efkeORT25SanFo04" loading="lazy" /></a></figure>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

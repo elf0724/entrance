@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>重生 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body h2:first-child { margin-top: 0; }
+    .article-body h3 {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.9rem;
+      letter-spacing: 0.1em; color: var(--accent-h); margin: 2.2em 0 0.8em;
+    }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body ol, .article-body ul.plain-list { margin: 0 0 1.4em 1.2em; }
+    .article-body li { font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.8em; line-height: 1.9; }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .article-body figure { margin: 2em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .article-body table {
+      width: 100%; border-collapse: collapse; margin: 1.6em 0; font-size: 0.85rem;
+    }
+    .article-body td { border: 1px solid var(--rule-light); padding: 14px 16px; color: var(--text-main); line-height: 1.8; }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 1.6em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    /* ── column themes ── */
+    .theme-block { margin: 0 0 2.6em; }
+    .theme-title {
+      font-family: 'IM Fell English', Georgia, serif; font-style: italic;
+      font-size: 1.3rem; color: var(--text-hi); margin-bottom: 16px;
+    }
+    .theme-block figure { margin: 1.2em 0; }
+    .theme-block a.photo-link { display: block; overflow: hidden; }
+    .theme-block img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(0.96); }
+    .reflection {
+      margin-top: 1.2em; padding: 16px 20px; background: #faf9f7;
+      border-left: 2px solid var(--rule); font-size: 0.86rem; color: var(--text-mid); line-height: 1.9;
+    }
+    .reflection .rf-label {
+      display: block; font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+    .theme-divider { border: none; border-top: 1px dashed var(--rule); margin: 2.6em 0; }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Digiphoto 攝影眼專欄 ・ 2016.01.05</p>
+    <h1 class="article-title">重生</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+
+    <p>先前替 DIGIPHOTO 雜誌撰寫「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/Taipei_cl.html">臺北</a>」、「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/yu_cl.html">緣份</a>」、「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/symbiosis_cl.html">共生</a>」、「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/emotions_cl.html">喜怒哀樂</a>」、「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/focus_cl.html">焦點</a>」、「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/paradise_cl.html">樂園</a>」、「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/gradation_cl.html">層次</a>」及「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/frame_cl.html">框景</a>」7 篇短文，此次再度應邀替該刊攝影眼專欄寫作「重生」這個主題，以下為此次筆者受邀時提交之圖文。</p>
+
+    <div class="theme-block">
+      <p class="theme-title">關於「重生」的想法</p>
+      <p>宇宙間萬事萬物隨時都在循環變化，易經繫傳上傳有句「生生之謂易」，即指天地間陰陽交互，流轉不絕，所以萬事萬物皆能不斷地擁有新的生機，永續綿延，這就是「易」。套用到現代生活的脈絡裏，我們會發現這世界充斥著各種新舊交陳，不管人、事、物的發展，總是由新生逐步走向老舊，而當破敗到了極致時，常常就跟著產生反轉的契機，如果能好好把握住，便能獲得重生，進入正向的循環，我想這就是重生的意義。</p>
+    </div>
+
+    <p class="divider-note">以下為圖例及說明 ・ 點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <div class="theme-block">
+      <p>配合都市更新的腳步，基隆火車站在 2015 年夏開始拆除，不管原本承載此地共同記憶的建築多麼沈重，為了獲得重生，適時的破壞是免不了的。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/20627789208/" target="_blank" rel="noopener"><img src="https://farm6.staticflickr.com/5685/20627789208_ccd2362bab_z.jpg" alt="20150823Keelung02" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>大環境思潮的改變，對社會現象造成許多的牽連，這些原本威風凜凜，矗立在各處的雕像，頓時成了落難的廢棄物，幸而有人靈機一動，想到可以集中收留在這個適合的地方，原本即將被遺棄的雕像因而獲得重生。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/15853978511/" target="_blank" rel="noopener"><img src="https://farm8.staticflickr.com/7556/15853978511_0df61a6e8b_z.jpg" alt="20141122Taoyuan02" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>即將結束冬日的乾涸，龜裂的大地為了等待溫暖的陽光和滋潤的雨水到來，正安靜地養精蓄銳，但生長其中的農作物卻有點耐不住性子先冒出了頭，迫不及待要迎接春日的重生。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/6730429041/" target="_blank" rel="noopener"><img src="https://farm8.staticflickr.com/7006/6730429041_e3e73eea47_z.jpg" alt="20120120Tainan01" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>位於臺東太麻里鄉境內的多良火車站因乘客不多，於 2006 年遭到裁撤，然而此站月臺上即可遠眺太平洋的美景，被認為是全臺最美的車站，許多觀光客慕名而來，車站也因此轉型重生為新興的觀光景點。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/18177624503/" target="_blank" rel="noopener"><img src="https://farm1.staticflickr.com/358/18177624503_4fa655483c_z.jpg" alt="20150612Taitung01" loading="lazy" /></a>
+      </figure>
+            <div class="reflection"><span class="rf-label">心得感想</span>重生一詞有點抽象，又似乎有點具體呈現的可能性，翻來覆去幾張作品，發現重點是「變化」，而且這變化還得有點「意在言外」的伏筆，未必要直接在畫面中呈現，攝影人習慣用照片說故事，這「意在言外」則考驗攝影人如何引導觀看者，將其想像帶往與「重生」有關的前後情節中，此次提交的照片，如果能讓讀者您有所感受，那想必筆者的嘗試還算過得去了。</div>
+    </div>
+
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/digiphoto_cl.html">回專欄目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>電影底片Kodak 250D實拍 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .shoot-info {
+      display: flex; flex-wrap: wrap; gap: 8px 28px;
+      margin: 2.4em 0; padding: 18px 22px;
+      background: #faf9f7; border-left: 2px solid var(--rule);
+    }
+    .shoot-info div { display: flex; flex-direction: column; gap: 2px; }
+    .shoot-info .si-label {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 9.5px;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim);
+    }
+    .shoot-info .si-value { font-size: 0.86rem; color: var(--text-hi); }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 0 0 2em; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    .photo-gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin: 0.4em 0 2em;
+    }
+    .gallery-item { margin: 0; }
+    .gallery-item img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      filter: saturate(0.96); transition: filter 0.3s ease, transform 0.3s ease;
+    }
+    .gallery-item a { display: block; overflow: hidden; }
+    .gallery-item:hover img { transform: scale(1.02); }
+    @media (max-width: 560px) { .photo-gallery { grid-template-columns: repeat(2, 1fr); } }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2011.10.22 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">電影底片 Kodak 250D 實拍</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>這幾年臺灣攝影圈掀起了一股電影底片（Movie Film）的風潮，號稱曝光寬容度比一般彩色負片更高出許多，能保留更多畫面細節的特性，讓許多攝影同好一時也趨之若鶩，但由於電影底片的沖洗程序 ECN-II 和一般彩色負片的 C41 及正片的 E-6 比起來更少店家能夠處理，因此想一嘗電影底片的滋味須要花費較多心思及耐心，且電影底片的購買管道亦較為有限，故筆者原先並沒有特別接觸，然而在某種機緣下，友人 <a class="inline-link" href="http://blueghost.info/blog/" target="_blank" rel="noopener">blueghost</a> 兄特地致贈了這款電影底片，筆者也十分樂意地試拍了它的效果，拍完之後 <a class="inline-link" href="http://blueghost.info/blog/" target="_blank" rel="noopener">blueghost</a> 兄並協助寄送沖掃，實在非常熱心，在此也再次表達謝意。</p>
+
+    <p>拿到這款底片的沖掃成果之後著實令人感到驚豔，大概是曝光寬容度十分寬廣之故，除了一般攝影同好所稱道的細節豐富之外，在色調的變化上也顯得更加柔和，許多使用一般彩色負片拍攝可能會形成過度暗沈或偏亮的地方，Kodak 250D 都能保持更緩和的色彩變化，也因此呈現出令人著迷的平滑色調，在筆者所使用過的彩色負片當中，Kodak 250D 拍攝效果可說是屬一屬二，表現確實十分優異。</p>
+
+    <p>有關 Kodak 250D 這款電影底片的相關文章在網路上已十分豐富，用 Google 搜尋一下便能夠找到許多有用的資訊，筆者撰寫本文只是替這款表現優異的底片再稍添柴火，同時也回應及感謝 <a class="inline-link" href="http://blueghost.info/blog/" target="_blank" rel="noopener">blueghost</a> 兄致贈底片的心意，現在電影底片沖洗管道除了一般較為人知在臺北的幾個店家之外，尚有<a class="inline-link" href="http://momoko.ws/film/?p=120" target="_blank" rel="noopener">花蓮彩韻</a>也可進行沖片掃描，筆者目前所拍之電影底片皆為<a class="inline-link" href="http://momoko.ws/film/?p=120" target="_blank" rel="noopener">花蓮彩韻</a>所沖掃，處理品質令人滿意，以下為實際成果照片，希望能提供對電影底片感興趣的同好一些拍攝參考。</p>
+
+    <p>2011.10.28 補充：另一款電影底片實拍文章連結——「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/500t_cl.html">電影底片Kodak 500T實拍</a>」</p>
+
+    <div class="shoot-info">
+      <div><span class="si-label">相機</span><span class="si-value">OM4Ti</span></div>
+      <div><span class="si-label">鏡頭</span><span class="si-value">OM Zuiko 50mm F1.4 MC、OM Zuiko 180mm F2.8</span></div>
+      <div><span class="si-label">底片</span><span class="si-value">Kodak 250D</span></div>
+    </div>
+
+    <p class="divider-note">點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194424994/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6155/6194424994_fe301c7215_z.jpg" alt="201108Kodak250DOM4TiTainan01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194422010/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6136/6194422010_737df11143_z.jpg" alt="201108Kodak250DOM4TiTainan02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194419830/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6161/6194419830_655deb2275_z.jpg" alt="201108Kodak250DOM4TiTainan03" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194422290/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6148/6194422290_c9c8fb3bfb_z.jpg" alt="201108Kodak250DOM4TiTainan04" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194419928/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6010/6194419928_9da40d67d0_z.jpg" alt="201108Kodak250DOM4TiTainan05" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6193903501/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6157/6193903501_b2aabacd8f_z.jpg" alt="201108Kodak250DOM4TiTainan06" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194422198/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6177/6194422198_919f8682bf_z.jpg" alt="201108Kodak250DOM4TiTainan07" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6193901357/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6157/6193901357_c92a863f8b_z.jpg" alt="201108Kodak250DOM4TiTainan08" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194414018/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6156/6194414018_a8acdf136d_z.jpg" alt="201108Kodak250DOM4TiTainan09" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194413904/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6179/6194413904_d16045ebd3_z.jpg" alt="201108Kodak250DOM4TiTainan10" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194414118/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6160/6194414118_2d3f32f9cc_z.jpg" alt="201108Kodak250DOM4TiTainan12" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194414218/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6006/6194414218_4a9825ce92_z.jpg" alt="201108Kodak250DOM4TiTainan13" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6193887133/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6151/6193887133_fda7f50902_z.jpg" alt="201108Kodak250DOM4TiTainan18" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6193887983/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6158/6193887983_58dde7af11_z.jpg" alt="201108Kodak250DOM4TiTainan19" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/6194413330/" target="_blank" rel="noopener"><img src="https://farm7.static.flickr.com/6022/6194413330_269cee2f18_z.jpg" alt="201108Kodak250DOM4TiTainan16" loading="lazy" /></a></figure>
+    </div>
+
+    <p>我的 Flickr 上所有 Kodak 250D 照片：<a class="inline-link" href="http://www.flickriver.com/photos/elf0724/tags/250D/" target="_blank" rel="noopener">flickriver – Kodak 250D</a></p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

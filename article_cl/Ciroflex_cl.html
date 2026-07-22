@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>美國製雙鏡反射式相機Ciro-Flex簡介及實拍 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.7rem, 5vw, 2.5rem); font-weight: 400; color: var(--text-hi); line-height: 1.25;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body h2:first-child { margin-top: 0; }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body figure { margin: 2.2em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .spec-table { width: 100%; border-collapse: collapse; margin: 2em 0; font-size: 0.88rem; }
+    .spec-table tr { border-bottom: 1px solid var(--rule-light); }
+    .spec-table td { padding: 10px 4px; }
+    .spec-table td:first-child {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); width: 30%;
+    }
+    .spec-table td:last-child { color: var(--text-hi); }
+    .footnotes {
+      margin: 2em 0; padding: 20px 22px; background: #faf9f7;
+      border-left: 2px solid var(--rule); font-size: 0.8rem; color: var(--text-mid); line-height: 1.9;
+    }
+    .footnotes p { margin-bottom: 0.8em; font-size: 0.8rem; }
+    .footnotes p:last-child { margin-bottom: 0; }
+    .footnotes .fn-num {
+      font-family: 'Lato', sans-serif; font-weight: 400; color: var(--accent); margin-right: 4px;
+    }
+    .photo-gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin: 0.4em 0 2em;
+    }
+    .gallery-item { margin: 0; }
+    .gallery-item img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      filter: saturate(0.96); transition: filter 0.3s ease, transform 0.3s ease;
+    }
+    .gallery-item a { display: block; overflow: hidden; }
+    .gallery-item:hover img { transform: scale(1.02); }
+    .gallery-item figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.68rem;
+      letter-spacing: 0.04em; color: var(--text-dim); text-align: center; margin-top: 8px;
+    }
+    @media (max-width: 560px) { .photo-gallery { grid-template-columns: repeat(2, 1fr); } }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 2.4em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2012.11.13 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">美國製雙鏡反射式相機 Ciro-Flex 簡介及實拍</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>雙鏡反射式相機（Twin Lens Reflex Camera，簡稱 TLR）是種結構簡單，堅固耐用的相機，其中多數都係採用中片幅底片，搭配的鏡頭成像品質也都有一定的水準，是底片愛好者在進入中片幅相機時不錯的選擇；在雙鏡反射式相機的世界中，德國的 Rollei 名聲最為響亮，其機身的作工、耐用性及鏡頭素質在攝影圈中早已備受肯定，而日本也有 Yashica、Mamiya⋯⋯等許多知名的品牌，表現同樣不遑多讓，另外，中國則有「海鷗」這樣的代表作，以上大略是一般人比較耳熟能詳的幾款雙鏡反射式相機品牌。</p>
+
+    <p>除了前述的這些品牌之外，位在北美新大陸的美國於二戰前後也曾生產過一些雙鏡反射式相機，Ansco、Argus、Ciro、Kodak、Royce⋯⋯等，在當時都曾製造過一些各自不同的機種，不過美國製的雙眼反射式相機規格相較之下不算太突出，以最大光圈來說，只有幾部達到 F3.5 的水準，許多都從 F4.5、F5.6 起跳，甚至有最大光圈是 F7.7 的，但在這些美國製的雙鏡反射式相機當中，還是有值得一提的機型，本文所要介紹的 Ciro-Flex 就是其中一部；Ciro-Flex 從 1941 年的 Model A 開始，歷經 B、C、D、E 幾代的演進，其鏡頭的最大光圈都是 F3.5，而自 1948 年開始生產的最後型號 Model F 則提昇到 F3.2，這是美國製的雙眼反射式相機當中光圈最大的一款；另外，相較於當時多數雙鏡反射式相機的鋁製機身，Ciro-Flex 採用了更堅固的「鋼」來作為機身的材質，雖然在重量上比同時期的主要競爭對手 Rollei Automat 稍微重了一些些，但持捧在手上那種堅固的信賴感卻是更上層樓；Ciro-Flex Model F 所採用的鏡間快門是由 Wollensak 公司所製造的「Rapax」<sup>註1</sup>，快門速度最高可達 1/400 秒，已十分貼近鏡間快門所能達到的最高速度（鏡間快門最高速度一般約在 1/500 秒左右），最慢則為 1 秒，並有 B 和 T 快門<sup>註2</sup>，所搭配的鏡頭是由 Wollensak 公司所提供的 4 枚鏡片組成之 83mm F3.2 RAPTAR，這顆鏡頭和當時 Rollei Automat 的 Tessar 彼此之間水準相當，都是素質十分優異的光學產品；北美有幾家出色的相機鏡頭製造商，例如 Wollensak 就以生產大型相機用及電影鏡頭為主，在一般相機的領域中比較鮮為人所知，而這些鏡頭製造商的光學實力和德國及日本各家相機大廠比起來絕對是毫不遜色的<sup>註3</sup>。</p>
+
+    <div class="footnotes">
+      <p><span class="fn-num">註 1</span>Model C 和 F 同樣採用「Rapax」快門，Model A、B、D 所採用的則是同為 Wollensak 公司所製造的「Alphax」快門，最高快門速度為 1/200 秒。</p>
+      <p><span class="fn-num">註 2</span>T 快門的運作方式是第一次按下快門鈕時快門開啟，第二次按下快門鈕後關閉快門，在現在的機身上已不多見。</p>
+      <p><span class="fn-num">註 3</span>美國有三家主要的大型相機鏡頭製造廠商，都位在紐約州的 Rochester，它們分別是 Kodak、Wollensak 和 Ilex，另外在二戰之前還有 Bausch &amp; Lomb 也生產大型相機用的鏡頭，Wollensak 和 Ilex 兩家公司的出身並且都和 Bausch &amp; Lomb 有關；另外順道一提，在北美的光學領域裏，相機製造方面和 Kodak 或多或少都有些裙帶關係，而鏡頭工藝則與 Bausch &amp; Lomb 的發展脈絡習習相關，當然也會有些例外的獨立廠商，但這兩家公司基本上可說是北美最重要的光學巨擘。</p>
+    </div>
+
+    <h2>規格</h2>
+    <table class="spec-table">
+      <tr><td>使用底片</td><td>120 底片</td></tr>
+      <tr><td>拍攝片幅</td><td>6×6 cm</td></tr>
+      <tr><td>鏡頭</td><td>Wollensak 83mm F3.2 RAPTAR</td></tr>
+      <tr><td>快門類型</td><td>鏡間快門</td></tr>
+      <tr><td>快門速度</td><td>T、B、1 到 1/400 秒</td></tr>
+      <tr><td>最近對焦距離</td><td>3 英呎（約 91 公分）</td></tr>
+      <tr><td>景深表尺</td><td>有・機身側面</td></tr>
+      <tr><td>機身材質</td><td>鋼</td></tr>
+      <tr><td>重量</td><td>980 克</td></tr>
+    </table>
+
+    <p>機身正面照片</p>
+    <div class="photo-gallery">
+      <figure class="gallery-item">
+        <a href="http://www.flickr.com/photos/elf0724/8029698414/" target="_blank" rel="noopener">
+          <img src="https://farm9.staticflickr.com/8175/8029698414_c2acfb894d_c.jpg" alt="CiroFlexF02" loading="lazy" />
+        </a>
+      </figure>
+      <figure class="gallery-item">
+        <a href="http://www.flickr.com/photos/elf0724/8029707219/" target="_blank" rel="noopener">
+          <img src="https://farm9.staticflickr.com/8461/8029707219_dc34dd9222_c.jpg" alt="CiroFlexF01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <p>順道利用本文做個有趣的比較，下圖由左至右分別是 TOYO 45AII Filed Camera【4x5 底片大型相機 Large Format】、Ciro-Flex F Type【6x6 中片幅底片相機 Medium Format】、Olympus OM-1n【135 底片單眼相機 SLR】、<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/KievBear2_cl.html">Kiev Bear2(Vega2)【16mm 底片迷你片幅相機 Subminiature Camera(16mm Films)】</a>，相機整體體積和片幅大小的關係可見一般。</p>
+
+    <figure>
+      <a href="http://www.flickr.com/photos/elf0724/8029794728/" target="_blank" rel="noopener">
+        <img src="https://farm9.staticflickr.com/8455/8029794728_e87d29b099_c.jpg" alt="CamerasCompare" loading="lazy" />
+      </a>
+      <figcaption>CamerasCompare</figcaption>
+    </figure>
+
+    <p>操作上，Ciro-Flex 和一般的雙鏡反射式相機沒什麼太大差別，快門機構是純機械式，且沒有測光系統，所以並不需要電力就可以運作，拍攝彩色負片的話，熟悉「<a class="inline-link" href="http://zh.wikipedia.org/wiki/%E9%98%B3%E5%85%8916%E6%B3%95%E5%88%99" target="_blank" rel="noopener">陽光16法則</a>」大略就可以獲得不錯的結果，如果要拍攝正片或黑白，建議帶上一支測光表，或者是拿部可以顯示光圈快門數值的小型數位相機甚至手機直接當測光工具也行；機身側面的景深表尺可以協助攝影者以泛焦方式拍攝，不過它的標示僅有美國所採用的英製而沒有臺灣所慣用的公製，在距離估計上須自行換算；在中片幅底片 6×6 規格下景深效果較淺，拍攝時常需要縮一點光圈才能有足夠的景深來把主體含蓋到畫面所需要的重點範圍中；機頂的取景毛玻璃兼對焦屏影像是左右顛倒的，一開始在調整構圖和水平時會比較不習慣，必須花點時間來適應。</p>
+
+    <p>此機實際拍攝的成果如下。</p>
+
+    <p class="divider-note">點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <h2>底片—彩色正片 Kodak E100G</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8161041695/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8341/8161041695_f68d3441a7_z.jpg" alt="20121104CiroFlexKodakE100GTaipei01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8161029643/" target="_blank" rel="noopener"><img src="https://farm8.staticflickr.com/7269/8161029643_c2270520d8_z.jpg" alt="20121104CiroFlexKodakE100GTaipei02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8161073500/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8344/8161073500_f57a62d583_z.jpg" alt="20121104CiroFlexKodakE100GTaipei03" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>底片—彩色負片 Fujifilm Pro160S</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8171496586/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8479/8171496586_f9c8d36a72_z.jpg" alt="20121103CiroFlexFUJIPro160STaipei01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8171496686/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8205/8171496686_d81738d9c0_z.jpg" alt="20121103CiroFlexFUJIPro160STaipei02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8171468335/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8198/8171468335_3080411653_z.jpg" alt="20121103CiroFlexFUJIPro160STaipei04" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>底片—彩色負片 Kodak Pro160</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8178601042/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8488/8178601042_4927955ded_z.jpg" alt="20121110CiroFlexKodakPro160Tainan01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8178600402/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8209/8178600402_eb047ba8c4_z.jpg" alt="20121110CiroFlexKodakPro160Tainan02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8178569337/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8346/8178569337_dbb2a86f49_z.jpg" alt="20121110CiroFlexKodakPro160Tainan06" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>底片—彩色負片 Kodak Portra160</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8178556349/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8057/8178556349_bc87abeac4_z.jpg" alt="20121111CiroFlexKodakPortra160Tainan02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8178587420/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8480/8178587420_415e9f28c7_z.jpg" alt="20121111CiroFlexKodakPortra160Tainan01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/8178557149/" target="_blank" rel="noopener"><img src="https://farm9.staticflickr.com/8203/8178557149_7ded6b0d22_z.jpg" alt="20121111CiroFlexKodakPortra160Tainan05" loading="lazy" /></a></figure>
+    </div>
+
+    <p>我的 Flickr 上所有 Ciro-Flex 照片：<a class="inline-link" href="http://www.flickriver.com/photos/elf0724/tags/Ciroflex/" target="_blank" rel="noopener">flickriver – Ciro-Flex</a></p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>框景 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body h2:first-child { margin-top: 0; }
+    .article-body h3 {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.9rem;
+      letter-spacing: 0.1em; color: var(--accent-h); margin: 2.2em 0 0.8em;
+    }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body ol, .article-body ul.plain-list { margin: 0 0 1.4em 1.2em; }
+    .article-body li { font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.8em; line-height: 1.9; }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .article-body figure { margin: 2em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .article-body table {
+      width: 100%; border-collapse: collapse; margin: 1.6em 0; font-size: 0.85rem;
+    }
+    .article-body td { border: 1px solid var(--rule-light); padding: 14px 16px; color: var(--text-main); line-height: 1.8; }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 1.6em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    /* ── column themes ── */
+    .theme-block { margin: 0 0 2.6em; }
+    .theme-title {
+      font-family: 'IM Fell English', Georgia, serif; font-style: italic;
+      font-size: 1.3rem; color: var(--text-hi); margin-bottom: 16px;
+    }
+    .theme-block figure { margin: 1.2em 0; }
+    .theme-block a.photo-link { display: block; overflow: hidden; }
+    .theme-block img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(0.96); }
+    .reflection {
+      margin-top: 1.2em; padding: 16px 20px; background: #faf9f7;
+      border-left: 2px solid var(--rule); font-size: 0.86rem; color: var(--text-mid); line-height: 1.9;
+    }
+    .reflection .rf-label {
+      display: block; font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+    .theme-divider { border: none; border-top: 1px dashed var(--rule); margin: 2.6em 0; }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Digiphoto 攝影眼專欄 ・ 2011.07.05</p>
+    <h1 class="article-title">框景</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+
+    <p>受 DIGIPHOTO 雜誌邀約寫了篇短文，內容是談有關攝影構圖取景技巧之一的「框景」，文章刊登於 DIGIPHOTO 2011 年 7.8 月號 NO.50 第 58 頁之「攝影眼的培養」系列專欄，由於雜誌版面和字數須求刪節若干，以下為本來字數稍多之原文。</p>
+
+    <div class="theme-block">
+      <p class="theme-title">關於「框景」的想法</p>
+      <p>「框景」在拍照取景的眾多手法中算是滿見的一種方式，舉凡植物枝幹、葉、光影、建築物的構架……等等，只要約略能在照片中形成另一層邊界，就可視為框景手法的運用，透過適當地框景技巧，可以讓觀賞者的注意力集中在攝影者所欲呈現的重點，又或者能夠透過框架和主題之間的角色安排，來交待彼此之間的關係，另外，自然地呈現也是很重要的，所以運用此手法時最好能用心觀察畫面中各個元素的協調感，如果框架和主題能夠安排妥適，那效果通常會是較佳的。</p>
+    </div>
+
+    <p class="divider-note">以下為圖例及說明 ・ 點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <div class="theme-block">
+      <p>臺南延平郡王祠原為福州式南方建築，後改為北方宮殿式，格局方正，南北廂房左右包護正殿，在此遙想當年鄭成功何等豪氣干雲，而白雲蒼狗，天上人間，往事已矣，今日同樣只是歷史的一章，供人追思憑弔。</p>
+      <figure>
+        <a class="photo-link" href="http://www.flickr.com/photos/elf0724/3528193137/" target="_blank" rel="noopener"><img src="https://farm4.static.flickr.com/3339/3528193137_1787727585_z.jpg" alt="20080525TainanHDR02" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>位於臺南市中西區文賢路與信義街交叉口的兌悅門為國定二級古蹟，但對比鄰而居的週邊住民來說，同樣只是日常生活的場景之一，歷史建築隨著光陰逝去而承戴著歲月的痕跡，生活在此的人則繼續生活著並創造新的歷史故事。</p>
+      <figure>
+        <a class="photo-link" href="http://www.flickr.com/photos/elf0724/5470481035/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5020/5470481035_71b27bbecd_z.jpg" alt="20110223Tainan01" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>正想拿起相機抓拍，主角卻忽然望向這邊來，只好隔著窗櫺一邊吐舌微笑，一邊搖搖手中的小相機，鬍鬚已斑白的理髮師看著也開心地笑了，肢體語言成了最好的溝通，再次拿起相機按下快門，店主人也大方地展露出當仁不讓的姿態。</p>
+      <figure>
+        <a class="photo-link" href="http://www.flickr.com/photos/elf0724/5453494476/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5178/5453494476_3f4590d2f2_z.jpg" alt="201101FujiRVP100SanFoMJUII01" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>雨過天晴的街頭，地上出現一方方的水洼，行人匆匆路過，小心避踏著，都市中的繁忙依舊，沒人注意到湛藍的天空此刻卻成為腳下無意間跨過的倒影，唯獨一個人拿著相機隨意地漫步著，將這幅美麗的雨後即景框成記憶。</p>
+      <figure>
+        <a class="photo-link" href="http://www.flickr.com/photos/elf0724/5452877347/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5054/5452877347_9f16bd2410_z.jpg" alt="201101FujiRVP100SanFoMJUII02" loading="lazy" /></a>
+      </figure>
+            <div class="reflection"><span class="rf-label">心得感想</span>在完成這篇短文的過程中自己也回顧了一下對於框景這個技巧的運用，發現原來常常在不知不覺中就將這個取景方式給用上了，有趣的是，攝影原本就是從人類所見紛紜雜沓的世界中框出局部來構成，而在照片這個框架之中又置入一個框架卻不會令人感到繁複，反而能吸引目光的關注，或許某種程度上也反應出人類對於重覆性所象微的「穩定」這個特質是有所期待及偏好的吧。</div>
+    </div>
+
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/digiphoto_cl.html">回專欄目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

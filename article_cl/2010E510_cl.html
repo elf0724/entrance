@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>老驥伏櫪，志在千里－2010年E-510使用回顧 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.7rem, 5vw, 2.4rem); font-weight: 400; color: var(--text-hi); line-height: 1.3;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.1rem;
+      color: var(--text-hi); letter-spacing: 0.1em; margin: 2.6em 0 1em;
+    }
+    .article-body h2::before { content: '〈 '; color: var(--accent); }
+    .article-body h2::after { content: ' 〉'; color: var(--accent); }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.5em; line-height: 2; }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .photo-gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin: 0.4em 0 2em;
+    }
+    .gallery-item { margin: 0; }
+    .gallery-item img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(0.96); }
+    .gallery-item a { display: block; overflow: hidden; }
+    @media (max-width: 560px) { .photo-gallery { grid-template-columns: repeat(2, 1fr); } }
+    .related-box {
+      margin: 2.4em 0; padding: 20px 24px; background: #faf9f7; border-left: 2px solid var(--rule);
+    }
+    .related-box p { margin-bottom: 8px; font-size: 0.8rem; color: var(--text-dim); font-family: 'Lato', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
+    .related-box ul { list-style: none; }
+    .related-box a {
+      display: block; padding: 6px 0; font-size: 0.9rem; color: var(--text-main);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .related-box a:hover { color: var(--accent-h); }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2011.01.01 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">老驥伏櫪，志在千里——2010年 E-510 使用回顧</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>2011 年已經到來了，新的一年開始，先祝各位同好新年快樂事事順利。</p>
+
+    <p>首先我要承認自己是個 Olympus 的愛好者，但同時也是個更愛攝影的人，所以我對各種不同的相機都很感興趣，並且很享受各式相機所具有的優點及帶來的拍照時的快樂，因此我拍照時不會僅限於一定只使用某家廠商的相機，但，人總是會有偏好的，我想自己對 Olympus 還是有多一分的喜愛。</p>
+
+    <p>這篇文章是對個人手上服役最久的相機 E-510 之回顧，不知怎麼的，最近總覺得手邊的 E-510 愈來愈衰弱了，眼看它從 2007 年開始陪伴著我，不管後來歷經各式相機的洗禮，E-510 終究是引領我一頭栽進攝影世界的最初，就像心理學上所說的烙印效果一樣，由於它，所以血液裏始終流著對 Olympus 的喜愛。（當然，更多時候，我對攝影本身的愛好是超越對於這個品牌的愛好的。）</p>
+
+    <p>該怎麼開始呢？不妨來談談多數人最喜歡提起的 Olympus 發色好了，和多數人選擇 Olympus 的原因不同，其實最初會購買 Olympus E System 的相機，並不是因為喜歡它的色彩，相反的，是在當時的時空背景之下，相對於其它系統的輕便性和可靠的除塵系統，確實 E-510 在這兩點上也表現得頗為良好，曾在雪地中帶著 E-510 和 12-60 及 50-200 兩管去拍攝，Olympus 機身所有的基本防護性讓人可以安心，兩管 HG 鏡原本就有防塵防滴就更不是問題了。</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4661877990/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4046/4661877990_50e93b91f4.jpg" alt="20100118LakeTahoe01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4661877940/" target="_blank" rel="noopener"><img src="https://farm2.static.flickr.com/1299/4661877940_a634cc5faf.jpg" alt="20100118LakeTahoe02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662803274/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4066/4662803274_2859581c03.jpg" alt="20100118LakeTahoe03" loading="lazy" /></a></figure>
+    </div>
+
+    <p>那麼，對於 Olympus 相機的發色我是怎麼看待的呢？我覺得 Olympus 的機身直出 JPG 色彩是十分獨特的，獨特到足以形成一群特別喜好它的族群。</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4876675899/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4078/4876675899_e149d4f410.jpg" alt="20100731Tainan01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5247864067/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5210/5247864067_fc40ca4414.jpg" alt="20101126Tainan01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4877281156/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4138/4877281156_99d10ce5df.jpg" alt="20100726Taipei01" loading="lazy" /></a></figure>
+    </div>
+
+    <p>或許你曾聽過某些人認為數位影像一定要後製才是在追求影像品質上比較積極的態度，但 Olympus 的 JPG 直出色彩可以顛覆這種說法，我同意對直接拍攝成果的後製是整體輸出很重要的一環，但很多時候前置作業處理得好，在後製上確實可以省下很多功夫甚至對多數的一般使用者來說是不必去後製的（不管用那一家廠商的相機都是的），也許有人會說，在機身上作參數設定或像其它廠商的相機可以套用風格檔也是一種後製，這種說法我其實不是很同意，老實說，機身上的各種參數和風格檔的套用在各種光線條件下所產生結果有無數的排列組合，如果想把 JPG 直出拍得好對這種過程是必須下一番苦功的，這和單純在電腦上透過程式運用巧思去進行影像的產出是兩種不同的思維，就像在底片時代拍攝時的「底片選擇、光線觀察及測光判斷」與「暗房裏的放相作業」是分屬不同階段的工作一樣，數位拍攝和數位暗房應該也是可以有所區分的才對，如果硬要把努力琢磨機身上各種設定和光線條件配合的動作也說成是在機身上後製，那麼到最後攝影這種活動就只剩後製了，這不是很怪異的一件事嗎？必須說，前置作業和後製作業都是影像輸出很重要的不同環節，就像底片時代的攝影家從前置到後製都有一套作業流程，但沒有人把前置和後製硬說成是同一件事，能在前置作業搞定的事沒有道理一定要到後製時才去處理，相反的後製作業能處理的很多時候前置作業未必能事先做到，而 Olympus 的相機給予前置作業處理得好的攝影者的回報是很明顯的，這點從版上很多高手的照片可以得到證明。</p>
+
+    <p>另外，很多人會說，4/3 系統的望遠優勢其實拿較大片幅來裁切效果是一樣的，這種說法基本上是對的，但還要符合幾項條件才比較能完全成立，首先感光元件的像素密度要一致，裁切出來的東西才有相同的可能性，其次，由於較大片幅的機種對於微震的敏感度也較高，所以除非你張張都上腳架，否則在同一場景下用較大片幅相機拍出來的圖像模糊的機率是會高一點，也就是說在實務上手持較大片幅相機拍攝後再來裁切，其結果要達成 4/3 系統望遠端的清晰度會比直接用 4/3 的相機來拍攝成功率低，好，大片幅有高感光優勢，不然我們拉高感光度提升安全快門來減輕震動的影響如何？假設較大片幅的可用感光度較 4/3 系統高兩級，亦即較大片幅 ISO400=4/3 系統 ISO100，調高 ISO 之下讓結果表現得可以了，但這樣終究犧牲掉一些大片幅低感光度畫質更純淨的優點，拍出同樣的畫質，揹出去的器材卻要重上許多，要不要這麼做，這就是選擇的問題了。</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4811294056/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4139/4811294056_039dc0ae32.jpg" alt="20100718SanFrancisco01" loading="lazy" /></a></figure>
+    </div>
+
+    <p>所以一直以來，我覺得 Olympus E System 最突出的地方，其實是相對的輕便性和整體的鏡頭素質，以及整個系統的可靠性，可惜 Olympus 始終沒有作出像 Pentax K-7/5 一樣更輕巧的頂級機，這也是我個人心裏一點小小的遺憾，如今，4/3 系統或許已如昨日黃花，但繼承它的新 M4/3 正在崛起，ZD 鏡轉到 M4/3 上的對焦速度可能永遠也沒辦法像原生 4/3 系統頂級機 E-5 那樣快，但如果能達到 E-5X0 的水準的話，那 4/3 的入門機種就可以由高階 M4/3 順理成章地接位了。</p>
+
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4359126250/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4048/4359126250_8df37bb9b7.jpg" alt="20100214SanFrancisco01" loading="lazy" /></a></figure>
+    </div>
+
+    <p>E-510 可以算是踏入攝影這個領域的起點，從最初的難以駕馭到可以掌控，再經歷其它各式機種的洗禮，不敢說是過盡千帆，但也慢慢體會到攝影從心不從物，不管拿著什麼樣的相機，對影像極緻追求的初衷才是最重要的，每每面對 E-510 這個攝影的起點，用心按下快門後，它總能帶來令人驚喜的回報，不管什麼主題，即使是被認為在這種入門機身貧弱對焦系統上很難拍攝的——</p>
+
+    <h2>動態</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4627866002/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4041/4627866002_c77487266e.jpg" alt="20100512SanFrancisco01" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>建築</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5248462430/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5010/5248462430_87bacbde15.jpg" alt="20101205Taipei01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4517364443/" target="_blank" rel="noopener"><img src="https://farm3.static.flickr.com/2681/4517364443_b779cf7231.jpg" alt="20100412Tainan02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4661872042/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4029/4661872042_af86a0c036.jpg" alt="20100413Tainan02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4667943105/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4009/4667943105_cb9677a1f7.jpg" alt="20100411Tainan04" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>夕陽</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4667725393/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4041/4667725393_f225450c2a.jpg" alt="20100214SanFrancisco02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4661871894/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4042/4661871894_4b2dd3b17c.jpg" alt="20100410Tainan01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5248452924/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5130/5248452924_9e65e428ac.jpg" alt="20101128Tainan01" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>風景</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662858156/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4009/4662858156_21220daa61.jpg" alt="20100327SanFrancisco01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5248465120/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5086/5248465120_ce6bc777ac.jpg" alt="20101205Yilan06" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5248452974/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5090/5248452974_98e9605d42.jpg" alt="20101205Yilan03" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>近攝</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662885464/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4012/4662885464_8efe6050e4.jpg" alt="Leaf Texture" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662254647/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4064/4662254647_c5e6314b08.jpg" alt="20100205SanFrancisco01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4661250511/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4064/4661250511_081a332675.jpg" alt="20100414Tainan03" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662254689/" target="_blank" rel="noopener"><img src="https://farm2.static.flickr.com/1298/4662254689_56376ff778.jpg" alt="Closeup Picture of Lotus" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662867498/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4021/4662867498_78a759777a.jpg" alt="Closeup Picture of Duck" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662876412/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4039/4662876412_e3c4dbf032.jpg" alt="Cotton Thistle Flower" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>動物</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662847424/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4070/4662847424_822f4a7863.jpg" alt="Squirrel" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662847110/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4045/4662847110_046e837854.jpg" alt="Blue Jay" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662246385/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4048/4662246385_6a875d9b14.jpg" alt="Dragonfly" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662868088/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4051/4662868088_c086d8c3de.jpg" alt="Tortoises Doing Sunbath" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>或只是隨寫</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4668561940/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4053/4668561940_e8679f2d5f.jpg" alt="20100214SanFrancisco03" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5248407138/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5008/5248407138_19f0eb6080.jpg" alt="20101130Tainan02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4683907409/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4057/4683907409_9879d60485.jpg" alt="20100421Tainan02" loading="lazy" /></a></figure>
+    </div>
+
+    <p>相信只要用心去使用手上的相機，一定都可以拍出令自己滿意的成果，謹以此文誌記逐漸老去的 E-510，並敬祝各位同好都能把手上的相機發揮得淋漓盡致。（本文所有照片都是 2010 年間由 E-510 所拍之機身直出之 JPG 縮圖）</p>
+
+    <div class="related-box">
+      <p>與本文相關的兩篇，有興趣的同好不妨一併參考看看</p>
+      <ul>
+        <li><a href="https://elf0724.github.io/entrance/article_cl/20105DII_cl.html">烈士壯年，雄心不已——2010年5D Mark II使用回顧</a></li>
+        <li><a href="https://elf0724.github.io/entrance/article_cl/2010_cl.html">自我觀照的靈光——記在兩部相機的回顧之後</a></li>
+      </ul>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

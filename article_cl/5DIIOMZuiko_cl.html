@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>5DII的OM Zuiko老鏡轉接解析力記錄 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.7rem, 5vw, 2.5rem); font-weight: 400; color: var(--text-hi); line-height: 1.25;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1rem;
+      color: var(--text-hi); letter-spacing: 0.06em; margin: 2.4em 0 1em;
+      font-family: 'Lato', sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent-h);
+    }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .article-body figure { margin: 1.8em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .crop-gallery {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 1.6em 0 2em;
+    }
+    .crop-gallery img { border: 1px solid var(--rule-light); }
+    @media (max-width: 560px) { .crop-gallery { grid-template-columns: 1fr; } }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 1.6em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    .photo-gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin: 0.4em 0 2em;
+    }
+    .gallery-item { margin: 0; }
+    .gallery-item img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(0.96); }
+    .gallery-item a { display: block; overflow: hidden; }
+    @media (max-width: 560px) { .photo-gallery { grid-template-columns: repeat(2, 1fr); } }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2010.12.21 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">5DII 的 OM Zuiko 老鏡轉接解析力記錄</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>最初買 Canon 的 DSLR 起因是這樣，自從來到美國之後，底片沖洗費用實在比臺灣貴滿多，原本的 135 底片系統 OM Zuiko 鏡頭出勤率愈來愈低，看著放在防潮箱裏的它們覺得實在可惜，於是便想說不如弄臺 135 FF 的數位單眼相機來轉接吧。比較一般的選擇有三大家 Canon 5DII、Nikon D700、Sony A900/850，Nikon 單眼系統的鏡後距最長，要玩老鏡轉接首先出局，Sony 繼承了 Minolta 的 alpha 接口轉接能力還可以，但偏偏我的 OM Zuiko 系統是接不上的，最後只能選擇 Canon 的 EOS 系統了。</p>
+
+    <p>說起來 EOS 系統的 EF 接口轉接相容性頗高，玩起各式老鏡來十分爽快，很多系統的鏡頭都接得上，但也因 135 FF 反光鏡和片幅都較大，反光鏡震動的影響和高倍率的畫素讓照片模糊的情形也更容易出現，原本以為是 5DII 畫素太高導致鏡頭解析力撐不上，直到有天上腳架並開啟等同反光鏡預鎖的 Live View 來拍攝後，才發現 OM Zuiko 老鏡在 135 FF DSLR 的機身上解析力真的很不錯，用以下的照片來說明。</p>
+
+    <p>5DII &amp; OM Zuiko 200mm F4</p>
+    <figure>
+      <img src="https://images.plurk.com/4034692_0b06ca6c2103ee154dde20e0db8eecf4.jpg" alt="全景" loading="lazy" />
+    </figure>
+
+    <p>照片中紅色框起來的地方，以下都用 1 比 1 裁切出來，可以看到畫面中遠方屋內的一些室內裝設也都大致拍出來了，原圖是 JPG 直出，如果用 RAW 拍再進 DPP 轉檔不知會不會再更銳利一點？</p>
+
+    <div class="crop-gallery">
+      <img src="https://images.plurk.com/4034692_9ae88d3aa9a25dcf81c3c0870d1ce876.jpg" alt="裁切細節 1" loading="lazy" />
+      <img src="https://images.plurk.com/4034692_73594e055b9e9bea9c0f9706bb5db039.jpg" alt="裁切細節 2" loading="lazy" />
+      <img src="https://images.plurk.com/4034692_12b232ae4fe75feaeffda42b3ee38984.jpg" alt="裁切細節 3" loading="lazy" />
+      <img src="https://images.plurk.com/4034692_e7c532022fc458af50a09d126fd98bfc.jpg" alt="裁切細節 4" loading="lazy" />
+    </div>
+
+    <p>5DII 用了將近一年，深深覺得它實在是拿來轉接各家老鏡的好機身，反而 EF 鏡除了 24-105 L 這支 Kit 外沒買到半顆，大概以後還是會拿它來作為接各式 135 系統老鏡的數位機背吧。</p>
+
+    <p class="divider-note">其它 5DII 接 OM Zuiko 鏡的實拍照 ・ 點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <h2>5DII &amp; OM Zuiko 200mm F4</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4692465970/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4012/4692465970_b2be49fa86.jpg" alt="20100611SanFrancisco01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4662236627/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4020/4662236627_bd77404db2.jpg" alt="20100501SanFrancisco01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4691833859/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4044/4691833859_b9d3ee7767.jpg" alt="20100611SanFrancisco04" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4668350446/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4043/4668350446_754a2a584a.jpg" alt="20100505SanFrancisco01" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>5DII &amp; OM Zuiko 180mm F2.8</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5386498125/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5219/5386498125_62f1bb3dcd.jpg" alt="20110124SanFrancisco01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5508954004/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5255/5508954004_b106395c70.jpg" alt="20110307Tainan02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5508954004/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5252/5508359039_fd7fcfb0f0.jpg" alt="20110307Tainan01" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5371609045/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5049/5371609045_18c7525395.jpg" alt="20110119SanFrancisco02" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/4769230499/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4095/4769230499_d2342e40bd.jpg" alt="20100704SanFrancisco01" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>5DII &amp; OM Zuiko 100mm F2.8</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5311358061/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5086/5311358061_c6b324c18c.jpg" alt="20110101SanFrancisco05" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5311336145/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5167/5311336145_80c556c24c.jpg" alt="20110101SanFrancisco04" loading="lazy" /></a></figure>
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/82203115@N00/5311336195/" target="_blank" rel="noopener"><img src="https://farm6.static.flickr.com/5210/5311336195_1c800c1cda.jpg" alt="20110101SanFrancisco03" loading="lazy" /></a></figure>
+    </div>
+
+    <h2>5DII &amp; OM Zuiko 24mm F2.8</h2>
+    <div class="photo-gallery">
+      <figure class="gallery-item"><a href="http://www.flickr.com/photos/elf0724/4692460916/" target="_blank" rel="noopener"><img src="https://farm5.static.flickr.com/4038/4692460916_9a6e65982b.jpg" alt="20100611SanFrancisco06" loading="lazy" /></a></figure>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

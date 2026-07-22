@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2011年E-510十張－臺南 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .photo-set { display: flex; flex-direction: column; gap: 56px; }
+    .photo-set figure { margin: 0; }
+    .photo-num {
+      font-family: 'IM Fell English', Georgia, serif; font-style: italic;
+      font-size: 0.9rem; color: var(--accent); margin-bottom: 12px; display: block;
+    }
+    .photo-set img {
+      display: block; width: 100%; height: auto; border-radius: 2px;
+      filter: saturate(0.96); transition: transform 0.3s ease;
+    }
+    .photo-set a { display: block; overflow: hidden; }
+    .photo-set a:hover img { transform: scale(1.01); }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2011.12.31 &nbsp;·&nbsp; 攝影雜文</p>
+    <h1 class="article-title">2011年 E-510 十張－舊金山</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <div class="photo-set">
+      <figure>
+        <span class="photo-num">01</span>
+        <a href="http://www.flickr.com/photos/elf0724/5569925997/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5224/5569925997_f18325b54d_z.jpg" alt="20110328SanFrancisco09" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">02</span>
+        <a href="http://www.flickr.com/photos/elf0724/5689077145/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5181/5689077145_e30452dc38_z.jpg" alt="20110504SanFrancisco01" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">03</span>
+        <a href="http://www.flickr.com/photos/elf0724/5689647356/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5102/5689647356_44c8ba591e_z.jpg" alt="20110504SanFrancisco03" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">04</span>
+        <a href="http://www.flickr.com/photos/elf0724/5886882582/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6035/5886882582_2cdb3c3942_z.jpg" alt="20110629SanFrancisco05" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">05</span>
+        <a href="http://www.flickr.com/photos/elf0724/5578657974/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5267/5578657974_10358d638a_z.jpg" alt="20110330SanFrancisco01" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">06</span>
+        <a href="http://www.flickr.com/photos/elf0724/5689071463/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5067/5689071463_4b783a015b_z.jpg" alt="20110504SanFrancisco06" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">07</span>
+        <a href="http://www.flickr.com/photos/elf0724/5365627724/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5128/5365627724_b122cddf07_z.jpg" alt="20110117SanFrancisco02" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">08</span>
+        <a href="http://www.flickr.com/photos/elf0724/5373984885/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5289/5373984885_84f6734f3b_z.jpg" alt="20110120SanFrancisco01" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">09</span>
+        <a href="http://www.flickr.com/photos/elf0724/5416911165/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5132/5416911165_2117fb1f48_z.jpg" alt="20110204SanFrancisco01" loading="lazy" />
+        </a>
+      </figure>
+      <figure>
+        <span class="photo-num">10</span>
+        <a href="http://www.flickr.com/photos/elf0724/5875571495/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5063/5875571495_ce97298bab_z.jpg" alt="20110626SanFrancisco04" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>焦點 | 攝影雜文 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --rule: #e0ddd8; --rule-light: #eeece8;
+      --text-dim: #b0aaa2; --text-mid: #7a7468; --text-main: #3a3530; --text-hi: #1a1714;
+      --accent: #7a6e5e; --accent-h: #4a3f30; --nav-h: 68px;
+    }
+    html {
+      background: var(--bg); color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif; font-size: 16px; line-height: 1.95;
+      -webkit-font-smoothing: antialiased; scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; }
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light); height: var(--nav-h);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto; padding: 0 32px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 13px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-hi); text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-mid);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+    .article-header {
+      max-width: 720px; margin: 0 auto; padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
+    }
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem); font-weight: 400; color: var(--text-hi); line-height: 1.2;
+    }
+    .article-body { max-width: 720px; margin: 0 auto; padding: 48px 32px 80px; }
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif; font-weight: 400; font-size: 1.15rem;
+      color: var(--text-hi); letter-spacing: 0.08em; margin: 2.8em 0 1em;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule-light);
+    }
+    .article-body h2:first-child { margin-top: 0; }
+    .article-body h3 {
+      font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.9rem;
+      letter-spacing: 0.1em; color: var(--accent-h); margin: 2.2em 0 0.8em;
+    }
+    .article-body p { font-size: 0.94rem; color: var(--text-main); margin-bottom: 1.4em; line-height: 2; }
+    .article-body ol, .article-body ul.plain-list { margin: 0 0 1.4em 1.2em; }
+    .article-body li { font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.8em; line-height: 1.9; }
+    .article-body a.inline-link {
+      color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a.inline-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    .article-body figure { margin: 2em 0; }
+    .article-body img { display: block; width: 100%; height: auto; border-radius: 2px; }
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 0.08em; color: var(--text-dim); text-align: center; margin-top: 10px;
+    }
+    .article-body table {
+      width: 100%; border-collapse: collapse; margin: 1.6em 0; font-size: 0.85rem;
+    }
+    .article-body td { border: 1px solid var(--rule-light); padding: 14px 16px; color: var(--text-main); line-height: 1.8; }
+    .divider-note {
+      text-align: center; font-family: 'Lato', sans-serif; font-weight: 300;
+      font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim);
+      margin: 1.6em 0; padding-top: 1.4em; border-top: 1px dashed var(--rule);
+    }
+    /* ── column themes ── */
+    .theme-block { margin: 0 0 2.6em; }
+    .theme-title {
+      font-family: 'IM Fell English', Georgia, serif; font-style: italic;
+      font-size: 1.3rem; color: var(--text-hi); margin-bottom: 16px;
+    }
+    .theme-block figure { margin: 1.2em 0; }
+    .theme-block a.photo-link { display: block; overflow: hidden; }
+    .theme-block img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(0.96); }
+    .reflection {
+      margin-top: 1.2em; padding: 16px 20px; background: #faf9f7;
+      border-left: 2px solid var(--rule); font-size: 0.86rem; color: var(--text-mid); line-height: 1.9;
+    }
+    .reflection .rf-label {
+      display: block; font-family: 'Lato', sans-serif; font-weight: 400; font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+    .theme-divider { border: none; border-top: 1px dashed var(--rule); margin: 2.6em 0; }
+    .article-footer-nav {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule);
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim);
+      text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-nav-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
+    footer { border-top: 1px solid var(--rule); padding: 32px 32px; max-width: 720px; margin: 0 auto; }
+    footer p {
+      font-family: 'Lato', sans-serif; font-weight: 300; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color 0.2s; }
+    footer a:hover { color: var(--accent-h); }
+    @media (prefers-reduced-motion: reduce) { *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; } }
+    @media (max-width: 480px) { .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; } }
+
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/article_cl/article_cl.html" class="nav-back">攝影雜文</a>
+    </div>
+  </nav>
+
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Digiphoto 攝影眼專欄 ・ 2014.09.05</p>
+    <h1 class="article-title">焦點</h1>
+  </header>
+
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+
+    <p>先前受 DIGIPHOTO 雜誌邀約撰寫「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/paradise_cl.html">樂園</a>」、「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/gradation_cl.html">層次</a>」及「<a class="inline-link" href="https://elf0724.github.io/entrance/article_cl/frame_cl.html">框景</a>」3 篇短文，並分別刊登於該刊 2011 年 7.8 月號 NO.50、2012 年 9.10 月號 NO.57 及 2014 年 7.8 月號 NO.68「攝影眼的培養」系列專欄，此次再次應邀替該刊 2014 年 9.10 月號 NO.69 攝影眼專欄寫作「焦點」這個主題，以下為此次筆者受邀時提交之圖文。</p>
+
+    <div class="theme-block">
+      <p class="theme-title">關於「焦點」的想法</p>
+      <p>對於自認不擅書寫也不懂繪畫的我來說，自從接觸了攝影以後，在自我表達上終於有了一項方便的工具，從最初的生澀，到技術面的逐漸熟練，慢慢地在拍照這件事上，也有了不同的體悟。攝影是一種觀看事物的方式，如果懂得凝聚焦點，就能穿越雙眼所見事物的表層，直達其核心，攝影者的內在世界也可藉此向外傳達，這種心境轉換的歷程並非一蹴可幾，除了不斷練習外，多看多思考是必須的功課，我想這也是本專欄希望分享給讀者的東西吧。</p>
+    </div>
+
+    <p class="divider-note">以下為圖例及說明 ・ 點選圖片可連回<a class="inline-link" href="http://www.flickr.com/photos/elf0724/" target="_blank" rel="noopener">我的 Flickr</a>看大圖</p>
+
+    <div class="theme-block">
+      <p>其實每張照片除了作者的焦點外，觀者也都應該要有自己的，有時候語文的說明是太多餘了，這張照片真要說起來，只用四個字帶過即止，「樹若離枝」。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/5977104825" target="_blank" rel="noopener"><img src="https://farm7.staticflickr.com/6022/5977104825_344c15733e_z.jpg" alt="20110726Tainan03" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>稍微在座位上後仰下來，眼角好像瞄到了什麼，再仔細注視一下，原來是這幅景像吸引了我的關注，這其實是臺鐵太魯閣號車廂裏的天花板，有沒有讓你想起什麼？附帶一提，這是張彩色照片。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/6226185347" target="_blank" rel="noopener"><img src="https://farm7.staticflickr.com/6174/6226185347_91e01bffd9_z.jpg" alt="20111008Yilan01" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>這群荒野外的流浪狗隻隻瞪大了眼瞧著我，不知牠們心裏是否想著要把我生吞下肚？到最後我已弄不清究竟牠們是我拍攝的焦點，又或者我才是牠們口腹之下所關注的焦點？</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/13167226853" target="_blank" rel="noopener"><img src="https://farm4.staticflickr.com/3815/13167226853_46a50a27cb_z.jpg" alt="20140315Tainan03" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>DNA 圖譜？不，這只是寺廟裏的光明燈在刻意失焦下所拍攝出來的照片，想想，你所點的光明燈和自己身上的 DNA，哪個會影響你的命運更多一些？</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/10962292575" target="_blank" rel="noopener"><img src="https://farm3.staticflickr.com/2880/10962292575_b48e900617_z.jpg" alt="20131120Taipei02" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>那天，重逢了久違的溫暖，在緩步走出低潮的過程裏，一股暖流出現注入心頭，那種和絢的感覺，我想把它記錄下來。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/8901365413" target="_blank" rel="noopener"><img src="https://farm3.staticflickr.com/2894/8901365413_2aaf304ce6_z.jpg" alt="20130531Taipei01" loading="lazy" /></a>
+      </figure>
+    </div>
+
+    <div class="theme-block">
+      <p>焦點早就對好了，就差最後一部車進來補上，「轟」一聲，這騎士呼嘯而過，我也順勢按下快門，完成了我的工作。</p>
+      <figure>
+        <a class="photo-link" href="https://www.flickr.com/photos/elf0724/9662448241" target="_blank" rel="noopener"><img src="https://farm8.staticflickr.com/7362/9662448241_5df5973624_z.jpg" alt="20130903Taipei01" loading="lazy" /></a>
+      </figure>
+            <div class="reflection"><span class="rf-label">心得感想</span>從很小的時候開始，腦海裏就常出現各種回憶和畫面，一場午後雷陣雨把學校紅土操場沖刷成洪水漫流的樣子，課後休息時在樓梯間上下穿梭的如風少年，某個假日午後從陽臺灑落房裏的一抹金黃，這些畫面在當下都只是一閃而過，卻也不露痕跡地留存在心底，在日後轉化成一種感覺，在開始應用攝影這種自我表達方式之後，悄悄地滲透出來，每每在拍照過程中觀察取景的焦點，往往就是這些潛藏在心理感覺的投射，透過以上照片的呈現，是否也讓讀者多多少少看出筆者內心的樣貌呢？</div>
+    </div>
+
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/digiphoto_cl.html">回專欄目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">回攝影雜文目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>
