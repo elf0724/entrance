@@ -424,6 +424,11 @@
       max-width: 900px;
       margin-left: auto;
       margin-right: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     footer p {
@@ -443,6 +448,21 @@
     }
 
     footer a:hover { color: var(--accent-h); }
+
+    .footer-legacy-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-legacy-link:hover { color: var(--accent-h); border-color: var(--accent-h); }
 
     @media (prefers-reduced-motion: reduce) {
       *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
@@ -539,14 +559,14 @@
       </div>
       <ul class="journal-list">
         <li class="journal-item">
-          <a class="journal-link" href="https://elf0724.github.io/entrance/article/article.html">
+          <a class="journal-link" href="https://elf0724.github.io/entrance/article_cl/article_cl.html">
             <span class="journal-title">攝影雜文</span>
             <span class="journal-en">Essays</span>
           </a>
           <p class="journal-desc">關於攝影的零碎文字</p>
         </li>
         <li class="journal-item">
-          <a class="journal-link" href="https://elf0724.github.io/entrance/note/note.html">
+          <a class="journal-link" href="https://elf0724.github.io/entrance/note_cl/note_cl.html">
             <span class="journal-title">隨意簡札</span>
             <span class="journal-en">Notes</span>
           </a>
@@ -562,7 +582,7 @@
       </div>
       <div class="works-grid">
 
-        <a href="https://elf0724.github.io/entrance/gallery/gallery.html" class="work-card">
+        <a href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html" class="work-card">
           <div class="work-img-wrap">
             <img
               class="work-img"
@@ -575,7 +595,7 @@
           <p class="work-meta">Landscape &nbsp;·&nbsp; Architecture &nbsp;·&nbsp; Coast</p>
         </a>
 
-        <a href="https://elf0724.github.io/entrance/Tainan.html" class="work-card">
+        <a href="https://elf0724.github.io/entrance/TainanCL.html" class="work-card">
           <div class="work-img-wrap">
             <img
               class="work-img"
@@ -669,6 +689,7 @@
 
   <footer>
     <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+    <a class="footer-legacy-link" href="https://elf0724.github.io/entrance/index2016.html">舊版網站 →</a>
   </footer>
 
 </body>
