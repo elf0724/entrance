@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project 7 · Lane | Selected Works | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    .lang-switch {
+      margin-top: 14px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .lang-switch a {
+      color: var(--text-mid);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .lang-switch a:hover { color: var(--accent-h); border-color: var(--accent-h); }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body > p {
+      max-width: 720px;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 1.9;
+    }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* ── Photo grid ── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 2.4em 0;
+    }
+
+    .photo-grid.wide { grid-template-columns: 1fr; }
+
+    .photo-grid a, .diary-figure a, figure a {
+      display: block;
+      border-bottom: none !important;
+    }
+
+    .photo-grid img, .diary-figure img, figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .photo-grid a:hover img { opacity: 0.88; }
+
+    .grid-item { position: relative; }
+
+    .grid-number {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #fff;
+      background: rgba(26,23,20,0.55);
+      padding: 3px 7px;
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    /* ── Diary entry ── */
+    .diary-entry {
+      max-width: 720px;
+      padding-top: 2.6em;
+      margin-top: 2.6em;
+      border-top: 1px solid var(--rule-light);
+    }
+    .diary-entry:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+
+    .diary-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .diary-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--accent-h);
+      margin-bottom: 0.8em;
+    }
+
+    .diary-entry p {
+      font-size: 0.94rem;
+      color: var(--text-main);
+      line-height: 1.85;
+      margin-bottom: 1.2em;
+      max-width: 720px;
+    }
+
+    .diary-figure { margin: 1.2em 0 0; max-width: 460px; }
+
+    .essay-figure { margin: 0.4em 0 2.2em; max-width: 620px; }
+
+    .rule-break {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3em 0;
+      max-width: 720px;
+    }
+
+    .link-row {
+      text-align: left;
+      margin: 1.4em 0;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 600px) {
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="Main">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html" class="nav-back">Gallery</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Selected Works</p>
+    <h1 class="article-title">Project 7 · Lane</h1>
+    <p class="lang-switch"><a href="https://elf0724.github.io/entrance/gallery_cl/Project7lane_cl.html">中文版 / Chinese version</a></p>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>Lanes, in various corners of Taiwan.</p>
+
+    <div class="photo-grid">
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/16051874893" target="_blank" rel="noopener">
+          <img src="https://farm9.staticflickr.com/8635/16051874893_5469d130b4_b.jpg" alt="20150228Taoyuan03" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/14731046208" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3854/14731046208_8f410c3b54_b.jpg" alt="20140814Taipei03" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/13106267025/" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3762/13106267025_b8ab26510c_b.jpg" alt="20140308Keelung08" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/11514340025/" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3721/11514340025_4e951f0bc9_b.jpg" alt="20131223Tainan10" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/10383343456/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5497/10383343456_cbd2585586_b.jpg" alt="20131020Tainan01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/10383332695/" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3758/10383332695_35f2301e74_b.jpg" alt="20131019Tainan01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/10116980915/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5494/10116980915_3aca35a8bc_b.jpg" alt="20131006Taipei01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/9876931724/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5533/9876931724_2faf3b9384_b.jpg" alt="20130921Tainan02" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/8127717314/" target="_blank" rel="noopener">
+          <img src="https://farm9.staticflickr.com/8474/8127717314_369f6913de_b.jpg" alt="20121027Tainan05" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/6989867261/" target="_blank" rel="noopener">
+          <img src="https://farm8.staticflickr.com/7060/6989867261_c36efa6fcc_b.jpg" alt="20120317Taipei04" loading="lazy" />
+        </a>
+      </div>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html">Back to Gallery</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">Back to Home</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

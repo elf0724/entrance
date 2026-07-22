@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project 1 · Alternative Isomorph | Selected Works | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    .lang-switch {
+      margin-top: 14px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .lang-switch a {
+      color: var(--text-mid);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .lang-switch a:hover { color: var(--accent-h); border-color: var(--accent-h); }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body > p {
+      max-width: 720px;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 1.9;
+    }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* ── Photo grid ── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 2.4em 0;
+    }
+
+    .photo-grid.wide { grid-template-columns: 1fr; }
+
+    .photo-grid a, .diary-figure a, figure a {
+      display: block;
+      border-bottom: none !important;
+    }
+
+    .photo-grid img, .diary-figure img, figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .photo-grid a:hover img { opacity: 0.88; }
+
+    .grid-item { position: relative; }
+
+    .grid-number {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #fff;
+      background: rgba(26,23,20,0.55);
+      padding: 3px 7px;
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    /* ── Diary entry ── */
+    .diary-entry {
+      max-width: 720px;
+      padding-top: 2.6em;
+      margin-top: 2.6em;
+      border-top: 1px solid var(--rule-light);
+    }
+    .diary-entry:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+
+    .diary-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .diary-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--accent-h);
+      margin-bottom: 0.8em;
+    }
+
+    .diary-entry p {
+      font-size: 0.94rem;
+      color: var(--text-main);
+      line-height: 1.85;
+      margin-bottom: 1.2em;
+      max-width: 720px;
+    }
+
+    .diary-figure { margin: 1.2em 0 0; max-width: 460px; }
+
+    .essay-figure { margin: 0.4em 0 2.2em; max-width: 620px; }
+
+    .rule-break {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3em 0;
+      max-width: 720px;
+    }
+
+    .link-row {
+      text-align: left;
+      margin: 1.4em 0;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 600px) {
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="Main">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html" class="nav-back">Gallery</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Selected Works</p>
+    <h1 class="article-title">Project 1 · Alternative Isomorph</h1>
+    <p class="lang-switch"><a href="https://elf0724.github.io/entrance/gallery_cl/Project1ai_cl.html">中文版 / Chinese version</a></p>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>Introduction:</p>
+
+    <p>There are usually many farmers selling their agricultural products in the countryside of Taiwan. Someday I just passed by such a place and stopped in front of a cage. There was a chicken about to be slaughtered that stuck its head out of the cage and gazed at me. Suddenly I remembered a series of images related to stray dogs facing euthanasia. Some senseless words came into my mind at the same time, like "You don't kill the stray dogs, but the chicken dies because of you," "Stray dogs shouldn't be killed, but the chicken can die for its fate," "Death can be as light as a feather or as heavy as a mountain." At the same time I had a faint feeling that there might be some association between the messy thoughts of that moment and the series of creations I had been focusing on recently. So, risking the possibility of being chased off, I quickly picked up the camera and pressed the shutter.</p>
+
+    <figure class="essay-figure">
+      <img src="https://elf0724.github.io/entrance/images/20110907TC.jpg" alt="chicken in a cage" loading="lazy" />
+    </figure>
+
+    <p>After arriving home I searched online and found the piece "生殤相：流浪犬安樂死日最終肖像" shot by 杜韻飛 (Du Yun-Fei), a writer-in-residence at Eslite Station. I had been deeply impressed the first time I saw these images — the helpless, innocent expressions of the stray dogs reflect the fate awaiting them, and touch the viewer deeply, even stirring further compassion for stray animals. But under the same sky, another group of animals faces a similar, or perhaps even worse, situation. Take these chickens, for example — I don't think they will be granted euthanasia; mostly a knife to the neck, then a slow wait to die. I'm not trying to argue whether stray dogs should be captured or euthanized. I simply felt a strange contrast in that moment between the final portraits of dogs awaiting euthanasia and this chicken gazing at me from its cage. So many concepts seem contradictory yet run in parallel, all coexisting simultaneously in the human world. Some animal welfare groups may speak for the death of stray dogs — but will any vegetarian or religious group speak for the chicken? Can the value of different lives be weighed against each other? Should the care and protection we extend to living beings differ simply because of our own shifting positions? If life can be divided into levels, how will humans face the beings that are more advanced than us, someday? After settling the thoughts stirred by that moment of gazing, I distilled the concepts that could be understood as both opposed and isomorphic — and this became the theme I have been focused on in my recent work, hence this piece as its introduction.</p>
+
+    <hr class="rule-break" />
+
+    <p>Main text:</p>
+
+    <p>This photo can probably be considered the starting point of this series. When it was taken, the relationship between the two subjects had already become almost entirely separated, just as the image shows. Over more than half a year of change, what should have been under one roof slowly divided into two different windows, and the only remaining connection is as faint and fragile as the dead branches in the foreground. When will it finally break apart completely? The choice was never in the photographer's hands.</p>
+    <figure class="essay-figure">
+      <a href="http://www.flickr.com/photos/elf0724/5977104825/" target="_blank" rel="noopener">
+        <img src="https://farm7.staticflickr.com/6022/5977104825_344c15733e_b.jpg" alt="20110726Tainan03" loading="lazy" />
+      </a>
+    </figure>
+
+    <p>The world in the mirror is a structure that is both opposite and isomorphic to the real world. Even reversed left to right, it makes little difference to the diverging paths about to split.</p>
+    <figure class="essay-figure">
+      <a href="http://www.flickr.com/photos/elf0724/6126325536/" target="_blank" rel="noopener">
+        <img src="https://farm7.staticflickr.com/6206/6126325536_ffabba3ff9_b.jpg" alt="20110907Tainan01" loading="lazy" />
+      </a>
+    </figure>
+
+    <p>On one side, a plain and honest farmland landscape; on the other, steel-and-concrete modern housing. At this junction some will turn left, some will turn right. What looks like opposition is in fact all contained within the same urban landscape, within a radius of barely a hundred meters.</p>
+    <figure class="essay-figure">
+      <a href="http://www.flickr.com/photos/elf0724/6104965780/" target="_blank" rel="noopener">
+        <img src="https://farm7.staticflickr.com/6075/6104965780_65a586ab98_b.jpg" alt="201108LuckyEra100OM4Ti50mmTainan01" loading="lazy" />
+      </a>
+    </figure>
+
+    <p>The underground passages of Taipei Main Station grow more labyrinthine by the year. The crowds who pass through every day are all busy heading their own way. The maintenance staff once carefully arranged a photo display on a side wall — though few passersby likely stop to appreciate it. Photographs are crystallizations of time, each holding a slice of a past moment, and can themselves be understood as an isomorphic structure of some real span of time and space. In front of this photo display stands a smooth, polished stone pillar that reflects the exhibited photos as a mirror image. Travelers hurry past, and their present reflections merge, on the pillar's polished surface, with photographs that froze a past moment — old and new time and space fused into yet another isomorphic structure.</p>
+    <figure class="essay-figure">
+      <a href="http://www.flickr.com/photos/elf0724/6095218131/" target="_blank" rel="noopener">
+        <img src="https://farm7.staticflickr.com/6090/6095218131_a254f17c25_b.jpg" alt="20110826KonicaCenturia100Taipei01" loading="lazy" />
+      </a>
+    </figure>
+
+    <div class="photo-grid">
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/6108885866/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6190/6108885866_1ae0a37830_b.jpg" alt="20110903Tainan01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/6095190343/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6210/6095190343_a65e920425_b.jpg" alt="20110826KonicaCenturia100Taipei05" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/6062051798/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6189/6062051798_3f05198b8f_b.jpg" alt="20110820KonicaCenturia100Tainan02" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/6004447287/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6022/6004447287_5aac091e29_b.jpg" alt="201107RolleiSuperpan200OM4Ti50mmTainan11" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/5949955451/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6121/5949955451_8a9b4dbf44_b.jpg" alt="201107KodakTrix400OMFTL50mmTainan04" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/5949945943/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6144/5949945943_15b0b99121_b.jpg" alt="201107KodakTrix400OMFTL50mmTainan12" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/5917788889/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6024/5917788889_9be47f1b56_b.jpg" alt="201105efkb100OM4Ti50mmSanfo01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/5918347846/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6008/5918347846_ab022811b3_b.jpg" alt="201104KodakTrix400OM4Ti50mmSanfo01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/5886476880/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5104/5886476880_06572f8db6_b.jpg" alt="20110629SanFrancisco04" loading="lazy" />
+        </a>
+      </div>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html">Back to Gallery</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">Back to Home</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>影像作品 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before {
+      content: '← ';
+      letter-spacing: 0;
+    }
+
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Page header ── */
+    .page-header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 48px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .page-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.97rem;
+      color: var(--text-mid);
+    }
+
+    /* ── Wrapper ── */
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* ── Section head ── */
+    .section { padding-top: 56px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--rule-light);
+      padding-bottom: 10px;
+      margin-bottom: 0;
+    }
+
+    .section-label {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ── Project list ── */
+    .project-list { list-style: none; }
+
+    .project-item { border-bottom: 1px solid var(--rule-light); }
+    .project-item:first-child { border-top: 1px solid var(--rule-light); }
+
+    .project-link {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 0;
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s;
+    }
+
+    .project-link:hover .project-title { color: var(--accent-h); }
+    .project-link:hover .link-arrow { color: var(--accent-h); transform: translateX(4px); }
+
+    .project-title {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: color 0.2s;
+    }
+
+    .project-title-en {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      letter-spacing: 0.02em;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .link-arrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      flex-shrink: 0;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    /* ── External link section ── */
+    .external-section { padding-top: 56px; }
+
+    .external-list { list-style: none; }
+
+    .external-item { border-bottom: 1px solid var(--rule-light); }
+    .external-item:first-child { border-top: 1px solid var(--rule-light); }
+
+    .external-link {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 0;
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s;
+    }
+
+    .external-link:hover .external-title { color: var(--accent-h); }
+    .external-link:hover .link-arrow { color: var(--accent-h); transform: translateX(4px); }
+
+    .external-title {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: color 0.2s;
+    }
+
+    /* ── Back link ── */
+    .back-row {
+      padding-top: 52px;
+    }
+
+    .back-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .back-link::before { content: '← '; letter-spacing: 0; }
+
+    .back-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      margin-top: 64px;
+      padding: 32px 32px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 560px) {
+      .project-link, .external-link { flex-direction: column; gap: 4px; }
+      .link-arrow { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .wrapper, .page-header, .nav-inner, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-back">入口</a>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header class="page-header fade-in">
+    <p class="page-eyebrow">Selected Works</p>
+    <h1 class="page-title">影像作品</h1>
+    <p class="page-subtitle">Photography series and personal projects.</p>
+  </header>
+
+  <!-- Content -->
+  <div class="wrapper fade-in" style="animation-delay: 0.3s;">
+
+    <!-- 攝影專案 -->
+    <section class="section" aria-labelledby="label-projects">
+      <div class="section-head">
+        <span class="section-label" id="label-projects">Photography Projects</span>
+      </div>
+      <ul class="project-list">
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project8IPC_cl.html">
+            <span>
+              <span class="project-title">Project 8 鐵皮城市</span>
+              <span class="project-title-en">Iron Plate City</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project7lane_cl.html">
+            <span>
+              <span class="project-title">Project 7 巷</span>
+              <span class="project-title-en">Lane</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project6es_cl.html">
+            <span>
+              <span class="project-title">Project 6 誰來上座</span>
+              <span class="project-title-en">Will Someone Take the Seat</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project5tf_cl.html">
+            <span>
+              <span class="project-title">Project 5 21 世紀·臺灣</span>
+              <span class="project-title-en">21st Century · Taiwan</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project4fish_cl.html">
+            <span>
+              <span class="project-title">Project 4 安平魚市</span>
+              <span class="project-title-en">Anping Fish Market</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project3nt_cl.html">
+            <span>
+              <span class="project-title">Project 3 府城一月夜</span>
+              <span class="project-title-en">One Month Nights in Tainan — The Antique Capital of Taiwan</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project2ruin_cl.html">
+            <span>
+              <span class="project-title">Project 2 一日廢墟</span>
+              <span class="project-title-en">Ruins in One Day</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="project-item">
+          <a class="project-link" href="https://elf0724.github.io/entrance/gallery_cl/Project1ai_cl.html">
+            <span>
+              <span class="project-title">Project 1 對立同形</span>
+              <span class="project-title-en">Alternative Isomorph</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 外部連結 -->
+    <section class="external-section" aria-labelledby="label-external">
+      <div class="section-head">
+        <span class="section-label" id="label-external">More on Flickr</span>
+      </div>
+      <ul class="external-list">
+        <li class="external-item">
+          <a class="external-link" href="http://www.flickriver.com/photos/elf0724/popular-interesting/" target="_blank" rel="noopener">
+            <span class="external-title">Most Interesting Photos of My Flickr</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <div class="back-row">
+      <a class="back-link" href="https://elf0724.github.io/entrance/index.html">入口</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

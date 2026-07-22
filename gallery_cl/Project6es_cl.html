@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project 6 誰來上座 | 影像作品 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.95;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    .article-title-en {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      margin-top: 8px;
+    }
+
+    .lang-switch {
+      margin-top: 14px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+
+    .lang-switch a {
+      color: var(--text-mid);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .lang-switch a:hover { color: var(--accent-h); border-color: var(--accent-h); }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 400;
+      font-size: 1.2rem;
+      color: var(--text-hi);
+      letter-spacing: 0.08em;
+      margin: 3em 0 1em;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .article-body h2:first-child { margin-top: 0; }
+
+    .article-body > p {
+      max-width: 720px;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 2;
+    }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* ── Photo grid (undated works, no captions) ── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 2.4em 0;
+    }
+
+    .photo-grid.wide { grid-template-columns: 1fr; }
+
+    .photo-grid a, .diary-figure a, figure a {
+      display: block;
+      border-bottom: none !important;
+    }
+
+    .photo-grid img, .diary-figure img, figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .photo-grid a:hover img { opacity: 0.88; }
+
+    .grid-item { position: relative; }
+
+    .grid-number {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #fff;
+      background: rgba(26,23,20,0.55);
+      padding: 3px 7px;
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    /* ── Diary entry (dated photo-journal, e.g. Project3) ── */
+    .diary-entry {
+      max-width: 720px;
+      padding-top: 2.6em;
+      margin-top: 2.6em;
+      border-top: 1px solid var(--rule-light);
+    }
+    .diary-entry:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+
+    .diary-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .diary-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--accent-h);
+      margin-bottom: 0.8em;
+    }
+
+    .diary-entry p {
+      font-size: 0.94rem;
+      color: var(--text-main);
+      line-height: 1.95;
+      margin-bottom: 1.2em;
+      max-width: 720px;
+    }
+
+    .diary-figure { margin: 1.2em 0 0; max-width: 460px; }
+
+    /* ── Essay-style figure with caption before image (Project1) ── */
+    .essay-figure { margin: 0.4em 0 2.2em; max-width: 620px; }
+
+    .rule-break {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3em 0;
+      max-width: 720px;
+    }
+
+    .link-row {
+      text-align: left;
+      margin: 1.4em 0;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 600px) {
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html" class="nav-back">影像作品</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Selected Works &nbsp;·&nbsp; 影像作品</p>
+    <h1 class="article-title">Project 6 誰來上座</h1>
+    <p class="article-title-en">Will Someone Take the Seat</p>
+    <p class="lang-switch"><a href="https://elf0724.github.io/entrance/gallery_cl/Project6esEng_cl.html">for English reader</a></p>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>不知為何，在臺灣的戶外常可見到各式不同的椅子擺放著，空盪盪的位置出現在想像不到的地方，有時似乎與環境格格不入，卻又呈現一種莫名的互動關係，就像是某種不切實際的存在，等待著不存在的某人到來。</p>
+
+    <div class="photo-grid">
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/25074475411/in/dateposted/" target="_blank" rel="noopener">
+          <img src="https://farm2.staticflickr.com/1668/25074475411_63bb913754_b.jpg" alt="20160221Keelung01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/16769498670" target="_blank" rel="noopener">
+          <img src="https://farm9.staticflickr.com/8694/16769498670_fa317b6fb3_b.jpg" alt="20150328Hualien01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/15600044756" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3935/15600044756_3fc32a6479_b.jpg" alt="20141025Taipei01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/14117115973/" target="_blank" rel="noopener">
+          <img src="https://farm3.staticflickr.com/2935/14117115973_3fb758bbd8_b.jpg" alt="20140503Taipei02" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/14021203794/" target="_blank" rel="noopener">
+          <img src="https://farm8.staticflickr.com/7344/14021203794_dfa05cc5b4_b.jpg" alt="20140426Miaoli01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/13950488744/" target="_blank" rel="noopener">
+          <img src="https://farm8.staticflickr.com/7007/13950488744_fb6057ebb3_b.jpg" alt="20140420Taipei01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="https://www.flickr.com/photos/elf0724/13355675703/" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3749/13355675703_9ed0abf969_b.jpg" alt="20140323Taipei08" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/13106332513/" target="_blank" rel="noopener">
+          <img src="https://farm8.staticflickr.com/7431/13106332513_40ab7cfde4_b.jpg" alt="20140309Taipei05" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/9695393230/" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3699/9695393230_1cdd920dc0_b.jpg" alt="20130907Hualien04" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/9385043558/" target="_blank" rel="noopener">
+          <img src="https://farm6.staticflickr.com/5336/9385043558_1b83cfbfb0_b.jpg" alt="20130727Taipei01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/9168282868/" target="_blank" rel="noopener">
+          <img src="https://farm4.staticflickr.com/3712/9168282868_b7c7be56b9_b.jpg" alt="20130629Taipei01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/9058909306/" target="_blank" rel="noopener">
+          <img src="https://farm8.staticflickr.com/7450/9058909306_b8c556e3d2_b.jpg" alt="20130615Tainan01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/8977395681/" target="_blank" rel="noopener">
+          <img src="https://farm8.staticflickr.com/7332/8977395681_d496c5d873_b.jpg" alt="20130607Keelung01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/8722407861/" target="_blank" rel="noopener">
+          <img src="https://farm8.staticflickr.com/7376/8722407861_06c9ccceef_b.jpg" alt="20130509Taipei01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/8709669765/" target="_blank" rel="noopener">
+          <img src="https://farm9.staticflickr.com/8125/8709669765_09d35a976f_b.jpg" alt="20130504Tainan01" loading="lazy" />
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="http://www.flickr.com/photos/elf0724/8127722654/" target="_blank" rel="noopener">
+          <img src="https://farm9.staticflickr.com/8048/8127722654_3453f64da6_b.jpg" alt="20121027Tainan07" loading="lazy" />
+        </a>
+      </div>
+    </div>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html">回影像作品目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

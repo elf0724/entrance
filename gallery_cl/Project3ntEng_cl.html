@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project 3 · One Month Nights in Tainan — The Antique Capital of Taiwan | Selected Works | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    .lang-switch {
+      margin-top: 14px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .lang-switch a {
+      color: var(--text-mid);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .lang-switch a:hover { color: var(--accent-h); border-color: var(--accent-h); }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body > p {
+      max-width: 720px;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 1.9;
+    }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* ── Photo grid ── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 2.4em 0;
+    }
+
+    .photo-grid.wide { grid-template-columns: 1fr; }
+
+    .photo-grid a, .diary-figure a, figure a {
+      display: block;
+      border-bottom: none !important;
+    }
+
+    .photo-grid img, .diary-figure img, figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .photo-grid a:hover img { opacity: 0.88; }
+
+    .grid-item { position: relative; }
+
+    .grid-number {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #fff;
+      background: rgba(26,23,20,0.55);
+      padding: 3px 7px;
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    /* ── Diary entry ── */
+    .diary-entry {
+      max-width: 720px;
+      padding-top: 2.6em;
+      margin-top: 2.6em;
+      border-top: 1px solid var(--rule-light);
+    }
+    .diary-entry:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+
+    .diary-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .diary-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--accent-h);
+      margin-bottom: 0.8em;
+    }
+
+    .diary-entry p {
+      font-size: 0.94rem;
+      color: var(--text-main);
+      line-height: 1.85;
+      margin-bottom: 1.2em;
+      max-width: 720px;
+    }
+
+    .diary-figure { margin: 1.2em 0 0; max-width: 460px; }
+
+    .essay-figure { margin: 0.4em 0 2.2em; max-width: 620px; }
+
+    .rule-break {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3em 0;
+      max-width: 720px;
+    }
+
+    .link-row {
+      text-align: left;
+      margin: 1.4em 0;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 600px) {
+      .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="Main">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html" class="nav-back">Gallery</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">Selected Works</p>
+    <h1 class="article-title">Project 3 · One Month Nights in Tainan — The Antique Capital of Taiwan</h1>
+    <p class="lang-switch"><a href="https://elf0724.github.io/entrance/gallery_cl/Project3nt_cl.html">中文版 / Chinese version</a></p>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>October 18, 2011 — a day that belonged both to connection and to the start of disconnection. A dispirited man wandered his hometown of Tainan through the nights of an entire month and shot these photographs; in those sleepless nights, photography was the only redemption there was.</p>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.18</p>
+      <h3 class="diary-title">White Chicken</h3>
+      <p>1st night. I went to a temple festival. I don't know why, but a fearless white rooster was standing in front of the stage, waiting for the show to begin. It wasn't afraid of people and kept coming close to me — as if it wanted to offer some silent comfort.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6263165534/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6165/6263165534_31978d148c_b.jpg" alt="20111018Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.19</p>
+      <h3 class="diary-title">Game 4 of the 2011 CPBL Taiwan Series</h3>
+      <p>2nd night. Game 4 of the 2011 CPBL Taiwan Series was played in Tainan tonight. I bought a ticket, hoping to put everything unpleasant aside for a while. With a telephoto lens I caught this frame: Chen Chin-Feng — "Brother Feng," Taiwan's baseball spiritual leader of the past decade — twisted out of the batter's box by a close pitch from Uni-President starter Chen Yi-Chen.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6262223951/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6094/6262223951_bc320a58d8_b.jpg" alt="20111019Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.20</p>
+      <h3 class="diary-title">Game 5 of the 2011 CPBL Taiwan Series</h3>
+      <p>3rd night. I went back to the Tainan stadium. Tonight the home team, the Uni-President 7-Eleven Lions, beat the Lamigo Monkeys 10–6 to win the 2011 CPBL championship. I've been a Lions fan since the league's first year, but in all these years I'd never once been there in person to see them throw the streamers. I wasn't even supposed to still be in Taiwan tonight, and yet, by chance, I got to witness it live for the first time. Maybe the world was trying to tell me that no matter how bad things look, something good can still happen — the important thing is never to give up, and to keep trying. I don't think I'll ever forget this night.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6265768582/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6120/6265768582_9d4e1da8ab_b.jpg" alt="20111020Tainan10" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.21</p>
+      <h3 class="diary-title">The City God</h3>
+      <p>4th night. Tonight I walked to the City God Temple of the original county seat. In traditional belief, the City God governs the underworld's local administration, and also presides over the moral judgment, reward and punishment of both the living and the dead. I hope the City God's fairness, wronging no one and letting no guilt slip by, gives everyone — good or bad — the ending they're due.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6266316818/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6177/6266316818_c088b5b5da_b.jpg" alt="20111021Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.22</p>
+      <h3 class="diary-title">Peaceful</h3>
+      <p>5th night. Seeing this scene left me feeling calm.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6269037006/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6214/6269037006_e3fe45aec4_b.jpg" alt="20111022Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.23</p>
+      <h3 class="diary-title">Garden Night Market</h3>
+      <p>6th night. I came to shoot at Tainan's well-known Garden Night Market. I used to enjoy wandering night markets as a kid, but somewhere past 25 I stopped bothering with the crowds. I suppose that shift is just a sign of edging toward middle age.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6272191190/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6099/6272191190_39d024f86f_b.jpg" alt="20111023Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.24</p>
+      <h3 class="diary-title">Dusk over the Salt Flats</h3>
+      <p>7th night. I just wanted to lose myself in taking photos.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6276230240/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6032/6276230240_0ea6ac71c3_b.jpg" alt="20111024Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.25</p>
+      <h3 class="diary-title">An Exit</h3>
+      <p>8th night. Really the small hours of this day — another sleepless night. I rode out across the Chianan Plain in the dark, looking for some way out of my own head.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6279109759/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6049/6279109759_2a4e8985f0_b.jpg" alt="20111025Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.26</p>
+      <h3 class="diary-title">Carrefour</h3>
+      <p>9th night. Last night I came here with my family to pick up a few things at this 24-hour Carrefour — hadn't been in ages. It brought back memories of harder times, when a trip to the supermarket was practically an outing. We always liked this one because it never closes; you can stay as late as you like without watching the clock, wandering at your own pace. The hardest days for our family are behind us now, and life has carried us this far. Is there really anything that can't be gotten through?</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6282915028/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6034/6282915028_13faa90b40_b.jpg" alt="20111026Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.27</p>
+      <h3 class="diary-title">The Homeless Man</h3>
+      <p>10th night. Again, technically the small hours. Couldn't sleep, so I went out to shoot. This man, who calls the whole world home, was sleeping soundly enough.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6285274430/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6217/6285274430_ec948be85f_b.jpg" alt="20111027Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.28</p>
+      <h3 class="diary-title">Disorder</h3>
+      <p>11th night. The tangled wires felt like my state of mind these days. The beautiful sunset glow I caught on camera is the redemption photography offers — every place has its ugliness, and its beauty too. For my hometown, I choose to notice the beauty with an open heart.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6288196845/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6051/6288196845_1a7dc6578e_b.jpg" alt="20111028TainanHDR01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.29</p>
+      <h3 class="diary-title">Twelve</h3>
+      <p>12th night. Really the small hours — 2am, riding around Tainan with nowhere in particular to be, shooting whatever caught my eye.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6290981775/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6214/6290981775_7f97d3e52a_b.jpg" alt="20111029Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.30</p>
+      <h3 class="diary-title">Flowers in a Mirror, Moon on the Water</h3>
+      <p>13th night. I've grown used to shooting in the sleepless small hours by now. There's a Chinese idiom, "flowers in a mirror, the moon on the water," used to describe something illusory and unreal. Life isn't so long, and isn't so short either — rather than sighing later that it all amounted to nothing, better to do one's part well and walk the road ahead with real intent.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6293924919/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6227/6293924919_f14f65f1ba_b.jpg" alt="20111030Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.10.31</p>
+      <h3 class="diary-title">Swallow Lake Reflections</h3>
+      <p>14th night. "Autumn Moon over Swallow Lake" is one of Tainan's famous sights. The moon didn't show itself at its best tonight, but the lake's reflections were captivating all the same.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6297877857/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6100/6297877857_ccfb0f8631_b.jpg" alt="20111031Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.01</p>
+      <h3 class="diary-title">Anping Fish Market</h3>
+      <p>15th night. November has arrived. Sleepless again, I came to Anping Fish Market around 2am (see the <a href="https://elf0724.github.io/entrance/gallery_cl/Project4fishEng_cl.html" target="_blank">Anping Fish Market</a> project page) — a wholesale market where fishing boats unload directly, with fishermen and buyers trading briskly from midnight to 6am. If you can't sleep in Tainan, you might as well come here and take some seafood home.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6308582978/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6034/6308582978_51db901e54_b.jpg" alt="20111101KodakTrix400OM4Ti50mmTainan12" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.02</p>
+      <h3 class="diary-title">Dark</h3>
+      <p>16th night. Out around 1:30am, close to when the night market packs up. Litter was scattered everywhere; the tired staff have to clear it all before dawn so the place looks normal again by day. The ugly side, it seems, hides itself in the dark.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6305629880/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6109/6305629880_2dd1a5de51_b.jpg" alt="20111102Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.03</p>
+      <h3 class="diary-title">The Fake Ruined Steps</h3>
+      <p>17th night. This used to be the library of National Cheng Kung University, back when I was in senior high — now it's an ordinary reading room. Sleepless again, I wandered out that morning and shot it once, then came back at dusk, when the sky's colour felt more compelling. Riding past, I remembered how much I'd once admired the idea of campus life at NCKU — one of Taiwan's top universities, though I never got the chance to study there. After high school I went to university in Taipei, at what was then "National Chung Hsing University, College of Law and Business," renamed "National Taipei University" a year after I graduated. The campus sat right downtown, on too little land for anything resembling a real campus life. Only in graduate school, at National Chengchi University, did I finally get something closer to that. Passing this spot before dawn stirred up memories of my time there — I didn't spend much time on campus as a graduate student, given how different that headspace was from undergrad, but I'd still wander it some evenings. These steps in front of the old NCKU library reminded me of a similar, taller flight in front of the NCCU library, where I used to sit and rest after tired late-night walks around campus. Those student years still leave a long aftertaste.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6308869332/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6229/6308869332_5cf1f46d30_b.jpg" alt="20111103Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.04</p>
+      <h3 class="diary-title">Underpass</h3>
+      <p>18th night. The small hours. Not a soul on the street.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6311375181/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6095/6311375181_ccfe3a4fb7_b.jpg" alt="20111104Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.05</p>
+      <h3 class="diary-title">Songzijiao Seafood BBQ</h3>
+      <p>19th night. My sister and her husband came back to Tainan this weekend, and the family had dinner at Songzijiao, a well-known BBQ seafood spot — open-air tables in the temple square, a light evening breeze, about as typical a slice of Taiwanese folk life as it gets.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6314464509/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6093/6314464509_a04b11bd16_b.jpg" alt="20111105Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.06</p>
+      <h3 class="diary-title">Honeycomb Grouper</h3>
+      <p>20th night. At my sister and brother-in-law's request, I took the family to Anping Fish Market again around midnight. Seeing such a wide variety of fish at that hour is honestly kind of fascinating.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6317829602/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6047/6317829602_690a367035_b.jpg" alt="20111106Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.07</p>
+      <h3 class="diary-title">Yellow Light</h3>
+      <p>21st night. Standing at an intersection — not the green light that lets you go, nor the red that makes you stop, just the yellow in between, full of hesitation. Where do I go looking for redemption?</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6321499205/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6100/6321499205_158eb95410_b.jpg" alt="20111107Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.08</p>
+      <h3 class="diary-title">Banquet in the Street</h3>
+      <p>22nd night. Riding past the old Julius Mannich & Co. merchant house, a third-grade historic site in Tainan, I came across an international conference under way — Visual Communications and Image Processing (VCIP) 2011. Scholars on stage introduced themselves as coming from Japan, Korea, Germany, the US, and more, with an audience likely drawn from even further afield. Holding this kind of international symposium in front of a century-old Tainan landmark, and serving it up in the traditional Taiwanese banquet style — table after table set right out in the square — struck me as a genuinely clever bit of staging.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6325802768/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6109/6325802768_c6b3b36358_b.jpg" alt="20111108Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.09</p>
+      <h3 class="diary-title">Night at the Confucius Temple</h3>
+      <p>23rd night. It's been raining for days now — unusual for Tainan this time of year. Tonight I came to the Confucius Temple. As many know, Tainan is Taiwan's earliest developed city, home to the greatest concentration of cultural heritage and historic sites on the island, and the Confucius Temple, founded in 1715, is the most representative of them all — the first Confucian temple built in Taiwan, and the island's first formally established school, marking the beginning of Taiwan's cultural era. Looking back over the years of shooting Tainan's historic sites, I realize this is the one I've photographed the most, yet never before on a rainy night. So with this rare rain, I came back to shoot it after dark — and it does feel like a different place altogether.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6327992941/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6019/6327992941_8611668811_b.jpg" alt="20111109Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.10</p>
+      <h3 class="diary-title">Rainy Night</h3>
+      <p>24th night. The rain hasn't let up since last night; the whole city feels soaked through. I went out shooting in the evening. The building in this photo is the National Museum of Taiwanese Literature, formerly the Tainan City Hall — a Japanese-era building, designed and built in an imitation Baroque style. This is the Minsheng Green Circle intersection, and the sight of scooter riders in their bright rain ponchos is its own kind of Taiwanese scenery.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6330898243/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6220/6330898243_cb88a43b5c_b.jpg" alt="20111110Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.11</p>
+      <h3 class="diary-title">Chihkan Tower at Night</h3>
+      <p>25th night. This is Chihkan Tower, another site I return to often. Originally named Fort Provintia, it was built by the Dutch in 1653 as an administrative centre; the original structure has long since been lost, and what stands today was rebuilt during the Japanese era. Between Dutch colonial rule, the Kingdom of Tungning, Qing rule, the Japanese era, and today's Republic of China on Taiwan, Tainan has always sat at the origin and centre of Taiwan's layered, multicultural history — which is part of why living here, with so many historic sites within reach, feels like such good fortune.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6333620367/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6095/6333620367_583f268096_b.jpg" alt="20111111Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.12</p>
+      <h3 class="diary-title">Blue Moonlit Night</h3>
+      <p>26th night. Couldn't fall asleep at all, so around 5am I went out to shoot. It turned out to be a full moon — the sky still mostly clouded over, but every so often the moon broke through with a clear, bright light. So before sunrise I got this quiet blue-lit night.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6335764899/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6050/6335764899_d5d7f96518_b.jpg" alt="20111112Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.13</p>
+      <h3 class="diary-title">Take Me Somewhere Far</h3>
+      <p>27th night. In the dark, wanting the light trails along the rail line to carry me somewhere far away.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6339475721/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6103/6339475721_27c0103142_b.jpg" alt="20111113Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.14</p>
+      <h3 class="diary-title">Anping Old Fort at Night</h3>
+      <p>28th night. This is Anping Old Fort, also built by the Dutch, in 1624, and originally named Fort Zeelandia. The original structure is gone as well, but the broken wall visible in front is a surviving remnant, and the spired building behind it dates from the Japanese era. I came in the afternoon intending a quick visit, but stayed on without noticing until dusk fell — and ended up shooting it by night instead.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6343965218/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6060/6343965218_ac9f7068a1_b.jpg" alt="20111114Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.15</p>
+      <h3 class="diary-title">Temple Ritual Lanterns</h3>
+      <p>29th night. A number of temples around Tainan have been holding traditional consecration rituals lately, and their colourful lanterns are all over the city. I loved these makeshift structures with their bright decorations and moving figures as a kid — though they're usually taken down again before long, so it's worth grabbing the chance to shoot them while they last.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6346504475/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6223/6346504475_d13ecdcf75_b.jpg" alt="20111115Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.16</p>
+      <h3 class="diary-title">Dawn Approaches</h3>
+      <p>30th night. This used to be Tainan's liveliest district, and it's still a good place to wander and shop. I'd shot it before on film, but couldn't resist coming back with a digital camera — the clean high-ISO output makes handheld shooting so much easier, even if it can't quite match the warmth of film grain. Each has its own strengths.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6350094846/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6237/6350094846_a33064f71b_b.jpg" alt="20111116Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <div class="diary-entry">
+      <p class="diary-date">2011.11.17</p>
+      <h3 class="diary-title">Merry Christmas</h3>
+      <p>31st night. Without quite noticing, the department stores have already put out their Christmas trees. So Christmas is just over a month away — time really does move fast, and another year is nearly done. I hope everyone finds the best of wishes on such a wonderful day. Merry Christmas.</p>
+      <figure class="diary-figure">
+        <a href="http://www.flickr.com/photos/elf0724/6351967366/" target="_blank" rel="noopener">
+          <img src="https://farm7.staticflickr.com/6044/6351967366_f3f3db977d_b.jpg" alt="20111117Tainan01" loading="lazy" />
+        </a>
+      </figure>
+    </div>
+
+    <hr class="rule-break" />
+
+    <p>After a month of shooting Tainan's nights without a break, this project comes, for now, to a close. There was no particular plan behind it — just wandering and shooting each day, guided by whatever this city's memory and feeling stirred up in me. It may lack a tidy thread of meaning, but these images are an honest projection of how I met the outside world during that stretch of time. A city, of course, always holds more scenery and more stories than can ever be exhausted, and not every beautiful or ugly side of it can be fully shown — so I expect I'll keep shooting it in the future.</p>
+
+    <p>This project began in an unhappy state of mind. Facing it, all I could really do was let photography help carry me through the harder stretch. Maybe the process of making these images and writing about them really did comfort me a little; or maybe it was simply time doing its quiet work. Things still aren't entirely easy, but I think they'll keep getting better, slowly. I hope I can hold onto this kind of creative energy going forward — just without quite so much of the darker feeling behind it.</p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/gallery_cl/gallery_cl.html">Back to Gallery</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">Back to Home</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>
