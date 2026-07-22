@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2013面山教育與救難機制國際論壇與會心得 | 隨意簡札 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.95;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 400;
+      font-size: 1.2rem;
+      color: var(--text-hi);
+      letter-spacing: 0.08em;
+      margin: 3em 0 1em;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .article-body h2:first-child { margin-top: 0; }
+
+    .article-body p {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 2;
+    }
+
+    .article-body figure {
+      margin: 2.2em 0;
+    }
+
+    .article-body img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+    }
+
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* ── Poem / verse block ── */
+    .poem-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--accent-h);
+      text-align: center;
+      margin: 2.6em 0 1em;
+    }
+
+    .poem-title:first-of-type { margin-top: 0; }
+
+    .poem {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--text-hi);
+      text-align: center;
+      line-height: 2.1;
+      letter-spacing: 0.04em;
+      margin: 0 auto 1.6em;
+      max-width: 560px;
+    }
+
+    .poem-note {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin: 0 auto 2.4em;
+      max-width: 560px;
+    }
+
+    .poem-note strong {
+      font-weight: 400;
+      color: var(--accent-h);
+      letter-spacing: 0.05em;
+    }
+
+    .photo-credit {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-align: center;
+      margin: -0.8em auto 2.4em;
+      max-width: 560px;
+    }
+
+    .photo-credit a { color: var(--text-dim); border-bottom: 1px solid var(--rule); text-decoration: none; }
+    .photo-credit a:hover { color: var(--accent-h); }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* Stepped / staircase verse (名詞解釋) */
+    .stair-line {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      line-height: 2.3;
+      margin-bottom: 0.2em;
+    }
+
+    .stair-tears {
+      text-align: center;
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--accent-h);
+      margin: 1.6em 0 2em;
+    }
+
+    /* External album link row */
+    .link-row {
+      text-align: center;
+      margin: 1.2em 0 2em;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/note_cl/note_cl.html" class="nav-back">隨意簡札</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2013.11.16 &nbsp;·&nbsp; 隨意簡札</p>
+    <h1 class="article-title">2013面山教育與救難機制國際論壇與會心得</h1>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>今日參加了「2013面山教育與救難機制國際論壇」，其實我從未參與登山活動，更遑論赴災救人，參加這個論壇是因為其他的因素。在一日的課程當中，看到了熱心的民間團體，和辛勞的政府部門工作人員，聽了一整天下來，有些心得，其中有些也和近日社會現象有關，趁著思緒還在，隨筆記錄下來，不過畢竟是登山和救難的門外漢，所以純屬個人心得分享，以下分幾點敘述。</p>
+
+    <h2>一、環境教育不足</h2>
+    <p>臺灣高山很多，四面環海，但戶外教育不足，許多人對我們的自然環境了解有限；新加坡自然環境無高山，但新加坡政府創建了46年歷史的外展教育中心，每年更提供五億經費，全額補助中學生五天的戶外活動費用，為了什麼？對自己生活的環境要有基本的認識，這在國民教育中應該是相當重要的一環，讀萬卷書也要行萬里路，書中的描述配合實際的情境相互印證，對學生來說也會是個重要的學習體驗。</p>
+
+    <h2>二、公私部門的合作</h2>
+    <p>在登山救難機制的建立上，和當初機車強制責任險制度的推動一樣，可以看到民間的熱心和公部門較為保守的態度，制度推動的起因往往是由於一些因意外事故失去親人的家屬，為了不想見到同樣的悲劇再發生，而把傷痛化作力量，試著想要做點什麼，而公部門第一時間的回應往往是替現狀作解釋，然後再搬出「依法行政」這四個字，「依法行政」沒什麼不對，但當具有實務經驗的人回頭來告訴你有些不合時宜的法規應該要修正了，這時如果還在講「依法行政」，在我看來就是種怠惰，畢竟，行政部門往往也是法規的主管機關，是有權可以提出修正法案的，主管機關若能和民間這些熱心公益的力量一起合作，找出對的方向，相信也能減少事故的發生，達成雙贏的局面，否則問題一再發生，沒有獲得解決，到最後還是要有人去面對不是嗎？</p>
+
+    <h2>三、民眾的守法觀念待加強</h2>
+    <p>從另一方面講，民眾的守法觀念也要持續加強，原本公部門訂法規是劃出一道界線，越過這條線以外的事不應該去做，做了就是違法，法規要大家一起來遵守才有意義，違規者應是少數，公部門針對這些少數作例外管理就好，這樣才不會造成無謂的行政資源浪費，可臺灣有種很奇特的現象，法規訂好了之後，就有不少人喜歡去鑽漏洞，還沾沾自喜，自以為聰明，其他人看了也有樣學樣跟進，到最後很多事情就灰濁不清了，當例外管理變成常態時，行政資源的投入就得增加才能夠維持秩序，舉例來說，常見到一種現象，在熱鬧的街區，明明就有劃設好的停車格或停車場，可許多人為圖一時方便，還是喜歡違規亂停車，造成交通秩序的混亂，為了維護秩序，只有加強拖吊或增加警察人力指揮交通或開罰單，結果又會造成一些執法上的爭議，有人或許會抱怨停車格劃設的位置離要逛街的地方有點距離，可停車場的建置必須在土地取得成本和便利性中間取得一個平衡，花大錢把停車場蓋在精華地段或者是把停車場蓋在土地便宜但更偏遠的地方都是不切實際的，不要小看這樣的一件事，無名小卒時小小地違規，若哪天因時趁勢成為大企業家什麼的，更大的黑心事也就順勢做了出來。</p>
+
+    <h2>四、「衛星傳訊器」和「登山救難保險制度」值得推動，先求有，再求好。</h2>
+    <p>「衛星傳訊器」和「登山救難保險制度」是今日論壇的討論資料中個人認為的兩大重點，前者經實測有效，也提供了基礎數據，若能轉換成統計上的顯著性數值，更能加強說服力；後者除了具有風險分攤的概念外，對於公私部門資源的合理分配也會有所幫助，資源要花在刀口上，每一個登山團體若能強制加保，且保險公司也能針對登山救難保險提供一個標準化收費和給付標準，對不幸發生時的搜救作業，也有督促進步的作用。這兩者都值得透過立法來加以推動，而且可先求有，再求好，讓制度在執行中取得回饋，並慢慢改進，另外，保險公司從中賺取利潤天經地義，殺頭生意有人做，賠錢生意沒人做，經濟原本就是推動這世界的主要力量，而保險公司若想合理增加利潤，可投入一些研究經費，提升登山救難機制的效能，減低事故率，如此也能達成原本設想的公益目的。</p>
+
+    <h2>五、幫第一線工作人員解決法律問題</h2>
+    <p>最後替公部門的第一線基層人員說句話，在臺灣公部門的設計裏，原本就是防弊大於興利的思維，酬賞制度的缺乏，造成「多做多錯，少做少錯，不做不錯」的現象，在不管做多做少都是領取相同報酬的情況下，為何要多做呢？但許多第一線基層的工作人員並不是不想做事，反倒是，因為常和民眾接觸，最能了解民眾的感受，只要有點良知的公務員都想幫助民眾解決問題的，只是，基層人員往往比高層長官更受到「依法行政」的限制，他們沒有修法的權限，卻受到最多的法規規範，因此，民間團體若希望公部門能發揮功能，彼此之間應該要好好溝通，找出合適的解決方案，該修法的修法，該宣導的宣導，自律的加強，社群對違規者的處理⋯⋯等，只要能有合理的解決方案，相信許多第一線的工作人員都是很樂意服務人群的。</p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/note_cl/note_cl.html">回隨意簡札目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

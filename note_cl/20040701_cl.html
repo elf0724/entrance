@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>育幼所八仙樂園旅記 | 隨意簡札 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.95;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 400;
+      font-size: 1.2rem;
+      color: var(--text-hi);
+      letter-spacing: 0.08em;
+      margin: 3em 0 1em;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .article-body h2:first-child { margin-top: 0; }
+
+    .article-body p {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 2;
+    }
+
+    .article-body figure {
+      margin: 2.2em 0;
+    }
+
+    .article-body img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+    }
+
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* ── Poem / verse block ── */
+    .poem-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--accent-h);
+      text-align: center;
+      margin: 2.6em 0 1em;
+    }
+
+    .poem-title:first-of-type { margin-top: 0; }
+
+    .poem {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--text-hi);
+      text-align: center;
+      line-height: 2.1;
+      letter-spacing: 0.04em;
+      margin: 0 auto 1.6em;
+      max-width: 560px;
+    }
+
+    .poem-note {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin: 0 auto 2.4em;
+      max-width: 560px;
+    }
+
+    .poem-note strong {
+      font-weight: 400;
+      color: var(--accent-h);
+      letter-spacing: 0.05em;
+    }
+
+    .photo-credit {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-align: center;
+      margin: -0.8em auto 2.4em;
+      max-width: 560px;
+    }
+
+    .photo-credit a { color: var(--text-dim); border-bottom: 1px solid var(--rule); text-decoration: none; }
+    .photo-credit a:hover { color: var(--accent-h); }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* Stepped / staircase verse (名詞解釋) */
+    .stair-line {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      line-height: 2.3;
+      margin-bottom: 0.2em;
+    }
+
+    .stair-tears {
+      text-align: center;
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--accent-h);
+      margin: 1.6em 0 2em;
+    }
+
+    /* External album link row */
+    .link-row {
+      text-align: center;
+      margin: 1.2em 0 2em;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/note_cl/note_cl.html" class="nav-back">隨意簡札</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2004.07.01 &nbsp;·&nbsp; 隨意簡札</p>
+    <h1 class="article-title">育幼所八仙樂園旅記</h1>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>有時候我會想，夏天真是個魅惑的季節，如果跟隨著夏天的腳步，一步一步走到山林裏、海灘邊、晴空下、歡愉中，然後夏天的身影，似乎就會在眼下突然映現，卻又轉身在一旁隱約。</p>
+
+    <p>在今年眾多夏天的身影中，或許在八仙樂園裏遇到的那次，叫人印象最為深刻。那是今年的七月一日，也是育幼所小朋友們暑假的開始，大家都開心地準備享受長長的假期，八仙樂園的行程也是早就安排好的，好巧不巧，有個叫敏督利的颱風卻在今天也來湊熱鬧，大概嫌快樂的氣氛還不夠，非要愈多人來參與愈好，就這樣，在豔陽高照下夾帶著幾許飄風和水滴的清涼裏，我們在八仙樂園見到了夏天的身影；那身影在回眸一望的碧藍海上，在白雲稜繞的觀音山額角，在午後驟起的短暫雷雨，在奔跑雜躂的人群穿梭⋯⋯。夏天的身影在我們身旁錯落，和我們擦肩而過，或者陪我們一起降落到剌激的滑水道下，看著育幼所孩子們一張張歡笑的臉龐，化成一朵朵美麗笑靨，我仿佛也見到了一片片夏天的身影從我身旁走過，而過往幾個陪伴育幼所孩子們一起渡過的夏天回憶在此刻凍結。</p>
+
+    <p>回家了，登上遊覽車，望著窗外依舊陽光耀眼的夏日午後，敏督利似乎真的無意破壞今天的歡樂氣氛，只是來玩耍一陣。我收起育幼所今年第一個夏天的回憶，小心地放進我的背包，這個回憶像似今年夏天的開始，又好像是過去無數個夏天的結束，孩子們的未來還很漫長，育幼所的夏天不會再延續，這個特別的回憶，我得好好收藏才是。</p>
+
+    <p style="color: var(--text-dim); font-size: 0.85rem;">後記：原文是2004年在育幼機構當社工員時所寫，背景為當時機構即將結束前夕為院刊所寫的文稿，兼心情抒發。</p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/note_cl/note_cl.html">回隨意簡札目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

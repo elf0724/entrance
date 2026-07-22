@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>雜詩整彙 | 隨意簡札 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.95;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 400;
+      font-size: 1.2rem;
+      color: var(--text-hi);
+      letter-spacing: 0.08em;
+      margin: 3em 0 1em;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .article-body h2:first-child { margin-top: 0; }
+
+    .article-body p {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 2;
+    }
+
+    .article-body figure {
+      margin: 2.2em 0;
+    }
+
+    .article-body img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+    }
+
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* ── Poem / verse block ── */
+    .poem-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--accent-h);
+      text-align: center;
+      margin: 2.6em 0 1em;
+    }
+
+    .poem-title:first-of-type { margin-top: 0; }
+
+    .poem {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--text-hi);
+      text-align: center;
+      line-height: 2.1;
+      letter-spacing: 0.04em;
+      margin: 0 auto 1.6em;
+      max-width: 560px;
+    }
+
+    .poem-note {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin: 0 auto 2.4em;
+      max-width: 560px;
+    }
+
+    .poem-note strong {
+      font-weight: 400;
+      color: var(--accent-h);
+      letter-spacing: 0.05em;
+    }
+
+    .photo-credit {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-align: center;
+      margin: -0.8em auto 2.4em;
+      max-width: 560px;
+    }
+
+    .photo-credit a { color: var(--text-dim); border-bottom: 1px solid var(--rule); text-decoration: none; }
+    .photo-credit a:hover { color: var(--accent-h); }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* Stepped / staircase verse (名詞解釋) */
+    .stair-line {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      line-height: 2.3;
+      margin-bottom: 0.2em;
+    }
+
+    .stair-tears {
+      text-align: center;
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--accent-h);
+      margin: 1.6em 0 2em;
+    }
+
+    /* External album link row */
+    .link-row {
+      text-align: center;
+      margin: 1.2em 0 2em;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/note_cl/note_cl.html" class="nav-back">隨意簡札</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2012.11.23 &nbsp;·&nbsp; 隨意簡札</p>
+    <h1 class="article-title">雜詩整彙</h1>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <p>本篇為過往幾年所作雜詩之整理，每則皆有寫作說明，有些並附上圖片或白話語譯。</p>
+
+    <p class="poem-title">幾</p>
+    <p class="poem">幾分暮色幾分清，幾度梅雨幾度興，<br>幾日公務煩心事，幾番自得幾番輕。</p>
+    <p class="poem-note"><strong>寫作說明：</strong>圖與詩成於2012年5月8日，因那一段期間公事煩燥，當日傍晚下了班，原本說要來的梅雨沒下，天空卻很清朗，拿起相機拍下夜色，感念老天給上班族的恩賜，於是把感謝化成詩句，一起送給老天爺。</p>
+    <figure>
+      <a href="http://www.flickr.com/photos/elf0724/7157494024/" target="_blank" rel="noopener">
+        <img src="http://farm6.staticflickr.com/5234/7157494024_b4a8b6a09f_z.jpg" alt="20120508Taipei01" loading="lazy" />
+      </a>
+    </figure>
+
+    <p class="poem-title">秋月鸞凰</p>
+    <p class="poem">夏雨淡新暑氣藏，薄雲輕捲似鸞凰，<br>萬里相從伴燭星，緣沿映耀紫金芒，<br>清風微送天上來，白玉潔皎夜如霜，<br>問君何能得此景？穹蒼月下多情郎。</p>
+    <p class="poem-note"><strong>寫作說明：</strong>詩作係於2009年9月初時因偶見友人 <a href="http://www.flickr.com/photos/kaorss/" target="_blank" rel="noopener">August</a> 兄這張照片，覺得別有情調，又見月圓，想到不久就是中秋，過了中秋，秋天的腳步就近了，圖片月色如此美麗，所以即興為它賦詩一首。</p>
+    <figure>
+      <a href="http://www.flickr.com/photos/kaorss/3882249510/" target="_blank" rel="noopener">
+        <img src="http://farm3.staticflickr.com/2544/3882249510_1c94a74386_z.jpg" alt="P9030483" loading="lazy" />
+      </a>
+      <figcaption>圖片來源：友人 August 兄，著作權為 August 兄所有</figcaption>
+    </figure>
+
+    <p class="poem-title">如廁</p>
+    <p class="poem">秋山煙雨六堂分，時節暑氣再不生，<br>撲風頡雨索詩句，還教琴樂伴古燈。</p>
+    <p class="poem-note"><strong>寫作說明：</strong>某年秋雨風大雨大，工作到一半去上廁所，結果燈壞了閃呀閃的，因為在大樓所以廁所裏還放著音樂，於是就把文字湊一湊，當作上廁所時的娛樂。</p>
+
+    <p class="poem-title">夢醒</p>
+    <p class="poem">鵑城三月雨紛飛，霧裏春山點娥眉，<br>昨夜慘綠少年郎，今朝人間夢已隳。</p>
+    <p class="poem-note"><strong>寫作說明：</strong>鵑城係指臺北城，因臺北市花為牡鵑；春山係指陽明山，在臺北城裏擡頭就可看見，而寫作時為暮春三月；詩成前一晚夢見自己年少時期的往事，醒來一切成空而有感觸。</p>
+
+    <p class="poem-title">懷鄉</p>
+    <p class="poem">金風灑秋陽，薄影剪秋光，<br>秋熟日漸短，懷鄉意更長。</p>
+    <p class="poem-note"><strong>寫作說明：</strong>某個秋日想念家鄉的情感。</p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/note_cl/note_cl.html">回隨意簡札目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>隨意簡札 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before {
+      content: '← ';
+      letter-spacing: 0;
+    }
+
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Page header ── */
+    .page-header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 48px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .page-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.97rem;
+      color: var(--text-mid);
+    }
+
+    /* ── Wrapper ── */
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* ── Section head ── */
+    .section { padding-top: 56px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--rule-light);
+      padding-bottom: 10px;
+      margin-bottom: 0;
+    }
+
+    .section-label {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ── Note list ── */
+    .note-list { list-style: none; }
+
+    .note-item { border-bottom: 1px solid var(--rule-light); }
+    .note-item:first-child { border-top: 1px solid var(--rule-light); }
+
+    .note-link {
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 0 20px;
+      align-items: baseline;
+      padding: 16px 0;
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s;
+    }
+
+    .note-link:hover .note-title { color: var(--accent-h); }
+    .note-link:hover .link-arrow { color: var(--accent-h); transform: translateX(4px); }
+
+    .note-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .note-title {
+      font-size: 0.93rem;
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: color 0.2s;
+    }
+
+    .link-arrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      flex-shrink: 0;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    /* ── Back link ── */
+    .back-row {
+      padding-top: 52px;
+    }
+
+    .back-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .back-link::before { content: '← '; letter-spacing: 0; }
+
+    .back-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      margin-top: 64px;
+      padding: 32px 32px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 560px) {
+      .note-link { grid-template-columns: 90px 1fr; }
+      .link-arrow { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .wrapper, .page-header, .nav-inner, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-back">入口</a>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header class="page-header fade-in">
+    <p class="page-eyebrow">Journal / Notes</p>
+    <h1 class="page-title">隨意簡札</h1>
+    <p class="page-subtitle">Fragments of memory, moments of reflection.</p>
+  </header>
+
+  <!-- Content -->
+  <div class="wrapper fade-in" style="animation-delay: 0.3s;">
+
+    <!-- 筆記列表 -->
+    <section class="section" aria-labelledby="label-notes">
+      <div class="section-head">
+        <span class="section-label" id="label-notes">所有筆記 / All Notes</span>
+      </div>
+      <ul class="note-list">
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20190928_cl.html">
+            <span class="note-date">2019.09.28</span>
+            <span class="note-title">紀</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20160624trip_cl.html">
+            <span class="note-date">2016.06.24</span>
+            <span class="note-title">2016 上半年旅記</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20151015mem_cl.html">
+            <span class="note-date">2015.10.15</span>
+            <span class="note-title">拚湊的變形回憶</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20131116_cl.html">
+            <span class="note-date">2013.11.16</span>
+            <span class="note-title">2013 面山教育與救難機制國際論壇心得</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20131106_cl.html">
+            <span class="note-date">2013.11.06</span>
+            <span class="note-title">婚姻、愛情與社會制度</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20131021cosmos_cl.html">
+            <span class="note-date">2013.10.21</span>
+            <span class="note-title">幻想宇宙概論</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20130723_cl.html">
+            <span class="note-date">2013.07.23</span>
+            <span class="note-title">名詞解釋</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20121123poetry_cl.html">
+            <span class="note-date">2012.11.23</span>
+            <span class="note-title">雜詩整彙</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20120823father_cl.html">
+            <span class="note-date">2012.08.23</span>
+            <span class="note-title">記一場至親送別</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20091026term_cl.html">
+            <span class="note-date">2009.10.26</span>
+            <span class="note-title">水調歌頭－思鄉</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/2007noname_cl.html">
+            <span class="note-date">2007</span>
+            <span class="note-title">無題</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+        <li class="note-item">
+          <a class="note-link" href="https://elf0724.github.io/entrance/note_cl/20040701_cl.html">
+            <span class="note-date">2004.07.01</span>
+            <span class="note-title">育幼所八仙樂園旅記</span>
+            <span class="link-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <div class="back-row">
+      <a class="back-link" href="https://elf0724.github.io/entrance/index.html">入口</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>

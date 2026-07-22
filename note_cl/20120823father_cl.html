@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>記一場至親送別 | 隨意簡札 | elf0724</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@300;400&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #ffffff;
+      --rule:       #e0ddd8;
+      --rule-light: #eeece8;
+      --text-dim:   #b0aaa2;
+      --text-mid:   #7a7468;
+      --text-main:  #3a3530;
+      --text-hi:    #1a1714;
+      --accent:     #7a6e5e;
+      --accent-h:   #4a3f30;
+      --nav-h:      68px;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif TC', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.95;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body { min-height: 100vh; }
+
+    .fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule-light);
+      height: var(--nav-h);
+    }
+
+    .nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-hi);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back::before { content: '← '; letter-spacing: 0; }
+    .nav-back:hover { color: var(--accent-h); }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 64px) 32px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .article-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .article-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .article-body h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 400;
+      font-size: 1.2rem;
+      color: var(--text-hi);
+      letter-spacing: 0.08em;
+      margin: 3em 0 1em;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule-light);
+    }
+
+    .article-body h2:first-child { margin-top: 0; }
+
+    .article-body p {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 1.5em;
+      line-height: 2;
+    }
+
+    .article-body figure {
+      margin: 2.2em 0;
+    }
+
+    .article-body img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+    }
+
+    .article-body figcaption {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* ── Poem / verse block ── */
+    .poem-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--accent-h);
+      text-align: center;
+      margin: 2.6em 0 1em;
+    }
+
+    .poem-title:first-of-type { margin-top: 0; }
+
+    .poem {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
+      color: var(--text-hi);
+      text-align: center;
+      line-height: 2.1;
+      letter-spacing: 0.04em;
+      margin: 0 auto 1.6em;
+      max-width: 560px;
+    }
+
+    .poem-note {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin: 0 auto 2.4em;
+      max-width: 560px;
+    }
+
+    .poem-note strong {
+      font-weight: 400;
+      color: var(--accent-h);
+      letter-spacing: 0.05em;
+    }
+
+    .photo-credit {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-align: center;
+      margin: -0.8em auto 2.4em;
+      max-width: 560px;
+    }
+
+    .photo-credit a { color: var(--text-dim); border-bottom: 1px solid var(--rule); text-decoration: none; }
+    .photo-credit a:hover { color: var(--accent-h); }
+
+    .article-body a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .article-body a:hover { color: var(--text-hi); border-color: var(--accent-h); }
+
+    /* Stepped / staircase verse (名詞解釋) */
+    .stair-line {
+      font-size: 0.96rem;
+      color: var(--text-main);
+      line-height: 2.3;
+      margin-bottom: 0.2em;
+    }
+
+    .stair-tears {
+      text-align: center;
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--accent-h);
+      margin: 1.6em 0 2em;
+    }
+
+    /* External album link row */
+    .link-row {
+      text-align: center;
+      margin: 1.2em 0 2em;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Footer nav ── */
+    .article-footer-nav {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav-link {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .footer-nav-link:hover {
+      color: var(--accent-h);
+      border-color: var(--accent-h);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 32px 32px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--accent-h); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .fade-in { animation: none !important; transition: none !important; opacity: 1 !important; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-inner, .article-header, .article-body, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="主選單">
+    <div class="nav-inner">
+      <a href="https://elf0724.github.io/entrance/index.html" class="nav-logo">Elf0724</a>
+      <a href="https://elf0724.github.io/entrance/note_cl/note_cl.html" class="nav-back">隨意簡札</a>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-header fade-in">
+    <p class="article-eyebrow">2012.08.23 &nbsp;·&nbsp; 隨意簡札</p>
+    <h1 class="article-title">記一場至親送別</h1>
+  </header>
+
+  <!-- Article body -->
+  <article class="article-body fade-in" style="animation-delay: 0.3s;">
+
+    <h2>序曲</h2>
+    <p>8月7日星期二，陰沈沈的天氣，和家人到達臺南市殯葬管理所後，大雨開始傾盆而下，跟著禮儀社的工作人員把父親從保存的冰櫃中接出來，換上整套西裝的他，模樣看起來像似安靜地睡著，也許是病纏多年的苦痛已經不再折磨，終於獲得解脫了吧；猶記得兩天前突然接到醫院通知時的混亂，隔天回臺北辦公室緊忙交待事務後又趕回臺南的往返，而這一場送別的旅程，在父親入斂後正式開始。</p>
+    <p>入斂儀式過程中所有的環節，悲涼的鎖吶聲、僧侶引領向父親祝禱的言語，在在提醒著離別的哀傷，不論生者與亡者在世時的情感親疏與否，它都要引人起悲傷的情緒，偏偏此時雨下得愈加滄狂，場面也就顯得更加淒厲，雖然我們三個子女平時和父親的感情都不親睦，此刻還是有種悲涼湧上心頭，媽媽也流下了她的眼淚，閤棺之後，再無相見，別了，爸爸，請老天也幫忙停下吧，這苦雨。</p>
+
+    <h2>天下父母心</h2>
+    <p>雨停了，入斂後順利地移靈、停靈，下午來到禪寺替父親尋覓將來安置的靈骨塔位及神主牌位，依習俗在靈前上香祝禱，請父親跟我們一同前往，約莫一個多小時在不同樓層中上上下下之後，大致有了三、四個候選位罝，就等回靈堂前擲筊請示。一開始家人原本想將塔位及牌位安排在同一樓層，但不論怎麼擲筊都得不到父親的允諾，即使禱告請父親毋須擔心經濟問題，仍然沒有結果，後來由弟弟換個方式，將塔位及牌位個別擲筊請示，才分別擲出了連三次聖筊得以確定，父親最後的選擇分別位在價格相對較低的不同樓層塔位及牌位，比起安放在同一樓層，可以替我們省下一筆不算小的數目；擲筊或許可以解釋為單純的機率問題，但我寧可相信天下父母心，即使到了最後一刻，作父母的總是擔心著子女的未來，總還是在替子女著想的吧。</p>
+
+    <h2>悲傷聚會所</h2>
+    <p>在殯葬管理所待個幾天，會見到每天有人進來，有人出去，進進出出之間，似乎生命的流轉在這個地方變得再尋常也不過，在每日不停的蓮花、紙錢折作中，在親戚來訪的慰問中，離別的悲傷好像就一點一滴地被沖淡了，直到一位年輕軍官移靈進來，這個場所的本質才又被悄然點醒。</p>
+    <p>照片上看來是個二十幾歲的軍官，跟著護送進來的也都是短髮黝黑體健的年輕人，想來應該是軍中的同袍，在停靈完成後，一位黑衣的中年婦女走近靈堂，挪了張椅子端坐在年輕軍官的照片前一動也不動，悄然無聲地停佇著不知過了多久，如此肅然的情景反倒安靜得過於異常，這位母親一聲不作地承受著人生至痛，沒有流露出一絲強烈的情緒，猜測是因為習俗上在世至親的哭聲會令亡者無法安心離去，看在旁人眼裏，那沈默的背影卻更顯出悲傷的巨大；感受到這股強烈的氣流，我轉頭環顧停靈室中的其他家屬，有人情感豐富，面對離別的哀淒忍不住流淚哭泣，而多數人則選擇低調地埋藏自己的情緒，偶爾才從泛紅的眼眶中見到人們不捨的情感，於是我發現這終究是個悲傷的聚集地，沒有例外。</p>
+
+    <h2>聽覺</h2>
+    <p>送別的日子每天早早就到殯葬管理所報到，晚上回到家仍繼續做著蓮花、紙錢，連日來的疲憊使家人們都有點精神不濟，媽媽請家族平時主要代表祭祀先人的二伯母上香告知祖先「父親已過世」一事時，不小心口誤成「請打電話跟祖先說一聲」；妹夫的上司來電關心，他也不小心將「岳父」說成「公公」；諸如此類的種種，說明著文化習俗裏對於送終這件事的繁瑣，過程絕不輕鬆，而且素昧平生的禮俗主持者叫你跪你就跪，叫你爬就爬，沒有抗拒，這大概也是人們最服從、最聽話的時候了吧。</p>
+    <p>曾詳讀過「西藏生死書」的內容，書裏提到人在往生之後五感是逐漸退去的，其中聽覺是最後消逝的一項，世界各地不同文化的喪葬儀式中也幾乎都有音樂的應用，而在這場親身經歷的送別裏，從禮儀社工作人員引領和亡者交談的低語，到各種科儀舉行時的唸經聲、樂器聲，莫不是依靠著聲音在與亡者作溝通，而不巧若多場法會同時演出，其音量之宏偉及錯綜交雜，真的是有「吵死人」的感覺，看來我們的文化習俗對亡者的聽覺辨識靈敏度似乎特別有信心？</p>
+
+    <h2>最後的轉換</h2>
+    <p>告別式的日子很快就到了，這是眼淚最多的一天，媽媽的眼淚，妹妹的眼淚、弟弟的眼淚，其實父親和我們三個子女的關係始終都不親近，他是個不太懂得如何跟孩子互動的爸爸，個性上的固執似乎也讓我的祖父母對他沒有太多的偏愛？其實我覺得他一輩子應該都活得滿孤獨，而且我想他也是個怕寂寞的人，不過他最後安置的地方決定了是和阿公阿嬤在同一層，或許在心理上孤單了這麼久之後，終於在某種形式上可以和他自己的爸媽相聚，希望他能夠回到人類對親情之愛最初的想望中，被溫柔地擁抱。不管如何，他都已經離開了，若依我所相信的，我想他的生命是轉換到另外一個階段去了，但願他能超脫此生在人世的各種苦痛，在這點上，我確實是非常誠心地希望著，能成為家人都是某種緣份才有的，希望他在另一個生命階段能放下過去的種種，好好營造新的一切。</p>
+    <p>告別式之後火化、撿骨，進塔安厝，這場送別的旅程至此圓滿告一段落，一路回想起這趟旅程中的種種，想起颱風前夕剛好出差返回臺南，在颱風天還忙著辦理轉院；想起最初接到通知，趕赴醫院看到無聲躺在病床上的父親，那不再有一絲一毫生命氣息的軀體，當時的輕聲呼喚，唯有沈默作回應；想起隨著安排接送至臺南市殯葬管理所時，和弟弟護送父親至停靈室的過程中依然輕聲叫喚著，希望他不要驚慌；想起隔天進辦公室匆忙地準備交待同事代理事務，一整天下來渾渾噩噩，擔心交待不夠清楚造成困擾，所幸大家都很體諒也很幫忙，後來長官還特地來電關心，令人感到人情的溫暖；離開了悲傷聚會所，再也不欲回頭，但願離去時每個人都能卸下沈重的情緒，也願所有的家屬和亡者都能生死無憾。</p>
+
+    <div class="article-footer-nav">
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/note_cl/note_cl.html">回隨意簡札目錄</a>
+      <a class="footer-nav-link" href="https://elf0724.github.io/entrance/index.html">回入口</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>&copy; elf0724 Photography &nbsp;·&nbsp; Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></p>
+  </footer>
+
+</body>
+</html>
