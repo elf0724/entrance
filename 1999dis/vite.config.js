@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  // https://elf0724.github.io/entrance/1999dis/
+  // 只需要路徑開頭與結尾的斜線
   base: '/entrance/1999dis/', 
   plugins: [react()],
 })
