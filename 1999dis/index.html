@@ -57,12 +57,12 @@ footer{margin-top:48px; padding-top:20px; border-top:1px solid var(--rule);
 <header>
   <p class="eyebrow">Open Data Toolkit</p>
   <h1>1999 派工開放資料<span class="mark">工具集</span></h1>
-  <p class="sub">用臺北市資料大平臺的 1999 派工開放資料做的兩個小工具。</p>
+  <p class="sub">用臺北市資料大平臺的 1999 派工開放資料做的三個小工具。</p>
   <div class="rule"></div>
 </header>
 
 <p class="intro">
-  兩個工具都是<b>純前端、單一 HTML 檔</b>，資料上傳後只在你的瀏覽器裡處理，重新整理頁面即清除，不會送往任何伺服器，也不需要任何帳號或安裝。所需之 CSV 皆從臺北市資料大平臺下載的 1999 派工開放資料原始檔即可。
+  三個工具都是<b>純前端、單一 HTML 檔</b>，不需要任何帳號或安裝。前兩個工具（圖表化、空間與時間分析）採<b>自行上傳</b>模式：CSV 只在你的瀏覽器裡處理，重新整理頁面即清除，不會送往任何伺服器，所需之 CSV 皆從臺北市資料大平臺下載的 1999 派工開放資料原始檔即可。第三個工具（路樹風險分析）之案件與樹木資料已於製作時<b>預先處理並內建於頁面中</b>，開啟即可使用，資料範圍為2024年1月至2026年6月，之後若需納入更新月份需另行重新產製。
 </p>
 
 <div class="cards">
@@ -87,11 +87,22 @@ footer{margin-top:48px; padding-top:20px; border-top:1px solid var(--rule);
     <div class="tags"><span class="tag">門牌級地圖</span><span class="tag">每千戶標準化</span><span class="tag">時段分析</span></div>
   </a>
 
+  <a class="card" href="./1999tree.html">
+    <div class="card-top">
+      <span class="card-tag">路樹風險分析</span>
+      <span class="card-arrow">開啟 →</span>
+    </div>
+    <h2>路樹處理案件・行道樹分布・風險樹種疊圖</h2>
+    <p>整合「路樹處理」派工案件與行道樹、公園樹木普查資料，以路段代表點與門牌地理編碼雙圖層呈現案件熱點，並疊加楓香、黑板樹等五種與通報率顯著相關之樹種佔比，標出案件率與風險樹種佔比雙高的重疊路段。可依月份篩選、排除颱風後通報異常月。此工具資料已預先處理完成內建於頁面中，開啟即可使用，無需另行上傳 CSV。</p>
+    <div class="tags"><span class="tag">雙圖層地圖</span><span class="tag">月份篩選</span><span class="tag">樹種風險疊圖</span></div>
+  </a>
+
 </div>
 
 <footer>
   資料來源：臺北市資料大平臺・1999 派工案件開放資料（https://data.taipei）。<br>
-  門牌座標比對：內政部門牌資料，內建於「時間／空間／熱點」工具中。
+  門牌座標比對：內政部門牌資料，內建於「時間／空間／熱點」工具中。<br>
+  路樹風險分析：另整合臺北市行道樹、公園綠地樹木普查資料集，資料期間2024-01至2026-06，統計方法與限制詳見工具內之說明。
 </footer>
 
 </div>
