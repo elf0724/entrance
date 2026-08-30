@@ -877,14 +877,14 @@ function altitudeFactor(targetAlt, terrain) {
   return lerpScore(clamp(targetAlt, 0, 300), 0, 0.35, 300, 0.45);
 }
 
-const CLOUD_TDD_THRESHOLD = 6;
+const SATURATED_TDD_THRESHOLD = 2;
 
 function estimateCloudTop(profile) {
   const usable = profile.filter(p => p.tdd != null);
   if (usable.length < 2) return undefined;
   let base = null, top = null;
   for (const level of usable) {
-    if (level.tdd < CLOUD_TDD_THRESHOLD) {
+    if (level.tdd < SATURATED_TDD_THRESHOLD) {
       if (base == null) base = level.height;
       top = level.height;
     } else if (base != null) {
