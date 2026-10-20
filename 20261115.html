@@ -213,7 +213,7 @@
                     下班直奔桃園機場 ➔ 深夜抵達羽田 ➔ 平和島溫泉休息
                   </h2>
                   <p className="text-xs text-slate-500 mt-1">
-                    重點：你有買來回託運行李，請務必於 19:30 前抵達桃機第一航廈樂桃櫃檯完成託運。
+                    重點：託運行李請務必於 19:30 前抵達桃機第一航廈樂桃櫃檯完成託運。
                   </p>
                 </div>
 
@@ -224,7 +224,7 @@
                     badgeColor="indigo"
                     icon={<Icons.Luggage className="w-4 h-4" />}
                     title="下班出發 ➔ 桃園機場第一航廈會合報到"
-                    desc="樂桃 MM860 於 18:25 開櫃、20:05 關櫃。先將你的小行李箱辦理託運，一身輕便入關。入關後買頂呱呱或簡餐當晚餐。"
+                    desc="樂桃 MM860 於 18:25 開櫃、20:05 關櫃。先將宗亨的小行李箱辦理託運，一身輕便入關。入關後買頂呱呱或簡餐當晚餐。"
                     mapQuery="桃園國際機場第一航廈"
                     onOpenMap={openMap}
                   />
@@ -244,7 +244,7 @@
                     badgeColor="indigo"
                     icon={<Icons.Luggage className="w-4 h-4" />}
                     title="抵達羽田機場第 3 航廈 ➔ 領取託運行李"
-                    desc="出關並領取你的託運行李箱後，前往搭乘深夜接駁巴士（或計程車約 15 分鐘）前往平和島溫泉。"
+                    desc="出關並領取託運行李箱後，前往搭乘深夜接駁巴士（或計程車約 15 分鐘）前往平和島溫泉。"
                     mapQuery="羽田空港第3ターミナル"
                     onOpenMap={openMap}
                   />
@@ -304,7 +304,7 @@
                       }`}
                     >
                       <Icons.Camera className="w-3.5 h-3.5" />
-                      只看我的路線
+                      宗亨的路線
                     </button>
                     <button
                       onClick={() => setViewMode('colleague')}
@@ -315,7 +315,7 @@
                       }`}
                     >
                       <Icons.User className="w-3.5 h-3.5" />
-                      只看同事路線
+                      華仁的路線
                     </button>
                   </div>
                 </div>
@@ -358,7 +358,7 @@
                             <Icons.Camera className="w-4 h-4" />
                           </span>
                           <div>
-                            <h3 className="text-sm font-bold text-emerald-950">你的路線：品川建築光影漫遊</h3>
+                            <h3 className="text-sm font-bold text-emerald-950">宗亨的路線：品川建築光影漫遊</h3>
                             <p className="text-[11px] text-emerald-700">08:30 – 15:15（整整 6.5 小時悠閒放空）</p>
                           </div>
                         </div>
@@ -367,7 +367,7 @@
                       <div className="bg-white rounded-xl p-3 border border-emerald-100 shadow-sm">
                         <div className="text-xs font-bold text-emerald-700">08:30 – 09:30｜從容寄物 ＆ 晨間咖啡</div>
                         <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                          送走同事後，不趕時間慢慢在品川站內（ecute 旁或中央改札）或港南口找置物櫃鎖入小行李箱。接著在 <strong>ecute 品川</strong> 或 <strong>atré 品川</strong> 挑間採光好的咖啡館喝手沖咖啡休息。
+                          不趕時間慢慢在品川站內（ecute 旁或中央改札）或港南口找置物櫃鎖入小行李箱。接著在 <strong>ecute 品川</strong> 或 <strong>atré 品川</strong> 挑間採光好的咖啡館喝手沖咖啡休息。
                         </p>
                         <div className="flex flex-wrap gap-1.5 mt-2">
                           <MapButton label="ecute 品川" onClick={() => openMap('エキュート品川')} />
@@ -452,7 +452,7 @@
                     </div>
                   )}
 
-                  {/* 同事路線 */}
+                  {/* 華仁的路線 */}
                   {(viewMode === 'all' || viewMode === 'colleague') && (
                     <div className="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 space-y-3 shadow-sm">
                       <div className="flex items-center justify-between border-b border-amber-200/80 pb-2.5">
@@ -461,7 +461,7 @@
                             <Icons.Sparkles className="w-4 h-4" />
                           </span>
                           <div>
-                            <h3 className="text-sm font-bold text-amber-950">同事路線：靜岡沼津・三之浦特攻</h3>
+                            <h3 className="text-sm font-bold text-amber-950">華仁的路線：靜岡沼津・三之浦特攻</h3>
                             <p className="text-[11px] text-amber-800">08:34 – 15:11（《Love Live! Sunshine!!》聖地）</p>
                           </div>
                         </div>
@@ -502,7 +502,7 @@
                         🤝 下午會合點：15:15 JR 品川站「中央改札口內側」
                       </div>
                       <p className="text-xs text-indigo-100 mt-1 leading-relaxed">
-                        同事 15:11 下新幹線通過轉乘口後直接就在 JR 站內，請你於 <strong>14:35 先領出行李箱並刷進 JR 品川站內</strong>，兩人在站內直接會合前往 9/10 號月台搭 15:45 特急！
+                        華仁 15:11 下新幹線通過轉乘口後直接就在 JR 站內，宗亨須於 <strong>14:35 先領出行李箱並刷進 JR 品川站內</strong>，兩人在站內直接會合前往 9/10 號月台搭 15:45 特急！
                       </p>
                     </div>
                   </div>
@@ -553,7 +553,7 @@
                       Day 3｜2026年11月15日（週日）
                     </span>
                     <span className="text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md font-medium flex items-center gap-1">
-                      <Icons.Users className="w-3.5 h-3.5" /> 全程與同事共同行動
+                      <Icons.Users className="w-3.5 h-3.5" /> 全程共同行動
                     </span>
                   </div>
                   <h2 className="text-lg font-bold text-slate-800">
@@ -571,7 +571,7 @@
                     badgeColor="emerald"
                     icon={<Icons.Utensils className="w-4 h-4" />}
                     title="多美迎水戶享用豐盛早餐 ➔ 退房並寄放小行李箱"
-                    desc="睡飽後享用飯店知名的在地特色自助早餐。08:40 辦理退房，將你的小行李箱寄放在飯店一樓櫃檯（傍晚 17:05 回水戶再領取）。"
+                    desc="睡飽後享用飯店知名的在地特色自助早餐。08:40 辦理退房，將宗亨的小行李箱寄放在飯店一樓櫃檯（傍晚 17:05 回水戶再領取）。"
                     mapQuery="ドーミーイン水戸"
                     onOpenMap={openMap}
                   />
@@ -643,7 +643,7 @@
                       Day 4｜2026年11月16日（週一）
                     </span>
                     <span className="text-xs text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md font-medium">
-                      已修正回程航班資訊
+                      回程航班MM859
                     </span>
                   </div>
                   <h2 className="text-lg font-bold text-slate-800">
@@ -672,7 +672,7 @@
                     badgeColor="indigo"
                     icon={<Icons.Luggage className="w-4 h-4" />}
                     title="辦理小行李箱託運 ➔ 便利商店購買早餐"
-                    desc="03:45 樂桃櫃檯開櫃後，第一時間託運你的行李箱（04:55 關櫃）。可在出境前 1 樓 LAWSON 或通關後候機室的 7-Eleven 購買熱食早餐。"
+                    desc="03:45 樂桃櫃檯開櫃後，第一時間託運宗亨的行李箱（04:55 關櫃）。可在出境前 1 樓 LAWSON 或通關後候機室的 7-Eleven 購買熱食早餐。"
                   />
 
                   <TimelineCard
@@ -721,7 +721,7 @@
                           </div>
                         </div>
                         <div className="text-[11px] text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200/70 mt-2">
-                          🧳 <strong>你的託運提醒：</strong>{f.baggageNote}
+                          🧳 <strong>行李託運提醒：</strong>{f.baggageNote}
                         </div>
                       </div>
                     ))}
