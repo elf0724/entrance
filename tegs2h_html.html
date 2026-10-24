@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>旅遊行程 Excel / Google Sheet 轉互動式 HTML 產生器</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(148, 163, 184, 0.1);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.35);
+      border-radius: 9999px;
+    }
+    .theme-indigo {
+      --brand-bg: #1e3a5f;
+      --brand-bg-light: #ebf2f7;
+      --brand-accent: #2563eb;
+      --brand-badge: #dbeafe;
+      --brand-badge-text: #1e40af;
+    }
+    .theme-sakura {
+      --brand-bg: #831843;
+      --brand-bg-light: #fdf2f8;
+      --brand-accent: #db2777;
+      --brand-badge: #fce7f3;
+      --brand-badge-text: #9d174d;
+    }
+    .theme-matcha {
+      --brand-bg: #14532d;
+      --brand-bg-light: #f0fdf4;
+      --brand-accent: #16a34a;
+      --brand-badge: #dcfce7;
+      --brand-badge-text: #166534;
+    }
+    .theme-slate {
+      --brand-bg: #0f172a;
+      --brand-bg-light: #f1f5f9;
+      --brand-accent: #475569;
+      --brand-badge: #e2e8f0;
+      --brand-badge-text: #1e293b;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Top Navigation & Action Bar -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-inner">
+          <i data-lucide="Compass" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight">旅遊行程表 → 互動式 HTML 產生器</h1>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">v2.0 問路卡・憑證夾・光影氣象版</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">支援 Excel 拖曳轉檔・全螢幕日文指差し問路卡・Base64 離線憑證夾・URL 壓縮分享與黃金光影預測</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btnShareUrlState" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-700/70 transition">
+          <i data-lucide="Share2" class="w-4 h-4 text-indigo-400"></i>
+          <span>複製狀態分享網址 (#Hash)</span>
+        </button>
+        <button id="btnDownloadTemplate" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          <i data-lucide="FileSpreadsheet" class="w-4 h-4 text-emerald-400"></i>
+          <span>下載制式 Excel 範本 (.xlsx)</span>
+        </button>
+        <button id="btnCopyHtml" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          <i data-lucide="Code" class="w-4 h-4 text-sky-400"></i>
+          <span>複製 HTML 原始碼</span>
+        </button>
+        <button id="btnExportStandalone" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow transition">
+          <i data-lucide="Download" class="w-4 h-4"></i>
+          <span>匯出獨立互動式網頁 (.html)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace Container -->
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Column: Data Source & Customization Controls (4 cols on desktop) -->
+    <aside class="lg:col-span-4 space-y-5">
+
+      <!-- Card 1: Data Import -->
+      <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+            <i data-lucide="UploadCloud" class="w-4 h-4 text-blue-600"></i>
+            <span>步驟 1：匯入行程表資料</span>
+          </h2>
+          <button id="btnResetDemo" type="button" class="text-xs text-blue-600 hover:text-blue-800 font-medium underline">
+            還原 11月沼津・大洗範例
+          </button>
+        </div>
+
+        <!-- Drag & Drop Zone -->
+        <label for="fileInput" id="dropZone" class="block border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-4 text-center cursor-pointer transition bg-slate-50/70 hover:bg-blue-50/40">
+          <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" class="hidden" />
+          <div class="flex flex-col items-center gap-1.5">
+            <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+              <i data-lucide="FileUp" class="w-4 h-4"></i>
+            </div>
+            <p class="text-xs font-semibold text-slate-700">點擊或拖曳上傳 Excel (.xlsx) / CSV 檔</p>
+            <p class="text-[11px] text-slate-500">自動辨識「行程計畫」、「交通費用與時刻」、「住宿、交通與景點相關資訊」三張分頁</p>
+          </div>
+        </label>
+
+        <!-- Google Sheet URL Fetcher -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          <label for="gsheetUrlInput" class="block text-xs font-medium text-slate-700">或貼上 Google Sheet 公開連結 / 狀態分享碼：</label>
+          <div class="flex gap-1.5">
+            <input id="gsheetUrlInput" type="url" placeholder="https://docs.google.com/spreadsheets/d/... 或 #trip=..." class="flex-1 text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button id="btnLoadGsheet" type="button" class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white shrink-0 transition">
+              讀取試算表
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            💡 支援直接貼上同事傳來的 <code class="bg-slate-100 px-1 rounded">#trip=...</code> 壓縮狀態碼，或從 Google Sheet 下載 <code class="bg-slate-100 px-1 rounded">.xlsx</code> 拖曳匯入。
+          </p>
+        </div>
+
+        <!-- Current Data Status Badge -->
+        <div id="importStatusBox" class="rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2.5 flex items-start gap-2.5">
+          <i data-lucide="CheckCircle2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+          <div class="text-xs">
+            <p id="importStatusTitle" class="font-semibold text-emerald-900">目前載入：20261113-1116-沼津、大洗旅行行程計畫.xlsx</p>
+            <p id="importStatusMeta" class="text-emerald-700 text-[11px] mt-0.5">共 4 天行程・12 筆交通時刻・11 筆連結與日文問路卡</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 2: Theme & Parameters -->
+      <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 space-y-3.5">
+        <h2 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+          <i data-lucide="Sliders" class="w-4 h-4 text-blue-600"></i>
+          <span>步驟 2：自訂網頁標題與視覺主題</span>
+        </h2>
+
+        <div class="space-y-2.5">
+          <div>
+            <label for="inputTripTitle" class="block text-xs font-medium text-slate-600 mb-1">行程網頁主標題</label>
+            <input id="inputTripTitle" type="text" value="2026 日本沼津・大洗四日遊" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div>
+            <label for="inputTripSubtitle" class="block text-xs font-medium text-slate-600 mb-1">副標題 / 日期與目的地說明</label>
+            <input id="inputTripSubtitle" type="text" value="2026/11/13 (五) – 11/16 (一)｜東京平和島・靜岡沼津・茨城水戶＆大洗鮟鱇魚祭" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label for="inputExchangeRate" class="block text-xs font-medium text-slate-600 mb-1">日圓匯率 (JPY→TWD)</label>
+              <input id="inputExchangeRate" type="number" step="0.001" min="0.05" max="1" value="0.215" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label for="selectTheme" class="block text-xs font-medium text-slate-600 mb-1">配色主題風格</label>
+              <select id="selectTheme" class="w-full text-xs rounded-lg border border-slate-300 px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="indigo" selected>日式紺青 (Indigo)</option>
+                <option value="sakura">櫻花暖粉 (Sakura)</option>
+                <option value="matcha">宇治抹茶 (Matcha)</option>
+                <option value="slate">極簡深灰 (Slate)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 3: Offline Voucher Uploader & Quick Editor -->
+      <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+            <i data-lucide="QrCode" class="w-4 h-4 text-blue-600"></i>
+            <span>步驟 3：離線憑證夾＆線上表格快編</span>
+          </h2>
+          <button id="btnOpenEditorModal" type="button" class="text-xs px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold transition">
+            開啟表格編輯器
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-600 leading-relaxed">
+          可將車票 QR Code、訂房確認信截圖加入憑證夾，程式會自動壓縮為 Base64 內嵌進匯出的單一 HTML 檔，在日本地下鐵無訊號也能秒開：
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          <label for="voucherImageInput" class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 cursor-pointer transition">
+            <i data-lucide="ImagePlus" class="w-4 h-4 text-amber-600"></i>
+            <span>上傳車票 / QR 圖片內嵌</span>
+            <input id="voucherImageInput" type="file" accept="image/*" class="hidden" />
+          </label>
+          <button id="btnAddTextVoucher" type="button" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
+            <i data-lucide="PlusCircle" class="w-4 h-4 text-slate-600"></i>
+            <span>新增取票代號</span>
+          </button>
+        </div>
+
+        <div class="space-y-1.5 text-[11px] text-slate-600 bg-slate-50 rounded-xl p-3 border border-slate-200/70">
+          <p class="font-bold text-slate-800">✨ 已實作擴充模組 4 ＆ 5 亮點：</p>
+          <p>• <strong>模組 4（指差し問路大字卡＋離線憑證夾）</strong>：點擊任何住宿/交通/景點的「🗣️ 問路大字卡」即可全螢幕顯示日文原名、地址與情境日語（買票/問路/寄行李）。</p>
+          <p>• <strong>模組 5（氣象光影＋URL 狀態分享）</strong>：每日行程整合日出、日落、Golden Hour 攝影光影時段與 Open-Meteo 即時氣象更新，並支援 <code class="bg-white px-1 rounded border">LZ-String</code> 網址壓縮分享。</p>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- Right Column: Live Interactive HTML Preview (8 cols on desktop) -->
+    <section class="lg:col-span-8 flex flex-col">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+
+        <!-- Preview Top Bar -->
+        <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="flex gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            </span>
+            <span class="text-xs font-semibold text-slate-600 ml-1">即時互動式網頁預覽（匯出後即為此完整互動介面）</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btnRefreshWeather" type="button" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition">
+              <i data-lucide="CloudSun" class="w-3.5 h-3.5"></i>
+              <span id="weatherStatusBtnText">更新 Open-Meteo 氣象光影</span>
+            </button>
+            <select id="selectNumazuOption" class="text-xs rounded-lg border border-slate-300 px-2 py-1 bg-white text-slate-700 font-medium">
+              <option value="bike" selected>沼津方案 A：騎腳踏車 (¥1,920)</option>
+              <option value="bus">沼津方案 B：搭公車三段 (¥2,340)</option>
+              <option value="both">兩者皆列出計入</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Rendered Interactive App Area -->
+        <div id="previewContainer" class="theme-indigo flex-1 flex flex-col">
+
+          <!-- Hero Banner inside Preview -->
+          <div style="background-color: var(--brand-bg);" class="text-white px-5 sm:px-7 py-6 transition-colors">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div class="space-y-1.5">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-white/90 text-xs font-medium">
+                  <i data-lucide="Plane" class="w-3.5 h-3.5"></i>
+                  <span>Interactive Travel Companion v2.0</span>
+                </div>
+                <h2 id="previewTitle" class="text-xl sm:text-2xl font-bold tracking-tight">2026 日本沼津・大洗四日遊</h2>
+                <p id="previewSubtitle" class="text-xs sm:text-sm text-white/80">2026/11/13 (五) – 11/16 (一)｜東京平和島・靜岡沼津・茨城水戶＆大洗鮟鱇魚祭</p>
+              </div>
+
+              <!-- Quick Search Box inside Preview -->
+              <div class="w-full sm:w-56">
+                <div class="relative">
+                  <input id="inputPreviewSearch" type="text" placeholder="搜尋行程、車站、景點..." class="w-full text-xs rounded-xl bg-white/15 hover:bg-white/20 focus:bg-white text-white focus:text-slate-900 placeholder-white/70 focus:placeholder-slate-400 px-3 py-2 pl-8 border border-white/20 focus:outline-none transition" />
+                  <i data-lucide="Search" class="w-3.5 h-3.5 text-white/70 absolute left-2.5 top-2.5 pointer-events-none"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 KPI Summary Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
+                <p class="text-[11px] text-white/75">行程總天數</p>
+                <p id="kpiDays" class="text-lg font-bold mt-0.5">4 天 3 夜</p>
+                <p id="kpiDateSpan" class="text-[11px] text-white/70 mt-0.5">11/13(五) – 11/16(一)</p>
+              </div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
+                <p class="text-[11px] text-white/75">預估交通車資合計</p>
+                <p id="kpiTransportJpy" class="text-lg font-bold mt-0.5">¥19,180</p>
+                <p id="kpiTransportTwd" class="text-[11px] text-amber-200 mt-0.5">約 NT$ 4,124</p>
+              </div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
+                <p class="text-[11px] text-white/75">預估住宿總額 (3晚)</p>
+                <p id="kpiHotelJpy" class="text-lg font-bold mt-0.5">¥25,390</p>
+                <p id="kpiHotelTwd" class="text-[11px] text-amber-200 mt-0.5">約 NT$ 5,459 / 人</p>
+              </div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
+                <p class="text-[11px] text-white/75">離線憑證與行前檢核</p>
+                <p id="kpiPrebookCount" class="text-lg font-bold mt-0.5">3 筆預先處理</p>
+                <p id="kpiChecklistProgress" class="text-[11px] text-emerald-200 mt-0.5">已完成 0%</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Tabs inside Preview -->
+          <div class="bg-white border-b border-slate-200 px-3 sm:px-5 flex items-center gap-1 overflow-x-auto">
+            <button type="button" data-preview-tab="itinerary" class="preview-tab-btn border-b-2 border-blue-600 text-blue-600 font-semibold text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
+              <i data-lucide="Calendar" class="w-4 h-4"></i>
+              <span>每日行程時間軸</span>
+            </button>
+            <button type="button" data-preview-tab="transport" class="preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
+              <i data-lucide="Train" class="w-4 h-4"></i>
+              <span>交通費用與時刻表</span>
+            </button>
+            <button type="button" data-preview-tab="wallet" class="preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
+              <i data-lucide="IdCard" class="w-4 h-4"></i>
+              <span>問路大字卡＆憑證夾</span>
+            </button>
+            <button type="button" data-preview-tab="links" class="preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
+              <i data-lucide="Bookmark" class="w-4 h-4"></i>
+              <span>住宿・交通・景點連結</span>
+            </button>
+            <button type="button" data-preview-tab="checklist" class="preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
+              <i data-lucide="CheckSquare" class="w-4 h-4"></i>
+              <span>購票與行前檢核</span>
+            </button>
+          </div>
+
+          <!-- Tab Content Panels -->
+          <div class="p-4 sm:p-6 flex-1 bg-slate-50/60 overflow-y-auto custom-scrollbar">
+
+            <!-- Panel 1: Daily Itinerary Timeline + Weather & Golden Hour -->
+            <div id="panelItinerary" class="space-y-4">
+              <div id="dayFilterBar" class="flex flex-wrap items-center gap-2"></div>
+              <div id="dayCardsContainer" class="space-y-5"></div>
+            </div>
+
+            <!-- Panel 2: Transport & Schedule -->
+            <div id="panelTransport" class="hidden space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <button type="button" data-transport-filter="all" class="transport-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-white">全部路段</button>
+                  <button type="button" data-transport-filter="pre" class="transport-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">需預先處理 (線上訂票)</button>
+                  <button type="button" data-transport-filter="onsite" class="transport-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">現場處理 (IC卡/現場買)</button>
+                </div>
+                <p class="text-xs text-slate-500">可點擊「🗣️ 購票問路卡」出示日文站名給站務員</p>
+              </div>
+              <div id="transportListContainer" class="space-y-2.5"></div>
+            </div>
+
+            <!-- Panel 3 (Module 4): Point-and-Speak Cards & Offline Voucher Wallet -->
+            <div id="panelWallet" class="hidden space-y-6">
+              <!-- Section A: Offline Vouchers & Tickets -->
+              <div class="space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                      <i data-lucide="Ticket" class="w-4 h-4 text-amber-600"></i>
+                      <span>離線車票與訂房憑證夾（Base64 內嵌，無網路可開）</span>
+                    </h3>
+                    <p class="text-xs text-slate-500">點擊卡片可全螢幕放大出示 QR Code、取票代碼或預約編號</p>
+                  </div>
+                </div>
+                <div id="vouchersGridContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+              </div>
+
+              <!-- Section B: Point-and-Speak Japanese Cards -->
+              <div class="space-y-3 pt-3 border-t border-slate-200">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                      <i data-lucide="MessageSquareQuote" class="w-4 h-4 text-blue-600"></i>
+                      <span>日本現場「指差し（指指通）」全螢幕問路大字卡</span>
+                    </h3>
+                    <p class="text-xs text-slate-500">點擊任一地點即可彈出超大字體日文地名、地址與情境短句（問路／買票／入住／寄行李）</p>
+                  </div>
+                </div>
+                <div id="speakCardsGridContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+              </div>
+            </div>
+
+            <!-- Panel 4: Links & Info -->
+            <div id="panelLinks" class="hidden space-y-4">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button type="button" data-link-filter="all" class="link-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-white">全部分類</button>
+                <button type="button" data-link-filter="住宿" class="link-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">🏨 住宿資訊</button>
+                <button type="button" data-link-filter="交通" class="link-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">🚄 交通時刻與訂票</button>
+                <button type="button" data-link-filter="景點" class="link-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">⛩️ 景點與祭典活動</button>
+              </div>
+              <div id="linksGridContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+            </div>
+
+            <!-- Panel 5: Pre-trip & Ticket Checklist -->
+            <div id="panelChecklist" class="hidden space-y-4">
+              <div class="bg-blue-50 border border-blue-200 rounded-xl p-3.5 flex items-center justify-between gap-3">
+                <div class="text-xs text-blue-900">
+                  <p class="font-bold">行前訂票與重要注意事項檢核表</p>
+                  <p class="text-blue-700 mt-0.5">根據試算表內「預先處理」標記與行程重點自動彙整，勾選狀態會自動保存在瀏覽器與分享網址中。</p>
+                </div>
+                <button id="btnClearChecklist" type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-slate-700 border border-blue-200 hover:bg-slate-100 shrink-0">
+                  重置勾選
+                </button>
+              </div>
+              <div id="checklistContainer" class="space-y-2"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Full-Screen Point-and-Speak & Voucher Zoom Modal (Module 4) -->
+  <div id="pointSpeakModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6">
+    <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border-4 border-amber-400 flex flex-col max-h-[92vh]">
+      <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">指差し会話・問路大字卡</span>
+          <span id="psModalSubCategory" class="text-xs text-slate-300">請直接將此畫面出示給日本站務員、司機或店員</span>
+        </div>
+        <button id="btnClosePointSpeakModal" type="button" class="text-slate-300 hover:text-white p-1 rounded-lg bg-slate-800">
+          <i data-lucide="X" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-7 overflow-y-auto space-y-5 text-center">
+        <!-- Context Phrase Switcher Pills -->
+        <div class="flex flex-wrap items-center justify-center gap-1.5">
+          <button type="button" data-ps-phrase="go" class="ps-phrase-btn px-3 py-1.5 rounded-full text-xs font-bold bg-blue-600 text-white">📍 我想去這裡</button>
+          <button type="button" data-ps-phrase="ticket" class="ps-phrase-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">🎫 我想買車票</button>
+          <button type="button" data-ps-phrase="checkin" class="ps-phrase-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">🏨 辦理入住/預約</button>
+          <button type="button" data-ps-phrase="luggage" class="ps-phrase-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">🧳 寄放行李</button>
+        </div>
+
+        <!-- Japanese Intent Banner -->
+        <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4">
+          <p id="psPhraseJp" class="text-lg sm:text-2xl font-extrabold text-slate-900">すみません、ここへ行きたいです。</p>
+          <p id="psPhraseRomaji" class="text-xs sm:text-sm text-amber-800 mt-1 font-medium">Sumimasen, koko e ikitai desu. (不好意思，我想前往這個地點)</p>
+        </div>
+
+        <!-- Giant Japanese Destination Title -->
+        <div class="py-3 px-2 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">目的地 / 設施日文名稱</p>
+          <h2 id="psTargetJp" class="text-2xl sm:text-4xl font-black text-slate-900 leading-tight break-words">天然温泉 平和島</h2>
+          <p id="psTargetZh" class="text-sm font-semibold text-blue-600">平和島溫泉</p>
+          <p id="psTargetAddress" class="text-xs sm:text-sm text-slate-600 bg-white py-2 px-3 rounded-xl border border-slate-200 inline-block mt-2">📍 東京都大田区平和島1-1-1 BIG FUN平和島 2F</p>
+        </div>
+
+        <!-- Optional Booking Code or Embedded QR Image -->
+        <div id="psVoucherBox" class="hidden bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4 space-y-3">
+          <p class="text-xs font-bold text-emerald-800 uppercase">預約番號 / 憑證資訊 (Booking Reference)</p>
+          <p id="psVoucherCode" class="text-xl sm:text-2xl font-mono font-extrabold text-emerald-950 tracking-wider"></p>
+          <img id="psVoucherImg" src="" alt="憑證圖片" class="hidden max-h-64 mx-auto rounded-xl border border-emerald-300 shadow-sm" />
+        </div>
+      </div>
+
+      <div class="px-5 py-3 bg-slate-100 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+        <span>💡 提示：橫放手機可讓字體更大更清晰</span>
+        <button id="btnDonePointSpeakModal" type="button" class="px-4 py-1.5 rounded-lg font-bold bg-slate-900 text-white hover:bg-slate-800">關閉字卡</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-Page Modal: Add Text Voucher -->
+  <div id="voucherModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+          <i data-lucide="Ticket" class="w-4 h-4 text-amber-600"></i>
+          <span>新增離線憑證 / 取票代號</span>
+        </h3>
+        <button id="btnCloseVoucherModal" type="button" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="X" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label for="inputVoucherTitle" class="block text-xs font-medium text-slate-600 mb-1">憑證名稱（如：JR常磐線特急取票號、多美迎水戶訂房代號）</label>
+          <input id="inputVoucherTitle" type="text" placeholder="例如：JR 東日本 えきねっと 預約番號" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2" />
+        </div>
+        <div>
+          <label for="inputVoucherCode" class="block text-xs font-medium text-slate-600 mb-1">預約編號 / 取票代碼</label>
+          <input id="inputVoucherCode" type="text" placeholder="例如：EKI-884920 / 紙本票券提醒" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 font-mono" />
+        </div>
+        <div>
+          <label for="inputVoucherNote" class="block text-xs font-medium text-slate-600 mb-1">出示對象與備註說明</label>
+          <input id="inputVoucherNote" type="text" placeholder="例如：於品川站指定席售票機領票" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2" />
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="btnCancelVoucherModal" type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700">取消</button>
+        <button id="btnConfirmAddVoucher" type="button" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500">儲存憑證</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-Page Modal: Spreadsheet Quick Editor -->
+  <div id="editorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="Edit3" class="w-4 h-4 text-blue-400"></i>
+          <h3 class="font-bold text-sm">線上行程資料編輯器（修改後即時更新預覽與匯出檔）</h3>
+        </div>
+        <button id="btnCloseEditorModal" type="button" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="X" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Editor Sub-tabs -->
+      <div class="bg-slate-100 px-5 pt-2.5 border-b border-slate-200 flex gap-2">
+        <button type="button" data-editor-tab="days" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-bold bg-white text-blue-600 border-t border-x border-slate-200">1. 每日行程計畫</button>
+        <button type="button" data-editor-tab="transport" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900">2. 交通費用與時刻</button>
+        <button type="button" data-editor-tab="links" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900">3. 住宿・交通・景點連結</button>
+      </div>
+
+      <div class="p-5 overflow-y-auto flex-1 space-y-4 custom-scrollbar">
+        <!-- Editor Tab 1: Days -->
+        <div id="editorPanelDays" class="space-y-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-slate-600">可直接修改各天各時段內容與觀測城市，或點擊右側新增一天行程：</p>
+            <button id="btnAddDay" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500">+ 新增一天</button>
+          </div>
+          <div id="editorDaysContainer" class="space-y-4"></div>
+        </div>
+
+        <!-- Editor Tab 2: Transport -->
+        <div id="editorPanelTransport" class="hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-slate-600">管理各段交通工具、日圓票價、時刻與「現場/預先處理」標記：</p>
+            <button id="btnAddTransport" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500">+ 新增交通路段</button>
+          </div>
+          <div id="editorTransportContainer" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Editor Tab 3: Links & Japanese Info -->
+        <div id="editorPanelLinks" class="hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-slate-600">管理住宿、交通與景點連結，並可自訂「日文原名/地址」供全螢幕問路大字卡使用：</p>
+            <button id="btnAddLink" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500">+ 新增參考連結</button>
+          </div>
+          <div id="editorLinksContainer" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2">
+        <button id="btnSaveEditorModal" type="button" class="px-4 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow">
+          套用修改並返回預覽
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-900 text-white text-xs font-medium shadow-xl border border-slate-700">
+    <i data-lucide="Sparkles" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toastText">操作成功</span>
+  </div>
+
+  <script>
+    // =========================================================================
+    // Built-in Japanese Dictionary for Auto-Enriching Colleague's Excel Places
+    // =========================================================================
+    const JP_PLACE_DICT = {
+      "平和島溫泉": {
+        jpName: "天然温泉 平和島",
+        address: "東京都大田区平和島1-1-1 BIG FUN平和島 2F",
+        phraseType: "checkin",
+        voucherNote: "一晚 1人 ¥5,000（可付現或刷卡，含 7:00 早餐）"
+      },
+      "天然溫泉 香梅之湯 多美迎水戸": {
+        jpName: "天然温泉 香梅の湯 ドーミーイン水戸",
+        address: "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩約12分)",
+        phraseType: "checkin",
+        voucherNote: "一晚 1人 ¥15,390（同事已預先付款）"
+      },
+      "多美迎水戸": {
+        jpName: "天然温泉 香梅の湯 ドーミーイン水戸",
+        address: "茨城県水戸市南町2丁目6-7",
+        phraseType: "checkin",
+        voucherNote: "一晚 1人 ¥15,390（已預先付款）"
+      },
+      "平和島溫泉接駁車": {
+        jpName: "天然温泉平和島 送迎バス乗り場",
+        address: "京急平和島駅 / JR大森駅東口 6番乗場 / 羽田空港第3ターミナル",
+        phraseType: "go",
+        voucherNote: "凌晨 03:10 發車往羽田機場第3航廈"
+      },
+      "京濱急行電鐵（京急）": {
+        jpName: "京急本線 平和島駅 → 品川駅",
+        address: "東京都大田区大森北六丁目（京急平和島駅）",
+        phraseType: "ticket",
+        voucherNote: "於品川站轉乘 JR 東海道新幹線並寄放行李"
+      },
+      "JR東日本訂票系統": {
+        jpName: "JR常磐線特急 ひたち・ときわ（品川↔水戸）",
+        address: "JR品川駅 / JR水戸駅 指定席券売機",
+        phraseType: "ticket",
+        voucherNote: "11/14 15:45 品川→水戶｜11/15 17:53 水戶→大森"
+      },
+      "JR東海訂票系統": {
+        jpName: "東海道新幹線 こだま・ひかり（品川↔三島）",
+        address: "JR品川駅 新幹線乗換口 / JR三島駅",
+        phraseType: "ticket",
+        voucherNote: "11/14 08:04或08:34 品川→三島｜14:27 三島→品川"
+      },
+      "鹿島臨海鐵道": {
+        jpName: "鹿島臨海鉄道 大洗鹿島線（水戸駅 ↔ 大洗駅）",
+        address: "JR水戸駅 8番線ホーム（大洗鹿島線のりば）",
+        phraseType: "ticket",
+        voucherNote: "⚠️ 不支援 Suica/Apple Pay 西瓜卡！請買紙本票或出示線上票"
+      },
+      "沼津港大型展望水門「びゅうお」": {
+        jpName: "沼津港大型展望水門「びゅうお」",
+        address: "静岡県沼津市本字千本1905-27（沼津港）",
+        phraseType: "go",
+        voucherNote: "沼津港地標展望水門，門票 ¥100"
+      },
+      "沼津市觀光網站": {
+        jpName: "三の浦総合案内所（内浦エリア）",
+        address: "静岡県沼津市内浦長浜83-104",
+        phraseType: "go",
+        voucherNote: "沼津車站騎單車或搭東海巴士前往內浦三之浦觀光中心"
+      },
+      "大洗秋まつり 商工感謝祭＆大洗あんこう祭": {
+        jpName: "大洗あんこう祭 会場（大洗マリンタワー前芝生広場）",
+        address: "茨城県東茨城郡大洗町港中央10（大洗駅徒歩約14分）",
+        phraseType: "go",
+        voucherNote: "10:00 OARAI Seaside Station 開店｜12:00 活動舞台"
+      },
+      "大洗磯前神社": {
+        jpName: "大洗磯前神社・神磯の鳥居",
+        address: "茨城県東茨城郡大洗町磯浜町6890",
+        phraseType: "go",
+        voucherNote: "11/15 下午步行前往參拜與拍攝海上鳥居"
+      }
+    };
+
+    const PHRASE_TEMPLATES = {
+      go: {
+        jp: "すみません、ここへ行きたいです。道を教えてください。",
+        romaji: "Sumimasen, koko e ikitai desu. Michi o oshiete kudasai. (不好意思，我想去這裡，請問怎麼走？)"
+      },
+      ticket: {
+        jp: "すみません、この区間の切符を大人2枚買いたいです。",
+        romaji: "Sumimasen, kono kukan no kippu o otona ni-mai kaitai desu. (不好意思，我想買這段區間的車票，可調整張數)"
+      },
+      checkin: {
+        jp: "チェックインをお願いします。予約しています。",
+        romaji: "Chekku-in o onegaishimasu. Yoyaku shite imasu. (麻煩協助辦理入住，我已經有預約)"
+      },
+      luggage: {
+        jp: "すみません、近くにコインロッカーか荷物預かり所はありますか？",
+        romaji: "Sumimasen, chikaku ni koin-rokkaa ka nimotsu-azukarijo wa arimasu ka? (請問附近有投幣置物櫃或寄物處嗎？)"
+      }
+    };
+
+    // =========================================================================
+    // Default Dataset: Grounded 100% in colleague's 2026/11/13-11/16 Excel sheet
+    // + Enriched with Module 4 (Point-and-Speak & Vouchers) & Module 5 (Weather/Sun)
+    // =========================================================================
+    const DEFAULT_TRIP_DATA = {
+      title: "2026 日本沼津・大洗四日遊",
+      subtitle: "2026/11/13 (五) – 11/16 (一)｜東京平和島・靜岡沼津・茨城水戶＆大洗鮟鱇魚祭",
+      exchangeRate: 0.215,
+      theme: "indigo",
+      numazuOption: "bike",
+      sourceFileName: "20261113-1116-沼津、大洗旅行行程計畫.xlsx",
+      days: [
+        {
+          date: "11/13(五)",
+          isoDate: "2026-11-13",
+          city: "東京羽田・平和島",
+          lat: 35.579,
+          lon: 139.738,
+          sunrise: "06:14",
+          sunset: "16:37",
+          goldenHour: "15:55–16:45",
+          weatherDesc: "晴時多雲｜11°C – 18°C｜降雨 10%",
+          photoTip: "深夜抵達羽田機場三航廈，可拍攝江戶小路與展望台夜景",
+          departure: "自行前往機場",
+          breakfast: "自行處理",
+          morning: "-",
+          lunch: "-",
+          afternoon: "20:55 桃園機場 (一航站)\n00:50 羽田機場 (三航站)",
+          dinner: "入關後的頂呱呱或路上買東西",
+          hotel: "平和島溫泉"
+        },
+        {
+          date: "11/14(六)",
+          isoDate: "2026-11-14",
+          city: "靜岡沼津 → 茨城水戶",
+          lat: 35.096,
+          lon: 138.863,
+          sunrise: "06:19",
+          sunset: "16:43",
+          goldenHour: "06:00–06:50 / 16:00–16:50",
+          weatherDesc: "晴朗微風｜10°C – 17°C｜降雨 10%（適合單車巡禮）",
+          photoTip: "上午內浦灣與三之浦順光可拍駿河灣富士山景；14:11 返程前留意沼津港光線",
+          departure: "上午 7:40 或 7:55",
+          breakfast: "7:00～7:30\n平和島溫泉設施早餐",
+          morning: "1. 走路或搭公車到京急平和島站。\n2. 從京急平和島站坐到品川站，並在JR品川站寄放行李(沒空置物櫃的話，到三島寄放)。\n3. 轉新幹線坐到三島站，再轉在來線到沼津。\n4. 到沼津後，騎腳踏車或搭公車到三之浦觀光中心。",
+          lunch: "到水戶吃",
+          afternoon: "下午 2點11分 要從沼津坐車回三島\n下午 2點27分 從三島站出發到品川\n下午 3點45分 從品川到水戶約 5點8分\n車站走到飯店約 10-12分，\n下午 6點 走到車站南口，搭公車去吃飯",
+          dinner: "日式炸豬排餐廳 Cook Fan (備案薩利亞)\n吃完泡溫泉休息",
+          hotel: "天然溫泉 香梅之湯 多美迎水戸"
+        },
+        {
+          date: "11/15(日)",
+          isoDate: "2026-11-15",
+          city: "茨城大洗町 → 東京大森",
+          lat: 36.313,
+          lon: 140.575,
+          sunrise: "06:15",
+          sunset: "16:33",
+          goldenHour: "05:50–06:45 / 15:50–16:40",
+          weatherDesc: "晴時多雲｜8°C – 16°C｜海風稍涼建議防風外套",
+          photoTip: "下午前往大洗磯前神社剛好迎接 15:50–16:33 夕陽斜射「神磯の鳥居」浪花黃金時刻！",
+          departure: "上午 9:00 前往水戶站搭車",
+          breakfast: "06:30–08:00\n旅館早餐",
+          morning: "大洗鹿島線不支援現場支付的電子票證(包含 APPLE PAY 綁西瓜卡)，但有提供線上買票和現場紙本車票。\n預計 9點38分 抵達大洗。\n先走約 12-14分鐘(950m) 到活動會場逛一下，再到隔壁的 OARAI Seaside Station 逛(10點開店，走路約5分鐘)。\n12點 到活動舞台。",
+          lunch: "大洗的活動會場吃",
+          afternoon: "預計下午走到大洗磯前神社後，走回大洗車站\n逛到 4點多 搭車回水戶的飯店拿行李\n預計搭乘 5點53分 的車到大森站",
+          dinner: "大森站附近找吃的\n壽司郎？蘭州拉麵？",
+          hotel: "平和島溫泉"
+        },
+        {
+          date: "11/16(一)",
+          isoDate: "2026-11-16",
+          city: "東京羽田 → 桃園機場",
+          lat: 35.549,
+          lon: 139.779,
+          sunrise: "06:17",
+          sunset: "16:35",
+          goldenHour: "05:55–06:45",
+          weatherDesc: "晴朗｜11°C – 17°C｜凌晨接駁留意保暖",
+          photoTip: "凌晨 03:10 接駁巴士前往羽田第3航廈，入關後可補拍航廈晨光",
+          departure: "上午 3:00 準備搭 3:10 的接駁車",
+          breakfast: "預計 3點半 到機場，可以先在外面的 LAWSON（羅森）買吃的，入關後還有 7-11 或回台灣吃",
+          morning: "20:55 桃園機場 (一航站)\n00:50 羽田機場 (三航站) 凌晨返程航班",
+          lunch: "-",
+          afternoon: "-",
+          dinner: "-",
+          hotel: "溫暖的家"
+        }
+      ],
+      transports: [
+        { id: "t1", type: "公車", route: "平和島溫泉到京急平和島車站", jpRoute: "天然温泉平和島 → 京急平和島駅", priceText: "100", priceNum: 100, dep: "07:30 / 08:00 / 08:40", arr: "07:40 / 08:10 / 08:50", onsite: true, prebook: false, active: true, optionTag: "" },
+        { id: "t2", type: "鐵路", route: "京急平和島站到品川站(在這裡轉新幹線)", jpRoute: "京急平和島駅 → 品川駅（新幹線乗換・コインロッカー）", priceText: "180", priceNum: 180, dep: "07:48 / 08:13 / 08:53", arr: "07:56 / 08:22 / 09:01", onsite: true, prebook: false, active: true, optionTag: "" },
+        { id: "t3", type: "新幹線", route: "JR品川到JR三島", jpRoute: "東海道新幹線：JR品川駅 → JR三島駅", priceText: "4070", priceNum: 4070, dep: "08:04 / 08:34", arr: "08:50 / 09:20", onsite: true, prebook: false, active: true, optionTag: "" },
+        { id: "t4", type: "鐵路", route: "JR三島到JR沼津", jpRoute: "JR東海道本線：三島駅 → 沼津駅", priceText: "含於區間票", priceNum: 0, dep: "09:01 / 09:05 / 09:21 / 09:36", arr: "09:06 / 09:10 / 09:26 / 09:41", onsite: true, prebook: false, active: true, optionTag: "" },
+        { id: "t5", type: "A腳踏車", route: "沼津到三之浦旅遊服務中心，再騎回沼津", jpRoute: "沼津駅レンタサイクル ↔ 三の浦総合案内所", priceText: "每15分鐘120，12小時內2500 (預計4小時=1920)", priceNum: 1920, dep: "較自由，預計騎4小時", arr: "彈性往返", onsite: true, prebook: false, active: true, optionTag: "bike" },
+        { id: "t6", type: "B公車", route: "沼津 → 三之浦旅遊服務中心 → 沼津港 → 沼津", jpRoute: "東海バス：沼津駅 → 長浜・三の浦総合案内所 → 沼津港", priceText: "1090 + 980 + 270 (共 2340)", priceNum: 2340, dep: "一小時一班", arr: "依公車時刻表", onsite: true, prebook: false, active: false, optionTag: "bus" },
+        { id: "t7", type: "鐵路", route: "JR沼津到JR三島", jpRoute: "JR東海道本線：沼津駅 (14:11発) → 三島駅", priceText: "4070", priceNum: 4070, dep: "14:11", arr: "14:17", onsite: true, prebook: false, active: true, optionTag: "" },
+        { id: "t8", type: "新幹線", route: "JR三島到JR品川", jpRoute: "東海道新幹線：三島駅 (14:27発) → 品川駅", priceText: "併計於上段", priceNum: 0, dep: "14:27", arr: "15:11", onsite: true, prebook: false, active: true, optionTag: "" },
+        { id: "t9", type: "鐵路-常陸線、常磐線(ひたち、ときわ)", route: "JR品川到JR水戶", jpRoute: "JR常磐線特急 ひたち・ときわ：品川駅 (15:45発) → 水戸駅", priceText: "4000", priceNum: 4000, dep: "15:45", arr: "17:08", onsite: false, prebook: true, active: true, optionTag: "" },
+        { id: "t10", type: "鐵路 (大洗鹿島線)", route: "JR水戶與大洗來回", jpRoute: "鹿島臨海鉄道 大洗鹿島線：水戸駅 ↔ 大洗駅（往復紙切符）", priceText: "840", priceNum: 840, dep: "去程：09:24或更早 / 回程：16:44或更早", arr: "去程：09:38 / 回程：17:01", onsite: false, prebook: true, active: true, optionTag: "" },
+        { id: "t11", type: "鐵路", route: "JR水戶到JR大森", jpRoute: "JR常磐線特急：水戸駅 (17:27/17:53発) → 品川乗換 → JR大森駅", priceText: "4000", priceNum: 4000, dep: "17:27、17:53", arr: "19:07、19:32", onsite: false, prebook: true, active: true, optionTag: "" },
+        { id: "t12", type: "公車", route: "JR大森站到平和島溫泉", jpRoute: "JR大森駅東口 送迎バス → 天然温泉平和島", priceText: "免費", priceNum: 0, dep: "到時再看", arr: "-", onsite: true, prebook: false, active: true, optionTag: "" }
+      ],
+      links: [
+        { category: "住宿", name: "平和島溫泉", jpName: "天然温泉 平和島", address: "東京都大田区平和島1-1-1 BIG FUN平和島 2F", url: "https://www.heiwajima-onsen.jp/bus/", note: "一晚1人5000日圓(可付現或刷信用卡，附早餐，但要7點才有)", phraseType: "checkin" },
+        { category: "住宿", name: "天然溫泉 香梅之湯 多美迎水戸", jpName: "天然温泉 香梅の湯 ドーミーイン水戸", address: "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩12分)", url: "https://dormy-hotels.com/dormyinn/hotels/mito/breakfast/", note: "一晚1人15390日圓(同事已預先付款)", phraseType: "checkin" },
+        { category: "交通", name: "平和島溫泉接駁車", jpName: "天然温泉平和島 深夜早朝送迎バス", address: "BIG FUN平和島 1F バス乗場 ↔ 羽田空港第3ターミナル", url: "https://www.big-fun.jp/access/", note: "平和島 BIG FUN 接駁巴士時刻與乘車處資訊（11/16 03:10 搭車）", phraseType: "go" },
+        { category: "交通", name: "京濱急行電鐵（京急）", jpName: "京急本線 平和島駅 → 品川駅", address: "東京都大田区大森北6-13-1", url: "https://www.keikyu.co.jp/ride/kakueki/schedule.html", note: "京急平和島站 ↔ 品川站 各站停車時刻表", phraseType: "ticket" },
+        { category: "交通", name: "JR東日本訂票系統 (えきねっと)", jpName: "JR常磐線特急 ひたち・ときわ 指定席", address: "JR品川駅・JR水戸駅 みどりの窓口 / 指定席券売機", url: "https://www.eki-net.com/zh-CHT/jreast-train-reservation/Top/Index", note: "常磐線特急 ひたち/ときわ（品川↔水戶）預先訂票", phraseType: "ticket" },
+        { category: "交通", name: "JR東海訂票系統", jpName: "東海道新幹線（品川駅 ↔ 三島駅）", address: "JR品川駅 新幹線きっぷうりば", url: "https://railway.jr-central.co.jp/", note: "東海道新幹線（品川↔三島）班次查詢與預約", phraseType: "ticket" },
+        { category: "交通", name: "鹿島臨海鐵道（時刻表）", jpName: "鹿島臨海鉄道 大洗鹿島線（水戸駅 ↔ 大洗駅）", address: "JR水戸駅 8番線 大洗鹿島線のりば", url: "https://www.rintetsu.co.jp/timetable", note: "大洗鹿島線不支援 Suica，可先查時刻並購買線上或紙本票", phraseType: "ticket" },
+        { category: "景點", name: "沼津港大型展望水門「びゅうお」", jpName: "沼津港大型展望水門 びゅうお", address: "静岡県沼津市本字千本1905-27", url: "https://numazukanko.jp/spot/10020", note: "沼津港知名展望水門景點介紹", phraseType: "go" },
+        { category: "景點", name: "沼津市觀光網站 (LoveLive! 巡禮路線)", jpName: "三の浦総合案内所（内浦エリア）", address: "静岡県沼津市内浦長浜83-104", url: "https://numazukanko.jp/feature/lovelive-course3/page1", note: "內浦・三之浦觀光中心聖地巡禮指南", phraseType: "go" },
+        { category: "景點", name: "大洗秋まつり 商工感謝祭＆大洗あんこう祭", jpName: "大洗あんこう祭 会場（大洗マリンタワー前広場）", address: "茨城県東茨城郡大洗町港中央10", url: "https://www.tripia.app/zh/events/01a01e91-76d4-7dd4-9307-b0ea197ef536", note: "11/15 大洗鮟鱇魚祭活動會場與 12:00 舞台資訊", phraseType: "go" },
+        { category: "景點", name: "大洗磯前神社", jpName: "大洗磯前神社（神磯の鳥居）", address: "茨城県東茨城郡大洗町磯浜町6890", url: "https://www.tripia.app/zh/events/01a01e91-76d4-7dd4-9307-b0ea197ef536", note: "大洗知名神社與神磯鳥居，預計 11/15 下午步行前往", phraseType: "go" },
+        { category: "景點", name: "水戶日式炸豬排餐廳 Cook Fan", jpName: "とんかつレストラン クックファン (Cook Fan)", address: "茨城県水戸市酒門町3322-1（水戸駅南口よりバス）", url: "https://cookfan.com/", note: "11/14 晚餐名店（少女與戰車聖地炸豬排，備案：薩利亞）", phraseType: "go" }
+      ],
+      vouchers: [
+        {
+          id: "v_default_1",
+          title: "鹿島臨海鐵道（水戶↔大洗）購票提醒＆紙本票憑證",
+          code: "⚠️ 不支援 Suica / Apple Pay 西瓜卡",
+          jpTarget: "鹿島臨海鉄道 大洗鹿島線（水戸↔大洗 往復 ¥840）",
+          note: "請於水戶站 8 號月台入口或售票機購買來回紙本票，或出示線上購票畫面",
+          imageData: ""
+        },
+        {
+          id: "v_default_2",
+          title: "多美迎水戶 (Dormy Inn Mito) 住宿預約",
+          code: "11/14 入住 1 晚（¥15,390/人 已預付）",
+          jpTarget: "天然温泉 香梅の湯 ドーミーイン水戸",
+          note: "06:30–08:00 享用旅館早餐；11/15 下午 16:40 回飯店領取寄放行李",
+          imageData: ""
+        },
+        {
+          id: "v_default_3",
+          title: "JR 常磐線特急 (ひたち/ときわ) 劃位憑證",
+          code: "11/14 15:45 品川→水戶｜11/15 17:53 水戶→大森",
+          jpTarget: "JR東日本 えきねっと (Eki-net) 指定席",
+          note: "預先於 JR 東日本訂票系統劃位，可點擊左側「上傳車票/QR圖片」綁定截圖",
+          imageData: ""
+        }
+      ]
+    };
+
+    // Deep clone state
+    let appState = JSON.parse(JSON.stringify(DEFAULT_TRIP_DATA));
+    let activePreviewTab = "itinerary";
+    let activeDayFilter = "all";
+    let activeTransportFilter = "all";
+    let activeLinkFilter = "all";
+    let searchQuery = "";
+    let checklistState = {};
+    let currentPointSpeakItem = null;
+
+    // Safe localStorage & URL Hash State helpers (Module 5)
+    function loadSavedState() {
+      try {
+        const hash = window.location.hash || "";
+        if (hash.startsWith("#trip=") && typeof LZString !== "undefined") {
+          const compressed = hash.replace("#trip=", "");
+          const jsonStr = LZString.decompressFromEncodedURIComponent(compressed);
+          if (jsonStr) {
+            const parsed = JSON.parse(jsonStr);
+            if (parsed && parsed.state) {
+              appState = parsed.state;
+              checklistState = parsed.checklist || {};
+              showToast("已從分享網址 (#trip=...) 載入最新行程與檢核狀態！");
+              return;
+            }
+          }
+        }
+      } catch (e) {}
+
+      try {
+        const savedCheck = localStorage.getItem("japan_trip_checklist_v2");
+        if (savedCheck) {
+          checklistState = JSON.parse(savedCheck);
+        }
+      } catch (e) {
+        checklistState = {};
+      }
+    }
+
+    function saveChecklistState() {
+      try {
+        localStorage.setItem("japan_trip_checklist_v2", JSON.stringify(checklistState));
+      } catch (e) {}
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById("toastBox");
+      const txt = document.getElementById("toastText");
+      txt.textContent = msg;
+      box.classList.remove("hidden");
+      box.classList.add("flex");
+      if (window._toastTimer) clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        box.classList.add("hidden");
+        box.classList.remove("flex");
+      }, 3400);
+    }
+
+    function escapeHtml(str) {
+      return String(str == null ? "" : str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function parsePriceNumber(val) {
+      if (typeof val === "number" && !isNaN(val)) return val;
+      const s = String(val || "").trim();
+      if (!s || s.includes("免費")) return 0;
+      const eqMatch = s.match(/=\s*(\d+)/);
+      if (eqMatch) return parseInt(eqMatch[1], 10);
+      const nums = s.match(/\d+/g);
+      if (!nums) return 0;
+      if (s.includes("\n") && nums.length >= 2 && nums.length <= 4) {
+        return nums.reduce((acc, n) => acc + parseInt(n, 10), 0);
+      }
+      return parseInt(nums[0], 10) || 0;
+    }
+
+    function normalizeTimeText(val) {
+      if (val == null || val === "") return "-";
+      let s = String(val).trim();
+      s = s.replace(/\b([01]\d|2[0-3])([0-5]\d)\b/g, "$1:$2");
+      return s.replace(/\r?\n/g, " / ");
+    }
+
+    function resolveJpInfo(name, customJp, customAddr) {
+      if (customJp || customAddr) {
+        return {
+          jpName: customJp || name,
+          address: customAddr || "日本現地施設",
+          phraseType: "go"
+        };
+      }
+      for (const key of Object.keys(JP_PLACE_DICT)) {
+        if (name.includes(key) || key.includes(name)) {
+          return JP_PLACE_DICT[key];
+        }
+      }
+      return {
+        jpName: name,
+        address: "請出示此畫面予當地人員確認",
+        phraseType: "go"
+      };
+    }
+
+    // Open Full-Screen Point-and-Speak Modal (Module 4)
+    function openPointSpeakModal(item) {
+      currentPointSpeakItem = item;
+      const modal = document.getElementById("pointSpeakModal");
+      document.getElementById("psTargetJp").textContent = item.jpName || item.name || "";
+      document.getElementById("psTargetZh").textContent = item.name || "";
+      document.getElementById("psTargetAddress").textContent = "📍 " + (item.address || item.note || "日本現地");
+
+      const vBox = document.getElementById("psVoucherBox");
+      const vCode = document.getElementById("psVoucherCode");
+      const vImg = document.getElementById("psVoucherImg");
+
+      if (item.code || item.imageData) {
+        vBox.classList.remove("hidden");
+        vCode.textContent = item.code || "";
+        if (item.imageData) {
+          vImg.src = item.imageData;
+          vImg.classList.remove("hidden");
+        } else {
+          vImg.classList.add("hidden");
+        }
+      } else {
+        vBox.classList.add("hidden");
+      }
+
+      setPointSpeakPhrase(item.phraseType || "go");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function setPointSpeakPhrase(type) {
+      const tpl = PHRASE_TEMPLATES[type] || PHRASE_TEMPLATES.go;
+      document.getElementById("psPhraseJp").textContent = tpl.jp;
+      document.getElementById("psPhraseRomaji").textContent = tpl.romaji;
+      document.querySelectorAll(".ps-phrase-btn").forEach(btn => {
+        const isAct = btn.getAttribute("data-ps-phrase") === type;
+        btn.className = isAct
+          ? "ps-phrase-btn px-3 py-1.5 rounded-full text-xs font-bold bg-blue-600 text-white shadow-xs"
+          : "ps-phrase-btn px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200";
+      });
+    }
+
+    // Fetch Live Weather & Sun Times from Open-Meteo API (Module 5)
+    async function refreshOpenMeteoWeather() {
+      const btnText = document.getElementById("weatherStatusBtnText");
+      btnText.textContent = "更新氣象光影中...";
+      let updatedCount = 0;
+
+      for (let i = 0; i < appState.days.length; i++) {
+        const d = appState.days[i];
+        const lat = d.lat || 35.68;
+        const lon = d.lon || 139.76;
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=3`;
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.daily) {
+              const tMax = Math.round(data.daily.temperature_2m_max[0]);
+              const tMin = Math.round(data.daily.temperature_2m_min[0]);
+              const pop = data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[0] : 10;
+              const srRaw = data.daily.sunrise && data.daily.sunrise[0] ? data.daily.sunrise[0].split("T")[1] : d.sunrise;
+              const ssRaw = data.daily.sunset && data.daily.sunset[0] ? data.daily.sunset[0].split("T")[1] : d.sunset;
+              d.sunrise = srRaw || d.sunrise;
+              d.sunset = ssRaw || d.sunset;
+              d.weatherDesc = `即時觀測更新｜${tMin}°C – ${tMax}°C｜降雨機率 ${pop}%`;
+              updatedCount++;
+            }
+          }
+        } catch (err) {}
+      }
+
+      renderAll();
+      btnText.textContent = updatedCount > 0 ? "已同步最新氣象光影" : "已載入11月天文日照與氣候";
+      showToast(
+        updatedCount > 0
+          ? "已透過 Open-Meteo 同步最新當地氣溫與日出日落時刻！"
+          : "目前已套用日本關東・靜岡 11 月中旬天文日出日落與黃金光影時刻！"
+      );
+    }
+
+    function getChecklistItems() {
+      const items = [];
+      appState.transports.forEach((t, idx) => {
+        if (t.prebook) {
+          items.push({
+            id: "pre_t_" + idx,
+            title: "【預先購票/劃位】" + t.type + "：" + t.route,
+            detail: "出發時刻：" + t.dep + "｜預估費用：¥" + (t.priceNum || t.priceText)
+          });
+        }
+      });
+      items.push(
+        {
+          id: "rem_1",
+          title: "【鹿島臨海鐵道提醒】準備大洗鹿島線車票（不支援 Suica / Apple Pay 西瓜卡）",
+          detail: "11/15(日) 水戶往返大洗需使用線上購票或現場購買紙本車票（可開「問路大字卡」出示給站務員）"
+        },
+        {
+          id: "rem_2",
+          title: "【寄放行李確認】確認 JR 品川站或三島站置物櫃位置",
+          detail: "11/14(六) 早晨於 JR 品川站寄放大型行李（若滿櫃則改至三島站寄放）"
+        },
+        {
+          id: "rem_3",
+          title: "【凌晨接駁確認】確認平和島溫泉往羽田機場凌晨 3:10 接駁車預約方式",
+          detail: "11/16(一) 上午 3:00 集合準備搭乘 3:10 接駁巴士前往羽田機場第三航廈"
+        }
+      );
+      return items;
+    }
+
+    function parseWorkbookToState(workbook, filename) {
+      const sheetNames = workbook.SheetNames;
+      const newDays = [];
+      const newTransports = [];
+      const newLinks = [];
+
+      const dayGeoDefaults = [
+        { city: "東京羽田・平和島", lat: 35.579, lon: 139.738, sunrise: "06:14", sunset: "16:37", goldenHour: "15:55–16:45", weatherDesc: "晴時多雲｜11°C – 18°C｜降雨 10%", photoTip: "深夜抵達羽田第三航廈，適合拍攝江戶小路與觀景台" },
+        { city: "靜岡沼津 → 茨城水戶", lat: 35.096, lon: 138.863, sunrise: "06:19", sunset: "16:43", goldenHour: "06:00–06:50 / 16:00–16:50", weatherDesc: "晴朗微風｜10°C – 17°C｜適合單車巡禮", photoTip: "上午內浦灣與三之浦順光可拍駿河灣海景；14:11 返程前留意沼津港光影" },
+        { city: "茨城大洗町 → 東京大森", lat: 36.313, lon: 140.575, sunrise: "06:15", sunset: "16:33", goldenHour: "05:50–06:45 / 15:50–16:40", weatherDesc: "晴時多雲｜8°C – 16°C｜海風稍涼", photoTip: "下午前往大洗磯前神社剛好迎接 15:50–16:33 夕陽斜射「神磯の鳥居」黃金時刻" },
+        { city: "東京羽田 → 桃園機場", lat: 35.549, lon: 139.779, sunrise: "06:17", sunset: "16:35", goldenHour: "05:55–06:45", weatherDesc: "晴朗｜11°C – 17°C｜凌晨接駁留意保暖", photoTip: "凌晨 03:10 接駁巴士前往羽田第3航廈" }
+      ];
+
+      const s1Name = sheetNames.find(n => n.includes("行程")) || sheetNames[0];
+      if (s1Name) {
+        const ws1 = workbook.Sheets[s1Name];
+        const rows1 = XLSX.utils.sheet_to_json(ws1, { header: 1, defval: "" });
+        let dateRowIdx = rows1.findIndex(r => r && r.some(c => String(c).includes("日付") || String(c).includes("日期")));
+        if (dateRowIdx === -1) dateRowIdx = 0;
+        const dateRow = rows1[dateRowIdx] || [];
+
+        const dayCols = [];
+        for (let c = 1; c < dateRow.length; c++) {
+          const dVal = String(dateRow[c] || "").trim();
+          if (dVal) {
+            dayCols.push({ colIndex: c, date: dVal });
+          }
+        }
+
+        const fieldMap = {
+          "預計出門時間": "departure",
+          "出門時間": "departure",
+          "早餐": "breakfast",
+          "午前": "morning",
+          "上午": "morning",
+          "中餐": "lunch",
+          "午餐": "lunch",
+          "午後": "afternoon",
+          "下午": "afternoon",
+          "晚餐": "dinner",
+          "住宿": "hotel",
+          "目的地城市": "city",
+          "光影與氣象備註": "photoTip"
+        };
+
+        dayCols.forEach((dc, dIdx) => {
+          const geo = dayGeoDefaults[dIdx] || dayGeoDefaults[0];
+          const dayObj = {
+            date: dc.date,
+            city: geo.city,
+            lat: geo.lat,
+            lon: geo.lon,
+            sunrise: geo.sunrise,
+            sunset: geo.sunset,
+            goldenHour: geo.goldenHour,
+            weatherDesc: geo.weatherDesc,
+            photoTip: geo.photoTip,
+            departure: "-",
+            breakfast: "-",
+            morning: "-",
+            lunch: "-",
+            afternoon: "-",
+            dinner: "-",
+            hotel: "-"
+          };
+          for (let r = dateRowIdx + 1; r < rows1.length; r++) {
+            const row = rows1[r] || [];
+            const label = String(row[0] || "").trim();
+            if (!label) continue;
+            const mappedKey = fieldMap[label];
+            if (mappedKey) {
+              const cellVal = String(row[dc.colIndex] || "").trim();
+              if (cellVal) dayObj[mappedKey] = cellVal;
+            }
+          }
+          newDays.push(dayObj);
+        });
+      }
+
+      const s2Name = sheetNames.find(n => n.includes("交通費用") || n.includes("時刻")) || sheetNames[1];
+      if (s2Name) {
+        const ws2 = workbook.Sheets[s2Name];
+        const rows2 = XLSX.utils.sheet_to_json(ws2, { header: 1, defval: "" });
+        let hdrIdx = rows2.findIndex(r => r && r.some(c => String(c).includes("種類") || String(c).includes("起訖點")));
+        if (hdrIdx === -1) hdrIdx = 0;
+
+        for (let r = hdrIdx + 1; r < rows2.length; r++) {
+          const row = rows2[r] || [];
+          const type = String(row[0] || "").trim();
+          const route = String(row[1] || "").trim();
+          if (!type && !route) continue;
+          if (type.includes("合計") || type.includes("總計")) continue;
+
+          const rawPrice = row[2];
+          const priceNum = parsePriceNumber(rawPrice);
+          const priceText = rawPrice !== "" && rawPrice != null ? String(rawPrice).replace(/\r?\n/g, " / ") : "併計/未定";
+          const dep = normalizeTimeText(row[3]);
+          const arr = normalizeTimeText(row[4]);
+          const onsite = String(row[5] || "").trim().toUpperCase() === "V";
+          const prebook = String(row[6] || "").trim().toUpperCase() === "V";
+
+          let optionTag = "";
+          let active = true;
+          if (type.startsWith("A") || type.includes("腳踏車")) {
+            optionTag = "bike";
+            active = appState.numazuOption !== "bus";
+          } else if (type.startsWith("B") || (type.includes("公車") && route.includes("三之浦"))) {
+            optionTag = "bus";
+            active = appState.numazuOption === "bus" || appState.numazuOption === "both";
+          }
+
+          newTransports.push({
+            id: "tr_" + r,
+            type,
+            route: route.replace(/\r?\n/g, " → "),
+            jpRoute: route.replace(/\r?\n/g, " → "),
+            priceText,
+            priceNum,
+            dep,
+            arr,
+            onsite,
+            prebook,
+            active,
+            optionTag
+          });
+        }
+      }
+
+      const s3Name = sheetNames.find(n => n.includes("相關資訊") || n.includes("景點") || n.includes("住宿")) || sheetNames[2];
+      if (s3Name) {
+        const ws3 = workbook.Sheets[s3Name];
+        const rows3 = XLSX.utils.sheet_to_json(ws3, { header: 1, defval: "" });
+        const firstHeaderRow = rows3.find(r => r && r.some(c => String(c).includes("分類")));
+        if (firstHeaderRow) {
+          const hdrIdx = rows3.indexOf(firstHeaderRow);
+          for (let r = hdrIdx + 1; r < rows3.length; r++) {
+            const row = rows3[r] || [];
+            const cat = String(row[0] || "").trim() || "景點";
+            const name = String(row[1] || "").trim();
+            const url = String(row[2] || "").trim();
+            const note = String(row[3] || "").trim();
+            const customJp = String(row[4] || "").trim();
+            const customAddr = String(row[5] || "").trim();
+            if (!name) continue;
+            const jpMeta = resolveJpInfo(name, customJp, customAddr);
+            newLinks.push({
+              category: cat,
+              name,
+              jpName: jpMeta.jpName,
+              address: jpMeta.address,
+              phraseType: cat === "住宿" ? "checkin" : cat === "交通" ? "ticket" : "go",
+              url: url.startsWith("http") ? url : "https://www.rintetsu.co.jp/timetable",
+              note
+            });
+          }
+        } else {
+          let currentCategory = "住宿";
+          for (let r = 0; r < rows3.length; r++) {
+            const row = rows3[r] || [];
+            const col0 = String(row[0] || "").trim();
+            const col1 = String(row[1] || "").trim();
+            const col2 = String(row[2] || "").trim();
+            if (!col0 && !col1) continue;
+            if (col0.includes("【") || col0.includes("資訊")) continue;
+            if (col0 === "住宿" || col0 === "交通" || col0 === "景點") {
+              currentCategory = col0;
+              continue;
+            }
+            const cellAddress = XLSX.utils.encode_cell({ r, c: 1 });
+            const cellObj = ws3[cellAddress];
+            let resolvedUrl = col1;
+            if (cellObj && cellObj.l && cellObj.l.Target) {
+              resolvedUrl = cellObj.l.Target;
+            } else if (!resolvedUrl.startsWith("http") && col0.includes("鹿島臨海")) {
+              resolvedUrl = "https://www.rintetsu.co.jp/timetable";
+            }
+            const jpMeta = resolveJpInfo(col0, "", "");
+            newLinks.push({
+              category: currentCategory,
+              name: col0,
+              jpName: jpMeta.jpName,
+              address: jpMeta.address,
+              phraseType: currentCategory === "住宿" ? "checkin" : currentCategory === "交通" ? "ticket" : "go",
+              url: resolvedUrl,
+              note: col2 || (col1 && !col1.startsWith("http") ? col1 : "")
+            });
+          }
+        }
+      }
+
+      if (newDays.length > 0) appState.days = newDays;
+      if (newTransports.length > 0) appState.transports = newTransports;
+      if (newLinks.length > 0) appState.links = newLinks;
+      appState.sourceFileName = filename || "已匯入自訂行程表.xlsx";
+
+      document.getElementById("importStatusTitle").textContent = "目前載入：" + appState.sourceFileName;
+      document.getElementById("importStatusMeta").textContent =
+        `共 ${appState.days.length} 天行程・${appState.transports.length} 筆交通時刻・${appState.links.length} 筆連結與日文問路卡`;
+
+      renderAll();
+      showToast("已成功解析 Excel 並自動建立日文問路大字卡與光影時段！");
+    }
+
+    function renderAll() {
+      const previewContainer = document.getElementById("previewContainer");
+      previewContainer.className = `theme-${appState.theme} flex-1 flex flex-col`;
+
+      document.getElementById("previewTitle").textContent = appState.title;
+      document.getElementById("previewSubtitle").textContent = appState.subtitle;
+
+      const dayCount = appState.days.length;
+      document.getElementById("kpiDays").textContent = `${dayCount} 天 ${Math.max(1, dayCount - 1)} 夜`;
+      if (dayCount > 0) {
+        document.getElementById("kpiDateSpan").textContent = `${appState.days[0].date} – ${appState.days[dayCount - 1].date}`;
+      }
+
+      const totalTransportJpy = appState.transports
+        .filter(t => t.active)
+        .reduce((sum, t) => sum + (Number(t.priceNum) || 0), 0);
+      const totalTransportTwd = Math.round(totalTransportJpy * appState.exchangeRate);
+      document.getElementById("kpiTransportJpy").textContent = "¥" + totalTransportJpy.toLocaleString();
+      document.getElementById("kpiTransportTwd").textContent = "約 NT$ " + totalTransportTwd.toLocaleString();
+
+      let hotelJpy = 25390;
+      document.getElementById("kpiHotelJpy").textContent = "¥" + hotelJpy.toLocaleString();
+      document.getElementById("kpiHotelTwd").textContent = "約 NT$ " + Math.round(hotelJpy * appState.exchangeRate).toLocaleString() + " / 人";
+
+      const voucherCount = (appState.vouchers || []).length;
+      const checkItems = getChecklistItems();
+      const doneCount = checkItems.filter(it => checklistState[it.id]).length;
+      const pct = checkItems.length ? Math.round((doneCount / checkItems.length) * 100) : 0;
+      document.getElementById("kpiPrebookCount").textContent = `${voucherCount} 張離線憑證`;
+      document.getElementById("kpiChecklistProgress").textContent = `檢核完成 ${pct}% (${doneCount}/${checkItems.length})`;
+
+      renderItineraryPanel();
+      renderTransportPanel();
+      renderWalletPanel();
+      renderLinksPanel();
+      renderChecklistPanel();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function renderItineraryPanel() {
+      const filterBar = document.getElementById("dayFilterBar");
+      const container = document.getElementById("dayCardsContainer");
+
+      let pillsHtml = `<button type="button" data-day-idx="all" class="day-pill-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${
+        activeDayFilter === "all" ? "bg-slate-900 text-white shadow-xs" : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-100"
+      }">全部天數 (${appState.days.length}天)</button>`;
+
+      appState.days.forEach((d, idx) => {
+        const isAct = String(activeDayFilter) === String(idx);
+        pillsHtml += `<button type="button" data-day-idx="${idx}" class="day-pill-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${
+          isAct ? "bg-slate-900 text-white shadow-xs" : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-100"
+        }">Day ${idx + 1}・${escapeHtml(d.date)}</button>`;
+      });
+      filterBar.innerHTML = pillsHtml;
+
+      filterBar.querySelectorAll(".day-pill-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeDayFilter = btn.getAttribute("data-day-idx");
+          renderItineraryPanel();
+          if (window.lucide) window.lucide.createIcons();
+        });
+      });
+
+      const slotDefs = [
+        { key: "departure", label: "預計出門", icon: "AlarmClock", badgeClass: "bg-amber-100 text-amber-800" },
+        { key: "breakfast", label: "早餐時段", icon: "Coffee", badgeClass: "bg-orange-100 text-orange-800" },
+        { key: "morning", label: "午前行程", icon: "Sun", badgeClass: "bg-sky-100 text-sky-800" },
+        { key: "lunch", label: "中餐安排", icon: "Utensils", badgeClass: "bg-emerald-100 text-emerald-800" },
+        { key: "afternoon", label: "午後行程", icon: "MapPin", badgeClass: "bg-indigo-100 text-indigo-800" },
+        { key: "dinner", label: "晚餐時段", icon: "UtensilsCrossed", badgeClass: "bg-rose-100 text-rose-800" },
+        { key: "hotel", label: "當日住宿", icon: "BedDouble", badgeClass: "bg-purple-100 text-purple-800" }
+      ];
+
+      const q = searchQuery.trim().toLowerCase();
+      let cardsHtml = "";
+
+      appState.days.forEach((d, idx) => {
+        if (activeDayFilter !== "all" && String(activeDayFilter) !== String(idx)) return;
+
+        const combinedText = `${d.date} ${d.city || ""} ${d.departure} ${d.breakfast} ${d.morning} ${d.lunch} ${d.afternoon} ${d.dinner} ${d.hotel}`.toLowerCase();
+        if (q && !combinedText.includes(q)) return;
+
+        let slotsHtml = "";
+        slotDefs.forEach(slot => {
+          const val = String(d[slot.key] || "-").trim();
+          if (!val || val === "-") return;
+
+          const matchedLinks = appState.links.filter(lk => lk.name && val.includes(lk.name.split(" ")[0].substring(0, 4)));
+          let linkChips = "";
+          if (matchedLinks.length > 0) {
+            linkChips = `<div class="flex flex-wrap gap-1.5 mt-2">` +
+              matchedLinks.map((lk) => {
+                const lkIdx = appState.links.indexOf(lk);
+                return `<a href="${escapeHtml(lk.url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-medium">
+                  <i data-lucide="ExternalLink" class="w-3 h-3"></i>
+                  <span>${escapeHtml(lk.name)}</span>
+                </a>
+                <button type="button" data-open-ps-link="${lkIdx}" class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300 font-semibold">
+                  <span>🗣️ 日文問路卡</span>
+                </button>`;
+              }).join("") +
+              `</div>`;
+          }
+
+          slotsHtml += `
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-white transition">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0 ${slot.badgeClass}">
+                <i data-lucide="${slot.icon}" class="w-3.5 h-3.5"></i>
+                <span>${slot.label}</span>
+              </span>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs sm:text-sm text-slate-800 whitespace-pre-line leading-relaxed">${escapeHtml(val)}</p>
+                ${linkChips}
+              </div>
+            </div>
+          `;
+        });
+
+        const weatherBarHtml = `
+          <div class="bg-gradient-to-r from-amber-50/90 via-sky-50/80 to-indigo-50/90 border-b border-slate-200 px-4 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="inline-flex items-center gap-1 font-bold text-slate-800">
+                <i data-lucide="CloudSun" class="w-3.5 h-3.5 text-sky-600"></i>
+                <span>${escapeHtml(d.city || "日本關東")}｜${escapeHtml(d.weatherDesc || "晴時多雲 10°C–17°C")}</span>
+              </span>
+              <span class="inline-flex items-center gap-1 text-amber-800 font-semibold bg-amber-100/80 px-2 py-0.5 rounded-md border border-amber-200">
+                <i data-lucide="Camera" class="w-3.5 h-3.5"></i>
+                <span>日出 ${escapeHtml(d.sunrise || "06:15")}・日落 ${escapeHtml(d.sunset || "16:38")}（Golden Hour ${escapeHtml(d.goldenHour || "15:50–16:40")}）</span>
+              </span>
+            </div>
+            ${d.photoTip ? `<p class="text-[11px] text-slate-600 w-full mt-0.5">📸 <strong>攝影與動線提示：</strong>${escapeHtml(d.photoTip)}</p>` : ""}
+          </div>
+        `;
+
+        cardsHtml += `
+          <article class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div style="background-color: var(--brand-bg-light);" class="px-4 sm:px-5 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <span style="background-color: var(--brand-bg);" class="text-white text-xs font-bold px-2.5 py-1 rounded-lg">Day ${idx + 1}</span>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900">${escapeHtml(d.date)}</h3>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
+                <i data-lucide="BedDouble" class="w-3.5 h-3.5 text-slate-500"></i>
+                <span>住宿：${escapeHtml(d.hotel || "-")}</span>
+              </div>
+            </div>
+            ${weatherBarHtml}
+            <div class="p-4 sm:p-5 space-y-2.5">
+              ${slotsHtml}
+            </div>
+          </article>
+        `;
+      });
+
+      if (!cardsHtml) {
+        cardsHtml = `<div class="text-center py-10 text-slate-500 text-xs">找不到符合搜尋條件的行程內容</div>`;
+      }
+      container.innerHTML = cardsHtml;
+
+      container.querySelectorAll("[data-open-ps-link]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-open-ps-link"), 10);
+          const lk = appState.links[idx];
+          if (lk) openPointSpeakModal(lk);
+        });
+      });
+    }
+
+    function renderTransportPanel() {
+      const container = document.getElementById("transportListContainer");
+      const q = searchQuery.trim().toLowerCase();
+
+      let html = "";
+      appState.transports.forEach((t, idx) => {
+        if (activeTransportFilter === "pre" && !t.prebook) return;
+        if (activeTransportFilter === "onsite" && !t.onsite) return;
+        if (q && !(`${t.type} ${t.route} ${t.dep}`.toLowerCase().includes(q))) return;
+
+        const twd = Math.round((Number(t.priceNum) || 0) * appState.exchangeRate);
+        const statusBadge = t.prebook
+          ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-700 border border-rose-200">⚡ 預先處理 (線上購票)</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">現場處理</span>`;
+
+        html += `
+          <div class="bg-white rounded-xl border ${t.active ? "border-slate-200" : "border-slate-200 opacity-55"} p-3.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-2xs">
+            <div class="space-y-1 flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-800 text-white">${escapeHtml(t.type)}</span>
+                <h4 class="font-bold text-xs sm:text-sm text-slate-900">${escapeHtml(t.route)}</h4>
+                ${statusBadge}
+              </div>
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 pt-1">
+                <span>🕒 出發：<strong>${escapeHtml(t.dep)}</strong></span>
+                <span>🏁 抵達：<strong>${escapeHtml(t.arr)}</strong></span>
+                <span>💴 票價說明：${escapeHtml(t.priceText)}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="text-right mr-1">
+                <p class="text-sm font-bold text-slate-900">¥${(Number(t.priceNum) || 0).toLocaleString()}</p>
+                <p class="text-[11px] text-slate-500">約 NT$ ${twd.toLocaleString()}</p>
+              </div>
+              <button type="button" data-speak-transport="${idx}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 transition">
+                🗣️ 購票問路卡
+              </button>
+              <button type="button" data-toggle-transport="${idx}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                t.active
+                  ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                  : "bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200"
+              }">
+                ${t.active ? "計入車資" : "已排除"}
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      if (!html) {
+        html = `<div class="text-center py-8 text-slate-500 text-xs">無符合篩選條件的交通項目</div>`;
+      }
+      container.innerHTML = html;
+
+      container.querySelectorAll("[data-toggle-transport]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const i = parseInt(btn.getAttribute("data-toggle-transport"), 10);
+          appState.transports[i].active = !appState.transports[i].active;
+          renderAll();
+        });
+      });
+
+      container.querySelectorAll("[data-speak-transport]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const i = parseInt(btn.getAttribute("data-speak-transport"), 10);
+          const t = appState.transports[i];
+          if (t) {
+            openPointSpeakModal({
+              name: `${t.type}：${t.route}`,
+              jpName: t.jpRoute || t.route,
+              address: `発車時刻：${t.dep} ｜ 料金目安：¥${t.priceNum || t.priceText}`,
+              phraseType: "ticket"
+            });
+          }
+        });
+      });
+    }
+
+    function renderWalletPanel() {
+      const vGrid = document.getElementById("vouchersGridContainer");
+      const sGrid = document.getElementById("speakCardsGridContainer");
+
+      const vouchers = appState.vouchers || [];
+      vGrid.innerHTML = vouchers.map((v, idx) => `
+        <div class="bg-white rounded-2xl border-2 border-amber-200/90 p-4 flex flex-col justify-between gap-3 shadow-xs hover:shadow-md transition">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900">🎫 離線憑證 #${idx + 1}</span>
+              <button type="button" data-del-voucher="${idx}" class="text-[11px] text-slate-400 hover:text-rose-600">移除</button>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900">${escapeHtml(v.title)}</h4>
+            <p class="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200 inline-block">${escapeHtml(v.code)}</p>
+            <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(v.note || "")}</p>
+            ${v.imageData ? `<img src="${v.imageData}" alt="QR" class="max-h-28 rounded-lg border border-slate-200 mt-2 object-contain" />` : ""}
+          </div>
+          <button type="button" data-open-voucher="${idx}" class="w-full py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 flex items-center justify-center gap-1.5 transition">
+            <i data-lucide="Maximize2" class="w-3.5 h-3.5"></i>
+            <span>全螢幕放大出示憑證與日文</span>
+          </button>
+        </div>
+      `).join("");
+
+      vGrid.querySelectorAll("[data-open-voucher]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-open-voucher"), 10);
+          const v = appState.vouchers[idx];
+          if (v) {
+            openPointSpeakModal({
+              name: v.title,
+              jpName: v.jpTarget || v.title,
+              address: v.note,
+              code: v.code,
+              imageData: v.imageData,
+              phraseType: "checkin"
+            });
+          }
+        });
+      });
+
+      vGrid.querySelectorAll("[data-del-voucher]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-del-voucher"), 10);
+          appState.vouchers.splice(idx, 1);
+          renderAll();
+          showToast("已移除該張憑證");
+        });
+      });
+
+      sGrid.innerHTML = appState.links.map((lk, idx) => {
+        const jpMeta = resolveJpInfo(lk.name, lk.jpName, lk.address);
+        return `
+          <div class="bg-white rounded-xl border border-slate-200 p-3.5 flex items-center justify-between gap-3 hover:border-blue-400 transition">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">${escapeHtml(lk.category)}</span>
+                <span class="text-xs font-semibold text-slate-500 truncate">${escapeHtml(lk.name)}</span>
+              </div>
+              <p class="font-extrabold text-sm sm:text-base text-slate-900 mt-1 truncate">${escapeHtml(jpMeta.jpName)}</p>
+              <p class="text-[11px] text-slate-500 truncate mt-0.5">📍 ${escapeHtml(jpMeta.address)}</p>
+            </div>
+            <button type="button" data-open-speak="${idx}" class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 shrink-0 shadow-2xs transition">
+              🗣️ 問路大字卡
+            </button>
+          </div>
+        `;
+      }).join("");
+
+      sGrid.querySelectorAll("[data-open-speak]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-open-speak"), 10);
+          const lk = appState.links[idx];
+          if (lk) {
+            const jpMeta = resolveJpInfo(lk.name, lk.jpName, lk.address);
+            openPointSpeakModal({
+              name: lk.name,
+              jpName: jpMeta.jpName,
+              address: jpMeta.address,
+              phraseType: lk.phraseType || jpMeta.phraseType || "go"
+            });
+          }
+        });
+      });
+    }
+
+    function renderLinksPanel() {
+      const container = document.getElementById("linksGridContainer");
+      const q = searchQuery.trim().toLowerCase();
+
+      let html = "";
+      appState.links.forEach((lk, idx) => {
+        if (activeLinkFilter !== "all" && lk.category !== activeLinkFilter) return;
+        if (q && !(`${lk.category} ${lk.name} ${lk.jpName || ""} ${lk.note}`.toLowerCase().includes(q))) return;
+
+        const badgeColor =
+          lk.category === "住宿" ? "bg-purple-100 text-purple-800" :
+          lk.category === "交通" ? "bg-sky-100 text-sky-800" : "bg-emerald-100 text-emerald-800";
+        const jpMeta = resolveJpInfo(lk.name, lk.jpName, lk.address);
+
+        html += `
+          <div class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col justify-between gap-3 hover:shadow-md transition">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full ${badgeColor}">${escapeHtml(lk.category)}</span>
+                <button type="button" data-link-speak="${idx}" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 transition">
+                  🗣️ 日文問路大字卡
+                </button>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900">${escapeHtml(lk.name)}</h4>
+              <p class="text-xs font-semibold text-slate-700">🇯🇵 ${escapeHtml(jpMeta.jpName)}</p>
+              <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(lk.note || "點擊下方按鈕開啟官方資訊網頁")}</p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[11px] text-slate-400 truncate max-w-[180px]">${escapeHtml(jpMeta.address)}</span>
+              <a href="${escapeHtml(lk.url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 shrink-0">
+                <span>開啟官網</span>
+                <i data-lucide="ExternalLink" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </div>
+        `;
+      });
+
+      if (!html) {
+        html = `<div class="col-span-2 text-center py-8 text-slate-500 text-xs">無符合篩選條件的連結項目</div>`;
+      }
+      container.innerHTML = html;
+
+      container.querySelectorAll("[data-link-speak]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-link-speak"), 10);
+          const lk = appState.links[idx];
+          if (lk) {
+            const jpMeta = resolveJpInfo(lk.name, lk.jpName, lk.address);
+            openPointSpeakModal({
+              name: lk.name,
+              jpName: jpMeta.jpName,
+              address: jpMeta.address,
+              phraseType: lk.phraseType || jpMeta.phraseType || "go"
+            });
+          }
+        });
+      });
+    }
+
+    function renderChecklistPanel() {
+      const container = document.getElementById("checklistContainer");
+      const items = getChecklistItems();
+
+      let html = "";
+      items.forEach(item => {
+        const checked = !!checklistState[item.id];
+        html += `
+          <label class="flex items-start gap-3 p-3.5 rounded-xl bg-white border ${checked ? "border-emerald-200 bg-emerald-50/30" : "border-slate-200"} cursor-pointer hover:bg-slate-50 transition">
+            <input type="checkbox" data-check-id="${item.id}" ${checked ? "checked" : ""} class="mt-1 w-4 h-4 rounded text-blue-600 focus:ring-blue-500" />
+            <div class="flex-1">
+              <p class="text-xs sm:text-sm font-semibold ${checked ? "line-through text-slate-400" : "text-slate-900"}">${escapeHtml(item.title)}</p>
+              <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(item.detail)}</p>
+            </div>
+          </label>
+        `;
+      });
+      container.innerHTML = html;
+
+      container.querySelectorAll("[data-check-id]").forEach(chk => {
+        chk.addEventListener("change", () => {
+          const id = chk.getAttribute("data-check-id");
+          checklistState[id] = chk.checked;
+          saveChecklistState();
+          renderAll();
+        });
+      });
+    }
+
+    function generateStandaloneHtmlString() {
+      const serializedData = JSON.stringify(appState, null, 2);
+      return `<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(appState.title)} - 互動式旅遊手冊</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"><\/script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; }
+    .theme-indigo { --brand-bg: #1e3a5f; --brand-bg-light: #ebf2f7; }
+    .theme-sakura { --brand-bg: #831843; --brand-bg-light: #fdf2f8; }
+    .theme-matcha { --brand-bg: #14532d; --brand-bg-light: #f0fdf4; }
+    .theme-slate  { --brand-bg: #0f172a; --brand-bg-light: #f1f5f9; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen theme-${escapeHtml(appState.theme)}">
+  <div class="max-w-4xl mx-auto my-0 sm:my-6 bg-white sm:rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+    <header style="background-color: var(--brand-bg);" class="text-white p-6">
+      <p class="text-xs uppercase tracking-wider text-white/75 font-semibold">Interactive Travel Companion v2.0</p>
+      <h1 class="text-2xl font-bold mt-1">${escapeHtml(appState.title)}</h1>
+      <p class="text-xs sm:text-sm text-white/85 mt-1">${escapeHtml(appState.subtitle)}</p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
+        <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+          <p class="text-xs text-white/75">行程天數</p>
+          <p class="text-lg font-bold">${appState.days.length} 天 ${Math.max(1, appState.days.length - 1)} 夜</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+          <p class="text-xs text-white/75">預估交通總額</p>
+          <p id="stTransportTotal" class="text-lg font-bold">¥0</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/15 col-span-2 sm:col-span-1">
+          <p class="text-xs text-white/75">離線憑證與問路卡</p>
+          <p class="text-lg font-bold">${(appState.vouchers || []).length} 張憑證・${appState.links.length} 張問路卡</p>
+        </div>
+      </div>
+    </header>
+    <nav class="flex border-b border-slate-200 bg-slate-50 px-4 overflow-x-auto">
+      <button onclick="switchTab('days')" id="tabBtn_days" class="px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-blue-600 text-blue-600 shrink-0">📅 每日行程＆光影</button>
+      <button onclick="switchTab('transport')" id="tabBtn_transport" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🚄 交通時刻</button>
+      <button onclick="switchTab('wallet')" id="tabBtn_wallet" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🪪 問路大字卡＆憑證夾</button>
+      <button onclick="switchTab('links')" id="tabBtn_links" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🏨 官網連結</button>
+    </nav>
+    <main class="p-4 sm:p-6">
+      <div id="tab_days" class="space-y-4"></div>
+      <div id="tab_transport" class="hidden space-y-3"></div>
+      <div id="tab_wallet" class="hidden space-y-4"></div>
+      <div id="tab_links" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </main>
+  </div>
+
+  <div id="stModal" class="fixed inset-0 bg-slate-950/90 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 text-center space-y-4 border-4 border-amber-400">
+      <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">指差し会話・日本現場問路大字卡</span>
+      <p id="stPhrase" class="text-lg font-bold text-slate-800 bg-amber-50 p-3 rounded-xl border border-amber-200">すみません、ここへ行きたいです。</p>
+      <h2 id="stJpName" class="text-3xl sm:text-4xl font-black text-slate-900 leading-tight"></h2>
+      <p id="stZhName" class="text-sm font-bold text-blue-600"></p>
+      <p id="stAddr" class="text-xs sm:text-sm text-slate-600 bg-slate-100 p-2.5 rounded-xl"></p>
+      <img id="stImg" src="" class="hidden max-h-60 mx-auto rounded-xl border" />
+      <button onclick="document.getElementById('stModal').classList.add('hidden');document.getElementById('stModal').classList.remove('flex');" class="w-full py-2.5 rounded-xl font-bold bg-slate-900 text-white">關閉字卡</button>
+    </div>
+  </div>
+
+  <script>
+    const DATA = ${serializedData};
+    function switchTab(t) {
+      ['days','transport','wallet','links'].forEach(k => {
+        document.getElementById('tab_' + k).classList.toggle('hidden', k !== t);
+        const btn = document.getElementById('tabBtn_' + k);
+        btn.className = k === t
+          ? 'px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-blue-600 text-blue-600 shrink-0'
+          : 'px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0';
+      });
+    }
+    function showCard(jp, zh, addr, img) {
+      document.getElementById('stJpName').textContent = jp;
+      document.getElementById('stZhName').textContent = zh;
+      document.getElementById('stAddr').textContent = addr || '';
+      const im = document.getElementById('stImg');
+      if (img) { im.src = img; im.classList.remove('hidden'); } else { im.classList.add('hidden'); }
+      const m = document.getElementById('stModal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+    function renderStandalone() {
+      const totalJpy = DATA.transports.filter(x => x.active).reduce((s, x) => s + (Number(x.priceNum)||0), 0);
+      const totalTwd = Math.round(totalJpy * DATA.exchangeRate);
+      document.getElementById('stTransportTotal').textContent = '¥' + totalJpy.toLocaleString() + ' (約 NT$' + totalTwd.toLocaleString() + ')';
+
+      const slots = [
+        ['departure','🕒 預計出門'],['breakfast','🍳 早餐'],['morning','🌅 午前'],
+        ['lunch','🍱 中餐'],['afternoon','🌇 午後'],['dinner','🍽️ 晚餐'],['hotel','🏨 住宿']
+      ];
+      document.getElementById('tab_days').innerHTML = DATA.days.map((d, i) => \`
+        <div class="border border-slate-200 rounded-xl overflow-hidden">
+          <div style="background-color: var(--brand-bg-light);" class="px-4 py-2.5 font-bold text-sm flex justify-between">
+            <span>Day \${i+1}・\${d.date} (\${d.city || ''})</span>
+            <span class="text-xs text-slate-600">住宿：\${d.hotel || '-'}</span>
+          </div>
+          <div class="bg-amber-50/70 px-4 py-2 text-xs border-b border-slate-200 flex flex-wrap justify-between gap-2">
+            <span>🌤️ \${d.weatherDesc || ''}</span>
+            <span class="font-bold text-amber-900">🌅 日出 \${d.sunrise || '06:15'} ｜ 🌇 日落 \${d.sunset || '16:38'} (Golden Hour \${d.goldenHour || ''})</span>
+          </div>
+          <div class="p-4 space-y-2">
+            \${slots.filter(s => d[s[0]] && d[s[0]] !== '-').map(s => \`
+              <div class="text-xs sm:text-sm bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <strong class="text-slate-700 block mb-0.5">\${s[1]}</strong>
+                <div class="whitespace-pre-line text-slate-800">\${d[s[0]]}</div>
+              </div>
+            \`).join('')}
+          </div>
+        </div>
+      \`).join('');
+
+      document.getElementById('tab_transport').innerHTML = DATA.transports.map(t => \`
+        <div class="p-3.5 rounded-xl border border-slate-200 flex justify-between items-center gap-2 bg-white">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-slate-800 text-white text-xs font-bold rounded">\${t.type}</span>
+              <strong class="text-xs sm:text-sm">\${t.route}</strong>
+              <span class="text-[11px] px-2 py-0.5 rounded-full \${t.prebook ? 'bg-rose-100 text-rose-700 font-bold' : 'bg-emerald-100 text-emerald-700'}">\${t.prebook ? '預先處理' : '現場處理'}</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">出發：\${t.dep} ｜ 抵達：\${t.arr} ｜ 說明：\${t.priceText}</p>
+          </div>
+          <div class="text-right font-bold text-sm shrink-0">¥\${(Number(t.priceNum)||0).toLocaleString()}</div>
+        </div>
+      \`).join('');
+
+      document.getElementById('tab_wallet').innerHTML =
+        (DATA.vouchers || []).map(v => \`
+          <div class="p-4 rounded-xl border-2 border-amber-300 bg-amber-50/40 flex justify-between items-center gap-3">
+            <div>
+              <span class="text-xs font-bold text-amber-900">🎫 離線憑證</span>
+              <h4 class="font-bold text-sm mt-0.5">\${v.title}</h4>
+              <p class="text-xs font-mono font-bold text-blue-700 mt-1">\${v.code}</p>
+              <p class="text-xs text-slate-600 mt-0.5">\${v.note || ''}</p>
+            </div>
+            <button onclick="showCard('\${(v.jpTarget||v.title).replace(/'/g,'')}','\${v.title.replace(/'/g,'')}','\${(v.code+' '+v.note).replace(/'/g,'')}','\${v.imageData||''}')" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white shrink-0">全螢幕出示</button>
+          </div>
+        \`).join('') +
+        DATA.links.map(lk => \`
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-white flex justify-between items-center gap-3">
+            <div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100">\${lk.category}</span>
+              <h4 class="font-extrabold text-base mt-1">\${lk.jpName || lk.name}</h4>
+              <p class="text-xs text-slate-500">\${lk.name} ｜ \${lk.address || ''}</p>
+            </div>
+            <button onclick="showCard('\${(lk.jpName||lk.name).replace(/'/g,'')}','\${lk.name.replace(/'/g,'')}','\${(lk.address||lk.note||'').replace(/'/g,'')}','')" class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 shrink-0">🗣️ 問路大字卡</button>
+          </div>
+        \`).join('');
+
+      document.getElementById('tab_links').innerHTML = DATA.links.map(lk => \`
+        <a href="\${lk.url}" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl border border-slate-200 hover:border-blue-400 bg-white block transition">
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">\${lk.category}</span>
+          <h4 class="font-bold text-sm mt-1.5 text-slate-900">\${lk.name}</h4>
+          <p class="text-xs text-slate-600 mt-1">\${lk.note || ''}</p>
+        </a>
+      \`).join('');
+    }
+    renderStandalone();
+  <\/script>
+</body>
+</html>`;
+    }
+
+    function downloadExcelTemplate() {
+      if (typeof XLSX === "undefined") {
+        showToast("SheetJS 載入中，請稍候再試");
+        return;
+      }
+      const wb = XLSX.utils.book_new();
+
+      const s1Header = ["日付", ...appState.days.map(d => d.date)];
+      const s1Rows = [
+        s1Header,
+        ["目的地城市", ...appState.days.map(d => d.city || "")],
+        ["預計出門時間", ...appState.days.map(d => d.departure)],
+        ["早餐", ...appState.days.map(d => d.breakfast)],
+        ["午前", ...appState.days.map(d => d.morning)],
+        ["中餐", ...appState.days.map(d => d.lunch)],
+        ["午後", ...appState.days.map(d => d.afternoon)],
+        ["晚餐", ...appState.days.map(d => d.dinner)],
+        ["住宿", ...appState.days.map(d => d.hotel)],
+        ["光影與氣象備註", ...appState.days.map(d => d.photoTip || "")]
+      ];
+      const ws1 = XLSX.utils.aoa_to_sheet(s1Rows);
+      XLSX.utils.book_append_sheet(wb, ws1, "行程計畫");
+
+      const s2Rows = [
+        ["種類", "起訖點", "價格(日圓)", "出發時刻", "抵達時刻", "現場處理", "預先處理"],
+        ...appState.transports.map(t => [
+          t.type,
+          t.route,
+          t.priceNum || t.priceText,
+          t.dep,
+          t.arr,
+          t.onsite ? "V" : "",
+          t.prebook ? "V" : ""
+        ])
+      ];
+      const ws2 = XLSX.utils.aoa_to_sheet(s2Rows);
+      XLSX.utils.book_append_sheet(wb, ws2, "交通費用與時刻");
+
+      const s3Rows = [
+        ["分類", "名稱", "網址", "備註", "日文名稱(問路卡用)", "日文地址或月台資訊"],
+        ...appState.links.map(lk => [lk.category, lk.name, lk.url, lk.note, lk.jpName || "", lk.address || ""])
+      ];
+      const ws3 = XLSX.utils.aoa_to_sheet(s3Rows);
+      XLSX.utils.book_append_sheet(wb, ws3, "住宿、交通與景點相關資訊");
+
+      XLSX.writeFile(wb, "旅遊行程制式範本_v2問路卡與光影版.xlsx");
+      showToast("已下載制式 Excel 範本 (.xlsx)！");
+    }
+
+    function renderEditorModalInputs() {
+      const daysContainer = document.getElementById("editorDaysContainer");
+      daysContainer.innerHTML = appState.days.map((d, i) => `
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800">Day ${i + 1}</span>
+            <button type="button" data-del-day="${i}" class="text-xs text-rose-600 hover:underline">刪除此天</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <div>
+              <label class="block text-[11px] text-slate-500">日期 (日付)</label>
+              <input type="text" data-edit-day="${i}" data-field="date" value="${escapeHtml(d.date)}" class="w-full text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-500">目的地城市 (氣象光影用)</label>
+              <input type="text" data-edit-day="${i}" data-field="city" value="${escapeHtml(d.city || "")}" class="w-full text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-500">預計出門時間</label>
+              <input type="text" data-edit-day="${i}" data-field="departure" value="${escapeHtml(d.departure)}" class="w-full text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-500">住宿飯店</label>
+              <input type="text" data-edit-day="${i}" data-field="hotel" value="${escapeHtml(d.hotel)}" class="w-full text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] text-slate-500">午前行程</label>
+              <textarea rows="2" data-edit-day="${i}" data-field="morning" class="w-full text-xs border border-slate-300 rounded px-2 py-1 bg-white">${escapeHtml(d.morning)}</textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-500">午後行程</label>
+              <textarea rows="2" data-edit-day="${i}" data-field="afternoon" class="w-full text-xs border border-slate-300 rounded px-2 py-1 bg-white">${escapeHtml(d.afternoon)}</textarea>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      daysContainer.querySelectorAll("[data-del-day]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-del-day"), 10);
+          if (appState.days.length > 1) {
+            appState.days.splice(idx, 1);
+            renderEditorModalInputs();
+          }
+        });
+      });
+
+      const trContainer = document.getElementById("editorTransportContainer");
+      trContainer.innerHTML = appState.transports.map((t, i) => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-6 gap-2 items-center">
+          <input type="text" data-edit-tr="${i}" data-field="type" value="${escapeHtml(t.type)}" placeholder="種類" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <input type="text" data-edit-tr="${i}" data-field="route" value="${escapeHtml(t.route)}" placeholder="起訖點" class="sm:col-span-2 text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <input type="number" data-edit-tr="${i}" data-field="priceNum" value="${Number(t.priceNum) || 0}" placeholder="日圓價格" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <input type="text" data-edit-tr="${i}" data-field="dep" value="${escapeHtml(t.dep)}" placeholder="出發時刻" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <div class="flex items-center justify-between gap-1">
+            <label class="text-[11px] flex items-center gap-1">
+              <input type="checkbox" data-edit-tr-pre="${i}" ${t.prebook ? "checked" : ""} />
+              <span>預先處理</span>
+            </label>
+            <button type="button" data-del-tr="${i}" class="text-xs text-rose-600 hover:underline">刪除</button>
+          </div>
+        </div>
+      `).join("");
+
+      trContainer.querySelectorAll("[data-del-tr]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-del-tr"), 10);
+          appState.transports.splice(idx, 1);
+          renderEditorModalInputs();
+        });
+      });
+
+      const lkContainer = document.getElementById("editorLinksContainer");
+      lkContainer.innerHTML = appState.links.map((lk, i) => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-6 gap-2 items-center">
+          <select data-edit-lk="${i}" data-field="category" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white">
+            <option value="住宿" ${lk.category === "住宿" ? "selected" : ""}>住宿</option>
+            <option value="交通" ${lk.category === "交通" ? "selected" : ""}>交通</option>
+            <option value="景點" ${lk.category === "景點" ? "selected" : ""}>景點</option>
+          </select>
+          <input type="text" data-edit-lk="${i}" data-field="name" value="${escapeHtml(lk.name)}" placeholder="中文名稱" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <input type="text" data-edit-lk="${i}" data-field="jpName" value="${escapeHtml(lk.jpName || "")}" placeholder="日文原名(問路卡)" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <input type="text" data-edit-lk="${i}" data-field="address" value="${escapeHtml(lk.address || "")}" placeholder="日文地址/位置" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <input type="url" data-edit-lk="${i}" data-field="url" value="${escapeHtml(lk.url)}" placeholder="網址" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white" />
+          <button type="button" data-del-lk="${i}" class="text-xs text-rose-600 hover:underline justify-self-end">刪除</button>
+        </div>
+      `).join("");
+
+      lkContainer.querySelectorAll("[data-del-lk]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-del-lk"), 10);
+          appState.links.splice(idx, 1);
+          renderEditorModalInputs();
+        });
+      });
+    }
+
+    function syncEditorModalToState() {
+      document.querySelectorAll("[data-edit-day]").forEach(el => {
+        const idx = parseInt(el.getAttribute("data-edit-day"), 10);
+        const field = el.getAttribute("data-field");
+        if (appState.days[idx]) appState.days[idx][field] = el.value;
+      });
+      document.querySelectorAll("[data-edit-tr]").forEach(el => {
+        const idx = parseInt(el.getAttribute("data-edit-tr"), 10);
+        const field = el.getAttribute("data-field");
+        if (appState.transports[idx]) {
+          if (field === "priceNum") {
+            appState.transports[idx].priceNum = parseFloat(el.value) || 0;
+            appState.transports[idx].priceText = String(appState.transports[idx].priceNum);
+          } else {
+            appState.transports[idx][field] = el.value;
+          }
+        }
+      });
+      document.querySelectorAll("[data-edit-tr-pre]").forEach(el => {
+        const idx = parseInt(el.getAttribute("data-edit-tr-pre"), 10);
+        if (appState.transports[idx]) {
+          appState.transports[idx].prebook = el.checked;
+          appState.transports[idx].onsite = !el.checked;
+        }
+      });
+      document.querySelectorAll("[data-edit-lk]").forEach(el => {
+        const idx = parseInt(el.getAttribute("data-edit-lk"), 10);
+        const field = el.getAttribute("data-field");
+        if (appState.links[idx]) appState.links[idx][field] = el.value;
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadSavedState();
+      renderAll();
+
+      const fileInput = document.getElementById("fileInput");
+      const dropZone = document.getElementById("dropZone");
+
+      function handleFileObj(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          try {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            parseWorkbookToState(workbook, file.name);
+          } catch (err) {
+            showToast("解析檔案失敗，請確認是否為有效的 Excel (.xlsx) 或 CSV 檔案");
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFileObj(e.target.files[0]);
+        }
+      });
+
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("border-blue-500", "bg-blue-50");
+      });
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("border-blue-500", "bg-blue-50");
+      });
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("border-blue-500", "bg-blue-50");
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleFileObj(e.dataTransfer.files[0]);
+        }
+      });
+
+      document.getElementById("btnLoadGsheet").addEventListener("click", async () => {
+        const rawInput = document.getElementById("gsheetUrlInput").value.trim();
+        if (!rawInput) {
+          showToast("請先輸入 Google Sheet 網址或 #trip=... 狀態分享碼");
+          return;
+        }
+        if (rawInput.includes("#trip=") && typeof LZString !== "undefined") {
+          try {
+            const encoded = rawInput.split("#trip=")[1];
+            const jsonStr = LZString.decompressFromEncodedURIComponent(encoded);
+            const parsed = JSON.parse(jsonStr);
+            if (parsed && parsed.state) {
+              appState = parsed.state;
+              checklistState = parsed.checklist || {};
+              renderAll();
+              showToast("已成功從狀態分享碼還原行程與勾選進度！");
+              return;
+            }
+          } catch (e) {
+            showToast("狀態分享碼格式不正確");
+            return;
+          }
+        }
+
+        const match = rawInput.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+        if (!match) {
+          showToast("請貼上包含 /spreadsheets/d/... 的網址或 #trip=... 狀態碼");
+          return;
+        }
+        const sheetId = match[1];
+        const exportUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=xlsx`;
+        showToast("正在嘗試讀取 Google Sheet...");
+        try {
+          const resp = await fetch(exportUrl);
+          if (!resp.ok) throw new Error("Fetch blocked");
+          const buf = await resp.arrayBuffer();
+          const wb = XLSX.read(new Uint8Array(buf), { type: "array" });
+          parseWorkbookToState(wb, `GoogleSheet_${sheetId.substring(0, 6)}.xlsx`);
+        } catch (err) {
+          showToast("此試算表未開放公開下載，請在 Google Sheet 點選「檔案 → 下載 → .xlsx」後拖曳至上方區塊！");
+        }
+      });
+
+      document.getElementById("btnShareUrlState").addEventListener("click", () => {
+        if (typeof LZString === "undefined") {
+          showToast("壓縮模組載入中，請稍候");
+          return;
+        }
+        const slimState = JSON.parse(JSON.stringify(appState));
+        (slimState.vouchers || []).forEach(v => {
+          if (v.imageData && v.imageData.length > 4000) {
+            v.imageData = "";
+          }
+        });
+        const payload = JSON.stringify({ state: slimState, checklist: checklistState });
+        const compressed = LZString.compressToEncodedURIComponent(payload);
+        const hashStr = "#trip=" + compressed;
+        try {
+          window.history.replaceState(null, "", hashStr);
+        } catch (e) {}
+        const shareText = (window.location.href.split("#")[0] || "") + hashStr;
+        const ta = document.createElement("textarea");
+        ta.value = shareText;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast("已將整份行程與勾選狀態壓縮編碼為 #trip=... 網址並複製到剪貼簿！");
+        } catch (err) {
+          showToast("已更新網址 Hash，可直接複製瀏覽器網址列分享");
+        }
+        document.body.removeChild(ta);
+      });
+
+      document.getElementById("btnRefreshWeather").addEventListener("click", refreshOpenMeteoWeather);
+
+      document.getElementById("voucherImageInput").addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement("canvas");
+            const maxDim = 720;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+            appState.vouchers = appState.vouchers || [];
+            appState.vouchers.unshift({
+              id: "v_img_" + Date.now(),
+              title: file.name.replace(/\.[^.]+$/, ""),
+              code: "已內嵌離線圖片憑證 (Base64)",
+              jpTarget: file.name.replace(/\.[^.]+$/, ""),
+              note: "匯出 HTML 後可離線全螢幕放大出示",
+              imageData: dataUrl
+            });
+            document.querySelector('[data-preview-tab="wallet"]').click();
+            renderAll();
+            showToast("已將圖片壓縮轉為 Base64 離線憑證並加入憑證夾！");
+          };
+          img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      const voucherModal = document.getElementById("voucherModal");
+      document.getElementById("btnAddTextVoucher").addEventListener("click", () => {
+        document.getElementById("inputVoucherTitle").value = "";
+        document.getElementById("inputVoucherCode").value = "";
+        document.getElementById("inputVoucherNote").value = "";
+        voucherModal.classList.remove("hidden");
+        voucherModal.classList.add("flex");
+      });
+      const closeVoucherModal = () => {
+        voucherModal.classList.add("hidden");
+        voucherModal.classList.remove("flex");
+      };
+      document.getElementById("btnCloseVoucherModal").addEventListener("click", closeVoucherModal);
+      document.getElementById("btnCancelVoucherModal").addEventListener("click", closeVoucherModal);
+      document.getElementById("btnConfirmAddVoucher").addEventListener("click", () => {
+        const title = document.getElementById("inputVoucherTitle").value.trim() || "自訂車票/預約憑證";
+        const code = document.getElementById("inputVoucherCode").value.trim() || "請出示此畫面";
+        const note = document.getElementById("inputVoucherNote").value.trim() || "";
+        appState.vouchers = appState.vouchers || [];
+        appState.vouchers.unshift({
+          id: "v_txt_" + Date.now(),
+          title,
+          code,
+          jpTarget: title,
+          note,
+          imageData: ""
+        });
+        closeVoucherModal();
+        document.querySelector('[data-preview-tab="wallet"]').click();
+        renderAll();
+        showToast("已新增離線憑證至憑證夾！");
+      });
+
+      const psModal = document.getElementById("pointSpeakModal");
+      const closePsModal = () => {
+        psModal.classList.add("hidden");
+        psModal.classList.remove("flex");
+      };
+      document.getElementById("btnClosePointSpeakModal").addEventListener("click", closePsModal);
+      document.getElementById("btnDonePointSpeakModal").addEventListener("click", closePsModal);
+      document.querySelectorAll(".ps-phrase-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          setPointSpeakPhrase(btn.getAttribute("data-ps-phrase"));
+        });
+      });
+
+      document.getElementById("btnResetDemo").addEventListener("click", () => {
+        appState = JSON.parse(JSON.stringify(DEFAULT_TRIP_DATA));
+        document.getElementById("inputTripTitle").value = appState.title;
+        document.getElementById("inputTripSubtitle").value = appState.subtitle;
+        document.getElementById("inputExchangeRate").value = appState.exchangeRate;
+        document.getElementById("selectTheme").value = appState.theme;
+        document.getElementById("importStatusTitle").textContent = "目前載入：" + appState.sourceFileName;
+        renderAll();
+        showToast("已還原 11/13–11/16 日本沼津・大洗行程範例！");
+      });
+
+      document.getElementById("inputTripTitle").addEventListener("input", (e) => {
+        appState.title = e.target.value || "旅遊行程計畫";
+        renderAll();
+      });
+      document.getElementById("inputTripSubtitle").addEventListener("input", (e) => {
+        appState.subtitle = e.target.value || "";
+        renderAll();
+      });
+      document.getElementById("inputExchangeRate").addEventListener("input", (e) => {
+        const v = parseFloat(e.target.value);
+        if (!isNaN(v) && v > 0) {
+          appState.exchangeRate = v;
+          renderAll();
+        }
+      });
+      document.getElementById("selectTheme").addEventListener("change", (e) => {
+        appState.theme = e.target.value;
+        renderAll();
+      });
+
+      document.getElementById("selectNumazuOption").addEventListener("change", (e) => {
+        const mode = e.target.value;
+        appState.numazuOption = mode;
+        appState.transports.forEach(t => {
+          if (t.optionTag === "bike") {
+            t.active = (mode === "bike" || mode === "both");
+          } else if (t.optionTag === "bus") {
+            t.active = (mode === "bus" || mode === "both");
+          }
+        });
+        renderAll();
+      });
+
+      document.getElementById("inputPreviewSearch").addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        renderAll();
+      });
+
+      document.querySelectorAll(".preview-tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activePreviewTab = btn.getAttribute("data-preview-tab");
+          document.querySelectorAll(".preview-tab-btn").forEach(b => {
+            const isAct = b.getAttribute("data-preview-tab") === activePreviewTab;
+            b.className = isAct
+              ? "preview-tab-btn border-b-2 border-blue-600 text-blue-600 font-semibold text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition"
+              : "preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition";
+          });
+          document.getElementById("panelItinerary").classList.toggle("hidden", activePreviewTab !== "itinerary");
+          document.getElementById("panelTransport").classList.toggle("hidden", activePreviewTab !== "transport");
+          document.getElementById("panelWallet").classList.toggle("hidden", activePreviewTab !== "wallet");
+          document.getElementById("panelLinks").classList.toggle("hidden", activePreviewTab !== "links");
+          document.getElementById("panelChecklist").classList.toggle("hidden", activePreviewTab !== "checklist");
+        });
+      });
+
+      document.querySelectorAll(".transport-filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeTransportFilter = btn.getAttribute("data-transport-filter");
+          document.querySelectorAll(".transport-filter-btn").forEach(b => {
+            const isAct = b.getAttribute("data-transport-filter") === activeTransportFilter;
+            b.className = isAct
+              ? "transport-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-white"
+              : "transport-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-100";
+          });
+          renderTransportPanel();
+        });
+      });
+
+      document.querySelectorAll(".link-filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeLinkFilter = btn.getAttribute("data-link-filter");
+          document.querySelectorAll(".link-filter-btn").forEach(b => {
+            const isAct = b.getAttribute("data-link-filter") === activeLinkFilter;
+            b.className = isAct
+              ? "link-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-white"
+              : "link-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-100";
+          });
+          renderLinksPanel();
+          if (window.lucide) window.lucide.createIcons();
+        });
+      });
+
+      document.getElementById("btnClearChecklist").addEventListener("click", () => {
+        checklistState = {};
+        saveChecklistState();
+        renderAll();
+        showToast("已重置行前檢核表勾選狀態");
+      });
+
+      document.getElementById("btnExportStandalone").addEventListener("click", () => {
+        const htmlContent = generateStandaloneHtmlString();
+        const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const safeName = (appState.title || "travel_itinerary").replace(/[\\/:*?"<>|\s]+/g, "_");
+        a.href = url;
+        a.download = `${safeName}_互動式行程表_v2.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("已匯出並下載包含問路大字卡、離線憑證與光影資訊的獨立 HTML 檔！");
+      });
+
+      document.getElementById("btnCopyHtml").addEventListener("click", () => {
+        const htmlContent = generateStandaloneHtmlString();
+        const ta = document.createElement("textarea");
+        ta.value = htmlContent;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast("已複製完整互動式 HTML 原始碼至剪貼簿！");
+        } catch (err) {
+          showToast("複製失敗，請直接使用「匯出獨立互動式網頁」下載檔案");
+        }
+        document.body.removeChild(ta);
+      });
+
+      document.getElementById("btnDownloadTemplate").addEventListener("click", downloadExcelTemplate);
+
+      const editorModal = document.getElementById("editorModal");
+      document.getElementById("btnOpenEditorModal").addEventListener("click", () => {
+        renderEditorModalInputs();
+        editorModal.classList.remove("hidden");
+        editorModal.classList.add("flex");
+      });
+      document.getElementById("btnCloseEditorModal").addEventListener("click", () => {
+        editorModal.classList.add("hidden");
+        editorModal.classList.remove("flex");
+      });
+      document.getElementById("btnSaveEditorModal").addEventListener("click", () => {
+        syncEditorModalToState();
+        editorModal.classList.add("hidden");
+        editorModal.classList.remove("flex");
+        renderAll();
+        showToast("已套用表格修改並同步更新預覽！");
+      });
+
+      document.querySelectorAll(".editor-tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          syncEditorModalToState();
+          const tab = btn.getAttribute("data-editor-tab");
+          document.querySelectorAll(".editor-tab-btn").forEach(b => {
+            const isAct = b.getAttribute("data-editor-tab") === tab;
+            b.className = isAct
+              ? "editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-bold bg-white text-blue-600 border-t border-x border-slate-200"
+              : "editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900";
+          });
+          document.getElementById("editorPanelDays").classList.toggle("hidden", tab !== "days");
+          document.getElementById("editorPanelTransport").classList.toggle("hidden", tab !== "transport");
+          document.getElementById("editorPanelLinks").classList.toggle("hidden", tab !== "links");
+        });
+      });
+
+      document.getElementById("btnAddDay").addEventListener("click", () => {
+        syncEditorModalToState();
+        appState.days.push({
+          date: `Day ${appState.days.length + 1}`,
+          city: "日本東京",
+          lat: 35.68,
+          lon: 139.76,
+          sunrise: "06:16",
+          sunset: "16:36",
+          goldenHour: "15:55–16:40",
+          weatherDesc: "晴時多雲｜10°C – 17°C",
+          photoTip: "建議留意傍晚斜射光線",
+          departure: "上午 08:30",
+          breakfast: "飯店早餐",
+          morning: "新增上午行程",
+          lunch: "當地午餐",
+          afternoon: "新增下午行程",
+          dinner: "當地晚餐",
+          hotel: "住宿飯店"
+        });
+        renderEditorModalInputs();
+      });
+
+      document.getElementById("btnAddTransport").addEventListener("click", () => {
+        syncEditorModalToState();
+        appState.transports.push({
+          id: "tr_new_" + Date.now(),
+          type: "鐵路",
+          route: "起點站 到 終點站",
+          jpRoute: "出発駅 → 到着駅",
+          priceText: "1000",
+          priceNum: 1000,
+          dep: "09:00",
+          arr: "10:00",
+          onsite: true,
+          prebook: false,
+          active: true,
+          optionTag: ""
+        });
+        renderEditorModalInputs();
+      });
+
+      document.getElementById("btnAddLink").addEventListener("click", () => {
+        syncEditorModalToState();
+        appState.links.push({
+          category: "景點",
+          name: "新景點名稱",
+          jpName: "新しいスポット名",
+          address: "東京都千代田区...",
+          url: "https://numazukanko.jp/",
+          note: "備註說明"
+        });
+        renderEditorModalInputs();
+      });
+    });
+  </script>
+</body>
+</html>
