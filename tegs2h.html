@@ -68,9 +68,9 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="font-bold text-base sm:text-lg tracking-tight">旅遊行程表 → 互動式 HTML 產生器</h1>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">v2.0 問路卡・憑證夾・光影氣象版</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">純前端離線工具 v2.5</span>
           </div>
-          <p class="text-xs text-slate-400 hidden sm:block">支援 Excel 拖曳轉檔・全螢幕日文指差し問路卡・Base64 離線憑證夾・URL 壓縮分享與黃金光影預測</p>
+          <p class="text-xs text-slate-400 hidden sm:block">上傳制式 Excel 或 Google Sheet 即可自動產出含「多人分帳結算、日文問路卡、離線憑證夾、氣象光影」的單一互動網頁</p>
         </div>
       </div>
 
@@ -121,7 +121,7 @@
               <i data-lucide="FileUp" class="w-4 h-4"></i>
             </div>
             <p class="text-xs font-semibold text-slate-700">點擊或拖曳上傳 Excel (.xlsx) / CSV 檔</p>
-            <p class="text-[11px] text-slate-500">自動辨識「行程計畫」、「交通費用與時刻」、「住宿、交通與景點相關資訊」三張分頁</p>
+            <p class="text-[11px] text-slate-500">所有檔案皆在您的瀏覽器本機端解析，不會上傳至任何外部伺服器，保障行程與個資安全</p>
           </div>
         </label>
 
@@ -135,7 +135,7 @@
             </button>
           </div>
           <p class="text-[11px] text-slate-500 leading-relaxed">
-            💡 支援直接貼上同事傳來的 <code class="bg-slate-100 px-1 rounded">#trip=...</code> 壓縮狀態碼，或從 Google Sheet 下載 <code class="bg-slate-100 px-1 rounded">.xlsx</code> 拖曳匯入。
+            💡 支援貼上旅伴分享的 <code class="bg-slate-100 px-1 rounded">#trip=...</code> 狀態碼還原進度，或將公開檢視的 Google Sheet 連結直接載入。
           </p>
         </div>
 
@@ -143,8 +143,8 @@
         <div id="importStatusBox" class="rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2.5 flex items-start gap-2.5">
           <i data-lucide="CheckCircle2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
           <div class="text-xs">
-            <p id="importStatusTitle" class="font-semibold text-emerald-900">目前載入：20261113-1116-沼津、大洗旅行行程計畫.xlsx</p>
-            <p id="importStatusMeta" class="text-emerald-700 text-[11px] mt-0.5">共 4 天行程・12 筆交通時刻・11 筆連結與日文問路卡</p>
+            <p id="importStatusTitle" class="font-semibold text-emerald-900">目前載入：日本關東・靜岡四日遊範例.xlsx</p>
+            <p id="importStatusMeta" class="text-emerald-700 text-[11px] mt-0.5">共 4 天行程・12 筆交通・5 筆分帳紀錄・12 張日文問路卡</p>
           </div>
         </div>
       </section>
@@ -169,8 +169,8 @@
 
           <div class="grid grid-cols-2 gap-2.5">
             <div>
-              <label for="inputExchangeRate" class="block text-xs font-medium text-slate-600 mb-1">日圓匯率 (JPY→TWD)</label>
-              <input id="inputExchangeRate" type="number" step="0.001" min="0.05" max="1" value="0.215" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label for="inputExchangeRate" class="block text-xs font-medium text-slate-600 mb-1">外幣匯率 (如 JPY→TWD)</label>
+              <input id="inputExchangeRate" type="number" step="0.001" min="0.01" max="100" value="0.215" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
               <label for="selectTheme" class="block text-xs font-medium text-slate-600 mb-1">配色主題風格</label>
@@ -190,7 +190,7 @@
         <div class="flex items-center justify-between">
           <h2 class="font-bold text-sm text-slate-900 flex items-center gap-2">
             <i data-lucide="QrCode" class="w-4 h-4 text-blue-600"></i>
-            <span>步驟 3：離線憑證夾＆線上表格快編</span>
+            <span>步驟 3：離線憑證夾＆線上表格編輯</span>
           </h2>
           <button id="btnOpenEditorModal" type="button" class="text-xs px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold transition">
             開啟表格編輯器
@@ -198,7 +198,7 @@
         </div>
 
         <p class="text-xs text-slate-600 leading-relaxed">
-          可將車票 QR Code、訂房確認信截圖加入憑證夾，程式會自動壓縮為 Base64 內嵌進匯出的單一 HTML 檔，在日本地下鐵無訊號也能秒開：
+          可將車票 QR Code、訂房確認信截圖加入憑證夾，系統會自動轉為 Base64 內嵌於匯出的單一 HTML 檔，在海外無網路環境下也能秒開出示：
         </p>
 
         <div class="flex flex-wrap gap-2">
@@ -214,9 +214,11 @@
         </div>
 
         <div class="space-y-1.5 text-[11px] text-slate-600 bg-slate-50 rounded-xl p-3 border border-slate-200/70">
-          <p class="font-bold text-slate-800">✨ 已實作擴充模組 4 ＆ 5 亮點：</p>
-          <p>• <strong>模組 4（指差し問路大字卡＋離線憑證夾）</strong>：點擊任何住宿/交通/景點的「🗣️ 問路大字卡」即可全螢幕顯示日文原名、地址與情境日語（買票/問路/寄行李）。</p>
-          <p>• <strong>模組 5（氣象光影＋URL 狀態分享）</strong>：每日行程整合日出、日落、Golden Hour 攝影光影時段與 Open-Meteo 即時氣象更新，並支援 <code class="bg-white px-1 rounded border">LZ-String</code> 網址壓縮分享。</p>
+          <p class="font-bold text-slate-800">📖 制式 Excel 範本四大工作表說明：</p>
+          <p>• <strong>1. 行程計畫</strong>：橫軸為各天日期，縱軸為出門時間、三餐、午前/午後行程、住宿與氣象備註。</p>
+          <p>• <strong>2. 交通費用與時刻</strong>：記錄各段交通工具、車資、班次時刻與預先/現場購票標記。</p>
+          <p>• <strong>3. 住宿、交通與景點相關資訊</strong>：整理官網連結與日文名稱/地址，自動生成全螢幕問路大字卡。</p>
+          <p>• <strong>4. 共同花費與分帳</strong>：設定旅伴名單與代墊項目，自動計算最少轉帳筆數的結算清單。</p>
         </div>
       </section>
 
@@ -242,8 +244,8 @@
               <span id="weatherStatusBtnText">更新 Open-Meteo 氣象光影</span>
             </button>
             <select id="selectNumazuOption" class="text-xs rounded-lg border border-slate-300 px-2 py-1 bg-white text-slate-700 font-medium">
-              <option value="bike" selected>沼津方案 A：騎腳踏車 (¥1,920)</option>
-              <option value="bus">沼津方案 B：搭公車三段 (¥2,340)</option>
+              <option value="bike" selected>交通方案 A：騎腳踏車 (¥1,920)</option>
+              <option value="bus">交通方案 B：搭公車三段 (¥2,340)</option>
               <option value="both">兩者皆列出計入</option>
             </select>
           </div>
@@ -258,7 +260,7 @@
               <div class="space-y-1.5">
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-white/90 text-xs font-medium">
                   <i data-lucide="Plane" class="w-3.5 h-3.5"></i>
-                  <span>Interactive Travel Companion v2.0</span>
+                  <span>Interactive Travel Companion</span>
                 </div>
                 <h2 id="previewTitle" class="text-xl sm:text-2xl font-bold tracking-tight">2026 日本沼津・大洗四日遊</h2>
                 <p id="previewSubtitle" class="text-xs sm:text-sm text-white/80">2026/11/13 (五) – 11/16 (一)｜東京平和島・靜岡沼津・茨城水戶＆大洗鮟鱇魚祭</p>
@@ -286,13 +288,13 @@
                 <p id="kpiTransportTwd" class="text-[11px] text-amber-200 mt-0.5">約 NT$ 4,124</p>
               </div>
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
-                <p class="text-[11px] text-white/75">預估住宿總額 (3晚)</p>
-                <p id="kpiHotelJpy" class="text-lg font-bold mt-0.5">¥25,390</p>
-                <p id="kpiHotelTwd" class="text-[11px] text-amber-200 mt-0.5">約 NT$ 5,459 / 人</p>
+                <p class="text-[11px] text-white/75">團體分帳累計總額</p>
+                <p id="kpiHotelJpy" class="text-lg font-bold mt-0.5">NT$ 15,693</p>
+                <p id="kpiHotelTwd" class="text-[11px] text-amber-200 mt-0.5">每人平均 NT$ 5,231</p>
               </div>
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
                 <p class="text-[11px] text-white/75">離線憑證與行前檢核</p>
-                <p id="kpiPrebookCount" class="text-lg font-bold mt-0.5">3 筆預先處理</p>
+                <p id="kpiPrebookCount" class="text-lg font-bold mt-0.5">3 張離線憑證</p>
                 <p id="kpiChecklistProgress" class="text-[11px] text-emerald-200 mt-0.5">已完成 0%</p>
               </div>
             </div>
@@ -307,6 +309,10 @@
             <button type="button" data-preview-tab="transport" class="preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
               <i data-lucide="Train" class="w-4 h-4"></i>
               <span>交通費用與時刻表</span>
+            </button>
+            <button type="button" data-preview-tab="split" class="preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
+              <i data-lucide="Wallet" class="w-4 h-4"></i>
+              <span>多人分帳結算</span>
             </button>
             <button type="button" data-preview-tab="wallet" class="preview-tab-btn border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-medium text-xs sm:text-sm px-3 py-3 flex items-center gap-1.5 shrink-0 transition">
               <i data-lucide="IdCard" class="w-4 h-4"></i>
@@ -344,7 +350,118 @@
               <div id="transportListContainer" class="space-y-2.5"></div>
             </div>
 
-            <!-- Panel 3 (Module 4): Point-and-Speak Cards & Offline Voucher Wallet -->
+            <!-- Panel 3 (Module 3): Multi-Person Expense Split & Minimum Transfer Settlement -->
+            <div id="panelSplit" class="hidden space-y-5">
+
+              <!-- Block A: Travelers / Members Bar -->
+              <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-3 shadow-2xs">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                      <i data-lucide="Users" class="w-4 h-4 text-blue-600"></i>
+                      <span>旅伴成員名單（點擊成員可移除，或新增同行旅伴）</span>
+                    </h3>
+                    <p class="text-xs text-slate-500">支援在 Excel「共同花費與分帳」分頁預先填寫，或在下方直接管理</p>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <input id="inputNewMemberName" type="text" placeholder="輸入旅伴姓名或暱稱..." class="text-xs rounded-lg border border-slate-300 px-2.5 py-1.5 w-36 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <button id="btnAddMember" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 transition">
+                      + 新增旅伴
+                    </button>
+                  </div>
+                </div>
+                <div id="membersChipContainer" class="flex flex-wrap items-center gap-2"></div>
+              </div>
+
+              <!-- Block B: Minimum-Transfer Settlement Summary & Per-Member Balance -->
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <!-- Left 7 cols: Who Pays Whom Settlement Transfers -->
+                <div class="md:col-span-7 bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-2xl border-2 border-emerald-200 p-4 flex flex-col justify-between gap-3">
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">🎯 最簡轉帳結算建議 (Who Pays Whom)</span>
+                      <button id="btnCopySplitSummary" type="button" class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg bg-white text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition">
+                        <i data-lucide="Copy" class="w-3.5 h-3.5"></i>
+                        <span>複製 LINE 分帳結算明細</span>
+                      </button>
+                    </div>
+                    <p class="text-xs text-slate-600">系統已自動將日圓與台幣帳目依設定匯率折算對沖，用最少轉帳次數完成結清：</p>
+                    <div id="settlementTransfersList" class="space-y-2 pt-1"></div>
+                  </div>
+                  <div id="splitTotalsFooter" class="pt-2.5 border-t border-emerald-200/70 flex flex-wrap items-center justify-between text-xs text-slate-600 font-medium"></div>
+                </div>
+
+                <!-- Right 5 cols: Per-Member Net Balance Table -->
+                <div class="md:col-span-5 bg-white rounded-2xl border border-slate-200 p-4 space-y-2.5">
+                  <h4 class="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="Scale" class="w-3.5 h-3.5 text-blue-600"></i>
+                    <span>各成員代墊與應分攤淨額 (TWD)</span>
+                  </h4>
+                  <div id="memberBalanceList" class="space-y-2"></div>
+                </div>
+              </div>
+
+              <!-- Block C: Add New Expense Form (On-the-go mobile logging) -->
+              <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-3 shadow-2xs">
+                <h4 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                  <i data-lucide="PlusCircle" class="w-4 h-4 text-blue-600"></i>
+                  <span>新增旅途共同花費 / 代墊紀錄</span>
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                  <div class="sm:col-span-4">
+                    <label for="inputExpTitle" class="block text-[11px] text-slate-500 mb-1">消費項目名稱</label>
+                    <input id="inputExpTitle" type="text" placeholder="例如：沼津港海鮮午餐、租單車" class="w-full text-xs rounded-lg border border-slate-300 px-2.5 py-2" />
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label for="selectExpCategory" class="block text-[11px] text-slate-500 mb-1">類別</label>
+                    <select id="selectExpCategory" class="w-full text-xs rounded-lg border border-slate-300 px-2 py-2 bg-white">
+                      <option value="住宿">🏨 住宿</option>
+                      <option value="交通">🚄 交通</option>
+                      <option value="餐飲" selected>🍱 餐飲</option>
+                      <option value="門票/購物">🎟️ 門票/購物</option>
+                      <option value="其他">📦 其他</option>
+                    </select>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label for="inputExpAmount" class="block text-[11px] text-slate-500 mb-1">金額</label>
+                    <input id="inputExpAmount" type="number" min="0" step="1" placeholder="金額" class="w-full text-xs rounded-lg border border-slate-300 px-2.5 py-2" />
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label for="selectExpCurrency" class="block text-[11px] text-slate-500 mb-1">幣別</label>
+                    <select id="selectExpCurrency" class="w-full text-xs rounded-lg border border-slate-300 px-2 py-2 bg-white">
+                      <option value="JPY" selected>JPY (日圓)</option>
+                      <option value="TWD">TWD (台幣)</option>
+                    </select>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label for="selectExpPayer" class="block text-[11px] text-slate-500 mb-1">誰先代墊</label>
+                    <select id="selectExpPayer" class="w-full text-xs rounded-lg border border-slate-300 px-2 py-2 bg-white"></select>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-medium text-slate-600">分攤成員：</span>
+                    <div id="expSplitMembersBox" class="flex flex-wrap items-center gap-2"></div>
+                  </div>
+                  <button id="btnAddExpenseItem" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-xs transition">
+                    ＋ 新增分帳項目
+                  </button>
+                </div>
+              </div>
+
+              <!-- Block D: Expense History List -->
+              <div class="space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wider">帳目明細列表（共 <span id="expenseCountLabel">0</span> 筆）</h4>
+                  <span class="text-[11px] text-slate-500">新增或刪除後將自動重算上方最簡轉帳金額</span>
+                </div>
+                <div id="expenseItemsContainer" class="space-y-2"></div>
+              </div>
+
+            </div>
+
+            <!-- Panel 4 (Module 4): Point-and-Speak Cards & Offline Voucher Wallet -->
             <div id="panelWallet" class="hidden space-y-6">
               <!-- Section A: Offline Vouchers & Tickets -->
               <div class="space-y-3">
@@ -375,7 +492,7 @@
               </div>
             </div>
 
-            <!-- Panel 4: Links & Info -->
+            <!-- Panel 5: Links & Info -->
             <div id="panelLinks" class="hidden space-y-4">
               <div class="flex flex-wrap items-center gap-1.5">
                 <button type="button" data-link-filter="all" class="link-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-white">全部分類</button>
@@ -386,7 +503,7 @@
               <div id="linksGridContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
             </div>
 
-            <!-- Panel 5: Pre-trip & Ticket Checklist -->
+            <!-- Panel 6: Pre-trip & Ticket Checklist -->
             <div id="panelChecklist" class="hidden space-y-4">
               <div class="bg-blue-50 border border-blue-200 rounded-xl p-3.5 flex items-center justify-between gap-3">
                 <div class="text-xs text-blue-900">
@@ -414,7 +531,7 @@
       <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">指差し会話・問路大字卡</span>
-          <span id="psModalSubCategory" class="text-xs text-slate-300">請直接將此畫面出示給日本站務員、司機或店員</span>
+          <span id="psModalSubCategory" class="text-xs text-slate-300">請直接將此畫面出示給當地站務員、司機或店員</span>
         </div>
         <button id="btnClosePointSpeakModal" type="button" class="text-slate-300 hover:text-white p-1 rounded-lg bg-slate-800">
           <i data-lucide="X" class="w-5 h-5"></i>
@@ -473,7 +590,7 @@
       </div>
       <div class="space-y-3">
         <div>
-          <label for="inputVoucherTitle" class="block text-xs font-medium text-slate-600 mb-1">憑證名稱（如：JR常磐線特急取票號、多美迎水戶訂房代號）</label>
+          <label for="inputVoucherTitle" class="block text-xs font-medium text-slate-600 mb-1">憑證名稱（如：JR特快取票號、飯店訂房代號）</label>
           <input id="inputVoucherTitle" type="text" placeholder="例如：JR 東日本 えきねっと 預約番號" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2" />
         </div>
         <div>
@@ -506,10 +623,10 @@
       </div>
 
       <!-- Editor Sub-tabs -->
-      <div class="bg-slate-100 px-5 pt-2.5 border-b border-slate-200 flex gap-2">
-        <button type="button" data-editor-tab="days" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-bold bg-white text-blue-600 border-t border-x border-slate-200">1. 每日行程計畫</button>
-        <button type="button" data-editor-tab="transport" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900">2. 交通費用與時刻</button>
-        <button type="button" data-editor-tab="links" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900">3. 住宿・交通・景點連結</button>
+      <div class="bg-slate-100 px-5 pt-2.5 border-b border-slate-200 flex gap-2 overflow-x-auto">
+        <button type="button" data-editor-tab="days" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-bold bg-white text-blue-600 border-t border-x border-slate-200 shrink-0">1. 每日行程計畫</button>
+        <button type="button" data-editor-tab="transport" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900 shrink-0">2. 交通費用與時刻</button>
+        <button type="button" data-editor-tab="links" class="editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900 shrink-0">3. 住宿・交通・景點連結</button>
       </div>
 
       <div class="p-5 overflow-y-auto flex-1 space-y-4 custom-scrollbar">
@@ -557,7 +674,7 @@
 
   <script>
     // =========================================================================
-    // Built-in Japanese Dictionary for Auto-Enriching Colleague's Excel Places
+    // Built-in Japanese Dictionary for Auto-Enriching Common Japanese Places
     // =========================================================================
     const JP_PLACE_DICT = {
       "平和島溫泉": {
@@ -570,7 +687,7 @@
         jpName: "天然温泉 香梅の湯 ドーミーイン水戸",
         address: "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩約12分)",
         phraseType: "checkin",
-        voucherNote: "一晚 1人 ¥15,390（同事已預先付款）"
+        voucherNote: "一晚 1人 ¥15,390（已預先付款）"
       },
       "多美迎水戸": {
         jpName: "天然温泉 香梅の湯 ドーミーイン水戸",
@@ -641,7 +758,7 @@
       },
       ticket: {
         jp: "すみません、この区間の切符を大人2枚買いたいです。",
-        romaji: "Sumimasen, kono kukan no kippu o otona ni-mai kaitai desu. (不好意思，我想買這段區間的車票，可調整張數)"
+        romaji: "Sumimasen, kono kukan no kippu o otona ni-mai kaitai desu. (不好意思，我想買這段區間的車票，可依人數調整)"
       },
       checkin: {
         jp: "チェックインをお願いします。予約しています。",
@@ -654,8 +771,7 @@
     };
 
     // =========================================================================
-    // Default Dataset: Grounded 100% in colleague's 2026/11/13-11/16 Excel sheet
-    // + Enriched with Module 4 (Point-and-Speak & Vouchers) & Module 5 (Weather/Sun)
+    // Default Public Demo Dataset (Includes Module 3 Group Split Expenses)
     // =========================================================================
     const DEFAULT_TRIP_DATA = {
       title: "2026 日本沼津・大洗四日遊",
@@ -663,7 +779,60 @@
       exchangeRate: 0.215,
       theme: "indigo",
       numazuOption: "bike",
-      sourceFileName: "20261113-1116-沼津、大洗旅行行程計畫.xlsx",
+      sourceFileName: "日本關東・靜岡四日遊範例.xlsx",
+      members: ["主辦人", "旅伴 A", "旅伴 B"],
+      expenses: [
+        {
+          id: "exp_1",
+          title: "天然溫泉 多美迎水戶（住宿代墊 3人房費）",
+          category: "住宿",
+          amount: 46170,
+          currency: "JPY",
+          payer: "主辦人",
+          splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
+          note: "每人 ¥15,390 × 3 人（由主辦人線上刷卡預付）"
+        },
+        {
+          id: "exp_2",
+          title: "平和島溫泉住宿（首晚＋末晚 3人合計）",
+          category: "住宿",
+          amount: 30000,
+          currency: "JPY",
+          payer: "旅伴 A",
+          splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
+          note: "一晚 1人 ¥5,000 × 2 晚 × 3 人"
+        },
+        {
+          id: "exp_3",
+          title: "JR 常磐線特急（品川→水戶、水戶→大森 指定席）",
+          category: "交通",
+          amount: 24000,
+          currency: "JPY",
+          payer: "主辦人",
+          splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
+          note: "えきねっと 預先劃位（每人來回 ¥8,000 × 3 人）"
+        },
+        {
+          id: "exp_4",
+          title: "水戶日式炸豬排 Cook Fan 聚餐",
+          category: "餐飲",
+          amount: 7800,
+          currency: "JPY",
+          payer: "旅伴 B",
+          splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
+          note: "11/14 晚餐現場付現"
+        },
+        {
+          id: "exp_5",
+          title: "桃園機場送機計程車資",
+          category: "交通",
+          amount: 1200,
+          currency: "TWD",
+          payer: "旅伴 B",
+          splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
+          note: "出發前往桃園機場第一航廈共乘"
+        }
+      ],
       days: [
         {
           date: "11/13(五)",
@@ -758,7 +927,7 @@
       ],
       links: [
         { category: "住宿", name: "平和島溫泉", jpName: "天然温泉 平和島", address: "東京都大田区平和島1-1-1 BIG FUN平和島 2F", url: "https://www.heiwajima-onsen.jp/bus/", note: "一晚1人5000日圓(可付現或刷信用卡，附早餐，但要7點才有)", phraseType: "checkin" },
-        { category: "住宿", name: "天然溫泉 香梅之湯 多美迎水戸", jpName: "天然温泉 香梅の湯 ドーミーイン水戸", address: "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩12分)", url: "https://dormy-hotels.com/dormyinn/hotels/mito/breakfast/", note: "一晚1人15390日圓(同事已預先付款)", phraseType: "checkin" },
+        { category: "住宿", name: "天然溫泉 香梅之湯 多美迎水戸", jpName: "天然温泉 香梅の湯 ドーミーイン水戸", address: "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩12分)", url: "https://dormy-hotels.com/dormyinn/hotels/mito/breakfast/", note: "一晚1人15390日圓(已預先付款，可列入分帳計算)", phraseType: "checkin" },
         { category: "交通", name: "平和島溫泉接駁車", jpName: "天然温泉平和島 深夜早朝送迎バス", address: "BIG FUN平和島 1F バス乗場 ↔ 羽田空港第3ターミナル", url: "https://www.big-fun.jp/access/", note: "平和島 BIG FUN 接駁巴士時刻與乘車處資訊（11/16 03:10 搭車）", phraseType: "go" },
         { category: "交通", name: "京濱急行電鐵（京急）", jpName: "京急本線 平和島駅 → 品川駅", address: "東京都大田区大森北6-13-1", url: "https://www.keikyu.co.jp/ride/kakueki/schedule.html", note: "京急平和島站 ↔ 品川站 各站停車時刻表", phraseType: "ticket" },
         { category: "交通", name: "JR東日本訂票系統 (えきねっと)", jpName: "JR常磐線特急 ひたち・ときわ 指定席", address: "JR品川駅・JR水戸駅 みどりの窓口 / 指定席券売機", url: "https://www.eki-net.com/zh-CHT/jreast-train-reservation/Top/Index", note: "常磐線特急 ひたち/ときわ（品川↔水戶）預先訂票", phraseType: "ticket" },
@@ -808,7 +977,7 @@
     let checklistState = {};
     let currentPointSpeakItem = null;
 
-    // Safe localStorage & URL Hash State helpers (Module 5)
+    // Safe localStorage & URL Hash State helpers
     function loadSavedState() {
       try {
         const hash = window.location.hash || "";
@@ -819,8 +988,14 @@
             const parsed = JSON.parse(jsonStr);
             if (parsed && parsed.state) {
               appState = parsed.state;
+              if (!appState.members || !appState.members.length) {
+                appState.members = ["主辦人", "旅伴 A", "旅伴 B"];
+              }
+              if (!appState.expenses) {
+                appState.expenses = [];
+              }
               checklistState = parsed.checklist || {};
-              showToast("已從分享網址 (#trip=...) 載入最新行程與檢核狀態！");
+              showToast("已從分享網址 (#trip=...) 載入最新行程、分帳與檢核狀態！");
               return;
             }
           }
@@ -905,6 +1080,97 @@
       };
     }
 
+    // =========================================================================
+    // Module 3: Minimum-Transfer Debt Settlement Algorithm (Splitwise Lite)
+    // =========================================================================
+    function computeSplitSettlement() {
+      const members = (appState.members && appState.members.length > 0)
+        ? appState.members
+        : ["主辦人", "旅伴 A"];
+      const expenses = appState.expenses || [];
+      const rate = Number(appState.exchangeRate) || 0.215;
+
+      const paidByMemberTwd = {};
+      const shareByMemberTwd = {};
+      members.forEach(m => {
+        paidByMemberTwd[m] = 0;
+        shareByMemberTwd[m] = 0;
+      });
+
+      let totalGroupTwd = 0;
+      let totalGroupJpy = 0;
+
+      expenses.forEach(exp => {
+        const amt = Number(exp.amount) || 0;
+        if (amt <= 0) return;
+        const isJpy = (exp.currency || "JPY").toUpperCase() === "JPY";
+        const twdVal = isJpy ? amt * rate : amt;
+        const jpyEquiv = isJpy ? amt : (rate > 0 ? amt / rate : 0);
+
+        totalGroupTwd += twdVal;
+        totalGroupJpy += jpyEquiv;
+
+        const payer = members.includes(exp.payer) ? exp.payer : members[0];
+        paidByMemberTwd[payer] = (paidByMemberTwd[payer] || 0) + twdVal;
+
+        const validTargets = (exp.splitAmong || []).filter(m => members.includes(m));
+        const targets = validTargets.length > 0 ? validTargets : members;
+        const perHead = twdVal / targets.length;
+        targets.forEach(t => {
+          shareByMemberTwd[t] = (shareByMemberTwd[t] || 0) + perHead;
+        });
+      });
+
+      const balances = members.map(m => {
+        const paid = paidByMemberTwd[m] || 0;
+        const share = shareByMemberTwd[m] || 0;
+        return {
+          member: m,
+          paidTwd: Math.round(paid),
+          shareTwd: Math.round(share),
+          netTwd: paid - share
+        };
+      });
+
+      // Greedy minimum-transfer matching
+      const debtors = [];
+      const creditors = [];
+      balances.forEach(b => {
+        if (b.netTwd < -0.5) debtors.push({ member: b.member, amount: -b.netTwd });
+        else if (b.netTwd > 0.5) creditors.push({ member: b.member, amount: b.netTwd });
+      });
+
+      debtors.sort((a, b) => b.amount - a.amount);
+      creditors.sort((a, b) => b.amount - a.amount);
+
+      const transfers = [];
+      let i = 0;
+      let j = 0;
+      while (i < debtors.length && j < creditors.length) {
+        const payAmt = Math.min(debtors[i].amount, creditors[j].amount);
+        if (payAmt >= 1) {
+          transfers.push({
+            from: debtors[i].member,
+            to: creditors[j].member,
+            twd: Math.round(payAmt),
+            jpy: rate > 0 ? Math.round(payAmt / rate) : 0
+          });
+        }
+        debtors[i].amount -= payAmt;
+        creditors[j].amount -= payAmt;
+        if (debtors[i].amount < 0.5) i++;
+        if (creditors[j].amount < 0.5) j++;
+      }
+
+      return {
+        totalGroupTwd: Math.round(totalGroupTwd),
+        totalGroupJpy: Math.round(totalGroupJpy),
+        perPersonAvgTwd: members.length > 0 ? Math.round(totalGroupTwd / members.length) : 0,
+        balances,
+        transfers
+      };
+    }
+
     // Open Full-Screen Point-and-Speak Modal (Module 4)
     function openPointSpeakModal(item) {
       currentPointSpeakItem = item;
@@ -978,11 +1244,11 @@
       }
 
       renderAll();
-      btnText.textContent = updatedCount > 0 ? "已同步最新氣象光影" : "已載入11月天文日照與氣候";
+      btnText.textContent = updatedCount > 0 ? "已同步最新氣象光影" : "已載入天文日照與氣候";
       showToast(
         updatedCount > 0
           ? "已透過 Open-Meteo 同步最新當地氣溫與日出日落時刻！"
-          : "目前已套用日本關東・靜岡 11 月中旬天文日出日落與黃金光影時刻！"
+          : "目前已套用目的地天文日出日落與黃金光影時刻！"
       );
     }
 
@@ -1001,17 +1267,17 @@
         {
           id: "rem_1",
           title: "【鹿島臨海鐵道提醒】準備大洗鹿島線車票（不支援 Suica / Apple Pay 西瓜卡）",
-          detail: "11/15(日) 水戶往返大洗需使用線上購票或現場購買紙本車票（可開「問路大字卡」出示給站務員）"
+          detail: "水戶往返大洗需使用線上購票或現場購買紙本車票（可開「問路大字卡」出示給站務員）"
         },
         {
           id: "rem_2",
-          title: "【寄放行李確認】確認 JR 品川站或三島站置物櫃位置",
-          detail: "11/14(六) 早晨於 JR 品川站寄放大型行李（若滿櫃則改至三島站寄放）"
+          title: "【寄放行李確認】確認轉乘車站大型置物櫃位置",
+          detail: "早晨於轉乘站寄放大型行李（若滿櫃則改至下一站寄放）"
         },
         {
           id: "rem_3",
-          title: "【凌晨接駁確認】確認平和島溫泉往羽田機場凌晨 3:10 接駁車預約方式",
-          detail: "11/16(一) 上午 3:00 集合準備搭乘 3:10 接駁巴士前往羽田機場第三航廈"
+          title: "【機場接駁確認】確認溫泉或飯店往返機場接駁車預約方式",
+          detail: "留意深夜或凌晨接駁巴士集合時間與乘車處"
         }
       );
       return items;
@@ -1022,6 +1288,8 @@
       const newDays = [];
       const newTransports = [];
       const newLinks = [];
+      const newExpenses = [];
+      let parsedMembers = [];
 
       const dayGeoDefaults = [
         { city: "東京羽田・平和島", lat: 35.579, lon: 139.738, sunrise: "06:14", sunset: "16:37", goldenHour: "15:55–16:45", weatherDesc: "晴時多雲｜11°C – 18°C｜降雨 10%", photoTip: "深夜抵達羽田第三航廈，適合拍攝江戶小路與觀景台" },
@@ -1030,6 +1298,7 @@
         { city: "東京羽田 → 桃園機場", lat: 35.549, lon: 139.779, sunrise: "06:17", sunset: "16:35", goldenHour: "05:55–06:45", weatherDesc: "晴朗｜11°C – 17°C｜凌晨接駁留意保暖", photoTip: "凌晨 03:10 接駁巴士前往羽田第3航廈" }
       ];
 
+      // 1. Sheet 1: 行程計畫
       const s1Name = sheetNames.find(n => n.includes("行程")) || sheetNames[0];
       if (s1Name) {
         const ws1 = workbook.Sheets[s1Name];
@@ -1096,6 +1365,7 @@
         });
       }
 
+      // 2. Sheet 2: 交通費用與時刻
       const s2Name = sheetNames.find(n => n.includes("交通費用") || n.includes("時刻")) || sheetNames[1];
       if (s2Name) {
         const ws2 = workbook.Sheets[s2Name];
@@ -1145,6 +1415,7 @@
         }
       }
 
+      // 3. Sheet 3: 住宿、交通與景點相關資訊
       const s3Name = sheetNames.find(n => n.includes("相關資訊") || n.includes("景點") || n.includes("住宿")) || sheetNames[2];
       if (s3Name) {
         const ws3 = workbook.Sheets[s3Name];
@@ -1207,17 +1478,66 @@
         }
       }
 
+      // 4. Sheet 4 (Module 3): 共同花費與分帳
+      const s4Name = sheetNames.find(n => n.includes("分帳") || n.includes("花費") || n.includes("費用明細"));
+      if (s4Name) {
+        const ws4 = workbook.Sheets[s4Name];
+        const rows4 = XLSX.utils.sheet_to_json(ws4, { header: 1, defval: "" });
+        const memberSet = new Set();
+        let hdrIdx = rows4.findIndex(r => r && r.some(c => String(c).includes("項目") || String(c).includes("代墊人")));
+        if (hdrIdx === -1) hdrIdx = 0;
+
+        for (let r = hdrIdx + 1; r < rows4.length; r++) {
+          const row = rows4[r] || [];
+          const title = String(row[0] || "").trim();
+          const category = String(row[1] || "其他").trim();
+          const amount = parseFloat(row[2]) || 0;
+          const currency = String(row[3] || "JPY").trim().toUpperCase();
+          const payer = String(row[4] || "").trim();
+          const splitRaw = String(row[5] || "").trim();
+          const note = String(row[6] || "").trim();
+
+          if (!title || amount <= 0 || title.includes("合計")) continue;
+          if (payer) memberSet.add(payer);
+          const splitArr = splitRaw
+            ? splitRaw.split(/[,、/，\s]+/).map(s => s.trim()).filter(Boolean)
+            : [];
+          splitArr.forEach(m => memberSet.add(m));
+
+          newExpenses.push({
+            id: "exp_xls_" + r,
+            title,
+            category,
+            amount,
+            currency: currency === "TWD" ? "TWD" : "JPY",
+            payer: payer || "主辦人",
+            splitAmong: splitArr,
+            note
+          });
+        }
+        parsedMembers = Array.from(memberSet);
+      }
+
       if (newDays.length > 0) appState.days = newDays;
       if (newTransports.length > 0) appState.transports = newTransports;
       if (newLinks.length > 0) appState.links = newLinks;
+      if (parsedMembers.length > 0) appState.members = parsedMembers;
+      if (newExpenses.length > 0) {
+        newExpenses.forEach(e => {
+          if (!e.splitAmong || e.splitAmong.length === 0) {
+            e.splitAmong = [...appState.members];
+          }
+        });
+        appState.expenses = newExpenses;
+      }
       appState.sourceFileName = filename || "已匯入自訂行程表.xlsx";
 
       document.getElementById("importStatusTitle").textContent = "目前載入：" + appState.sourceFileName;
       document.getElementById("importStatusMeta").textContent =
-        `共 ${appState.days.length} 天行程・${appState.transports.length} 筆交通時刻・${appState.links.length} 筆連結與日文問路卡`;
+        `共 ${appState.days.length} 天行程・${appState.transports.length} 筆交通・${(appState.expenses || []).length} 筆分帳紀錄・${appState.links.length} 張問路卡`;
 
       renderAll();
-      showToast("已成功解析 Excel 並自動建立日文問路大字卡與光影時段！");
+      showToast("已成功解析試算表並更新行程、分帳與問路卡預覽！");
     }
 
     function renderAll() {
@@ -1240,9 +1560,10 @@
       document.getElementById("kpiTransportJpy").textContent = "¥" + totalTransportJpy.toLocaleString();
       document.getElementById("kpiTransportTwd").textContent = "約 NT$ " + totalTransportTwd.toLocaleString();
 
-      let hotelJpy = 25390;
-      document.getElementById("kpiHotelJpy").textContent = "¥" + hotelJpy.toLocaleString();
-      document.getElementById("kpiHotelTwd").textContent = "約 NT$ " + Math.round(hotelJpy * appState.exchangeRate).toLocaleString() + " / 人";
+      // KPI 3: Group Split Total & Per-person average
+      const splitSummary = computeSplitSettlement();
+      document.getElementById("kpiHotelJpy").textContent = "NT$ " + splitSummary.totalGroupTwd.toLocaleString();
+      document.getElementById("kpiHotelTwd").textContent = `每人平均 NT$ ${splitSummary.perPersonAvgTwd.toLocaleString()}`;
 
       const voucherCount = (appState.vouchers || []).length;
       const checkItems = getChecklistItems();
@@ -1253,6 +1574,7 @@
 
       renderItineraryPanel();
       renderTransportPanel();
+      renderSplitPanel();
       renderWalletPanel();
       renderLinksPanel();
       renderChecklistPanel();
@@ -1466,6 +1788,136 @@
       });
     }
 
+    // =========================================================================
+    // Module 3: Render Multi-Person Expense Split & Settlement Panel
+    // =========================================================================
+    function renderSplitPanel() {
+      const members = appState.members || ["主辦人", "旅伴 A"];
+      const expenses = appState.expenses || [];
+      const rate = Number(appState.exchangeRate) || 0.215;
+
+      // 1. Render Members Chips
+      const chipBox = document.getElementById("membersChipContainer");
+      chipBox.innerHTML = members.map((m, idx) => `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200">
+          <span>👤 ${escapeHtml(m)}</span>
+          ${members.length > 1 ? `<button type="button" data-del-member="${idx}" class="text-slate-400 hover:text-rose-600 font-bold">×</button>` : ""}
+        </span>
+      `).join("");
+
+      chipBox.querySelectorAll("[data-del-member]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-del-member"), 10);
+          if (appState.members.length > 1) {
+            appState.members.splice(idx, 1);
+            renderAll();
+            showToast("已更新旅伴成員名單");
+          }
+        });
+      });
+
+      // 2. Populate Payer Select & Split Target Checkboxes
+      const payerSelect = document.getElementById("selectExpPayer");
+      const currentPayer = payerSelect.value;
+      payerSelect.innerHTML = members.map(m => `<option value="${escapeHtml(m)}" ${m === currentPayer ? "selected" : ""}>${escapeHtml(m)}</option>`).join("");
+
+      const splitMembersBox = document.getElementById("expSplitMembersBox");
+      splitMembersBox.innerHTML = members.map(m => `
+        <label class="inline-flex items-center gap-1 text-xs bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200 cursor-pointer">
+          <input type="checkbox" class="exp-split-target-chk rounded text-blue-600" value="${escapeHtml(m)}" checked />
+          <span>${escapeHtml(m)}</span>
+        </label>
+      `).join("");
+
+      // 3. Compute & Render Settlement Transfers + Member Balances
+      const summary = computeSplitSettlement();
+      const transfersList = document.getElementById("settlementTransfersList");
+      if (summary.transfers.length === 0) {
+        transfersList.innerHTML = `<div class="p-3 rounded-xl bg-white/80 border border-emerald-200 text-xs text-emerald-800 font-semibold">🎉 目前所有成員帳目已平衡，無須轉帳！</div>`;
+      } else {
+        transfersList.innerHTML = summary.transfers.map(tr => `
+          <div class="p-3 rounded-xl bg-white border border-emerald-200/90 flex items-center justify-between gap-2 shadow-2xs">
+            <div class="flex items-center gap-2 text-xs sm:text-sm">
+              <span class="font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">${escapeHtml(tr.from)}</span>
+              <span class="text-slate-400 font-bold">➔ 支付給 ➔</span>
+              <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${escapeHtml(tr.to)}</span>
+            </div>
+            <div class="text-right">
+              <span class="font-extrabold text-sm sm:text-base text-slate-900">NT$ ${tr.twd.toLocaleString()}</span>
+              <span class="block text-[11px] text-slate-500">約 ¥${tr.jpy.toLocaleString()}</span>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("splitTotalsFooter").innerHTML = `
+        <span>📊 團體累計總支出：<strong>NT$ ${summary.totalGroupTwd.toLocaleString()}</strong>（約 ¥${summary.totalGroupJpy.toLocaleString()}）</span>
+        <span>👥 每人平均分攤：<strong>NT$ ${summary.perPersonAvgTwd.toLocaleString()}</strong></span>
+      `;
+
+      const balList = document.getElementById("memberBalanceList");
+      balList.innerHTML = summary.balances.map(b => {
+        const net = Math.round(b.netTwd);
+        const badge = net > 0
+          ? `<span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">應收回 +NT$ ${net.toLocaleString()}</span>`
+          : net < 0
+            ? `<span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">應補付 -NT$ ${Math.abs(net).toLocaleString()}</span>`
+            : `<span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">已結清 NT$ 0</span>`;
+        return `
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2 text-xs">
+            <div>
+              <p class="font-bold text-slate-900">👤 ${escapeHtml(b.member)}</p>
+              <p class="text-[11px] text-slate-500">已代墊 NT$ ${b.paidTwd.toLocaleString()} ｜ 應分攤 NT$ ${b.shareTwd.toLocaleString()}</p>
+            </div>
+            ${badge}
+          </div>
+        `;
+      }).join("");
+
+      // 4. Render Expense Items History
+      document.getElementById("expenseCountLabel").textContent = String(expenses.length);
+      const expContainer = document.getElementById("expenseItemsContainer");
+      if (expenses.length === 0) {
+        expContainer.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 bg-white rounded-xl border border-slate-200">尚無分帳項目，可由上方表單新增或從 Excel 匯入</div>`;
+      } else {
+        expContainer.innerHTML = expenses.map((exp, idx) => {
+          const isJpy = (exp.currency || "JPY").toUpperCase() === "JPY";
+          const twdVal = isJpy ? Math.round((Number(exp.amount) || 0) * rate) : Math.round(Number(exp.amount) || 0);
+          const targets = (exp.splitAmong && exp.splitAmong.length) ? exp.splitAmong.join("、") : "全員均分";
+          return `
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-2xs">
+              <div class="space-y-1 flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-700">${escapeHtml(exp.category || "其他")}</span>
+                  <h5 class="font-bold text-xs sm:text-sm text-slate-900">${escapeHtml(exp.title)}</h5>
+                  <span class="text-[11px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-semibold border border-blue-200">💳 ${escapeHtml(exp.payer)} 先墊</span>
+                </div>
+                <p class="text-xs text-slate-500">👥 分攤對象：${escapeHtml(targets)} ${exp.note ? `｜ 備註：${escapeHtml(exp.note)}` : ""}</p>
+              </div>
+              <div class="flex items-center gap-3 shrink-0">
+                <div class="text-right">
+                  <p class="text-sm font-bold text-slate-900">${isJpy ? "¥" : "NT$ "}${(Number(exp.amount) || 0).toLocaleString()}</p>
+                  <p class="text-[11px] text-slate-500">${isJpy ? `折合 NT$ ${twdVal.toLocaleString()}` : "台幣計價"}</p>
+                </div>
+                <button type="button" data-del-expense="${idx}" class="text-xs text-slate-400 hover:text-rose-600 px-2 py-1 rounded hover:bg-rose-50 transition">
+                  刪除
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        expContainer.querySelectorAll("[data-del-expense]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const idx = parseInt(btn.getAttribute("data-del-expense"), 10);
+            appState.expenses.splice(idx, 1);
+            renderAll();
+            showToast("已刪除該筆分帳紀錄並重新計算結算金額");
+          });
+        });
+      }
+    }
+
     function renderWalletPanel() {
       const vGrid = document.getElementById("vouchersGridContainer");
       const sGrid = document.getElementById("speakCardsGridContainer");
@@ -1641,6 +2093,9 @@
       });
     }
 
+    // =========================================================================
+    // Generate Standalone Interactive HTML String for Export (Includes Mod 3, 4, 5)
+    // =========================================================================
     function generateStandaloneHtmlString() {
       const serializedData = JSON.stringify(appState, null, 2);
       return `<!DOCTYPE html>
@@ -1661,7 +2116,7 @@
 <body class="bg-slate-100 text-slate-800 min-h-screen theme-${escapeHtml(appState.theme)}">
   <div class="max-w-4xl mx-auto my-0 sm:my-6 bg-white sm:rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
     <header style="background-color: var(--brand-bg);" class="text-white p-6">
-      <p class="text-xs uppercase tracking-wider text-white/75 font-semibold">Interactive Travel Companion v2.0</p>
+      <p class="text-xs uppercase tracking-wider text-white/75 font-semibold">Interactive Travel Companion</p>
       <h1 class="text-2xl font-bold mt-1">${escapeHtml(appState.title)}</h1>
       <p class="text-xs sm:text-sm text-white/85 mt-1">${escapeHtml(appState.subtitle)}</p>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
@@ -1674,20 +2129,22 @@
           <p id="stTransportTotal" class="text-lg font-bold">¥0</p>
         </div>
         <div class="bg-white/10 rounded-xl p-3 border border-white/15 col-span-2 sm:col-span-1">
-          <p class="text-xs text-white/75">離線憑證與問路卡</p>
-          <p class="text-lg font-bold">${(appState.vouchers || []).length} 張憑證・${appState.links.length} 張問路卡</p>
+          <p class="text-xs text-white/75">團體分帳累計</p>
+          <p id="stSplitTotal" class="text-lg font-bold">NT$ 0</p>
         </div>
       </div>
     </header>
     <nav class="flex border-b border-slate-200 bg-slate-50 px-4 overflow-x-auto">
       <button onclick="switchTab('days')" id="tabBtn_days" class="px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-blue-600 text-blue-600 shrink-0">📅 每日行程＆光影</button>
       <button onclick="switchTab('transport')" id="tabBtn_transport" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🚄 交通時刻</button>
+      <button onclick="switchTab('split')" id="tabBtn_split" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">💰 多人分帳結算</button>
       <button onclick="switchTab('wallet')" id="tabBtn_wallet" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🪪 問路大字卡＆憑證夾</button>
       <button onclick="switchTab('links')" id="tabBtn_links" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🏨 官網連結</button>
     </nav>
     <main class="p-4 sm:p-6">
       <div id="tab_days" class="space-y-4"></div>
       <div id="tab_transport" class="hidden space-y-3"></div>
+      <div id="tab_split" class="hidden space-y-4"></div>
       <div id="tab_wallet" class="hidden space-y-4"></div>
       <div id="tab_links" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
     </main>
@@ -1708,7 +2165,7 @@
   <script>
     const DATA = ${serializedData};
     function switchTab(t) {
-      ['days','transport','wallet','links'].forEach(k => {
+      ['days','transport','split','wallet','links'].forEach(k => {
         document.getElementById('tab_' + k).classList.toggle('hidden', k !== t);
         const btn = document.getElementById('tabBtn_' + k);
         btn.className = k === t
@@ -1725,10 +2182,45 @@
       const m = document.getElementById('stModal');
       m.classList.remove('hidden'); m.classList.add('flex');
     }
+    function calcSplit() {
+      const members = DATA.members || ['主辦人','旅伴 A'];
+      const rate = Number(DATA.exchangeRate)||0.215;
+      const paid = {}, share = {};
+      members.forEach(m => { paid[m]=0; share[m]=0; });
+      let totalTwd = 0;
+      (DATA.expenses||[]).forEach(e => {
+        const a = Number(e.amount)||0;
+        const twd = (e.currency||'JPY')==='JPY' ? a*rate : a;
+        totalTwd += twd;
+        const p = members.includes(e.payer) ? e.payer : members[0];
+        paid[p] += twd;
+        const tg = (e.splitAmong||[]).filter(m => members.includes(m));
+        const list = tg.length ? tg : members;
+        list.forEach(m => share[m] += twd/list.length);
+      });
+      const debtors=[], creditors=[];
+      members.forEach(m => {
+        const net = paid[m] - share[m];
+        if (net < -0.5) debtors.push({m, a: -net});
+        else if (net > 0.5) creditors.push({m, a: net});
+      });
+      debtors.sort((x,y)=>y.a-x.a); creditors.sort((x,y)=>y.a-x.a);
+      const trans=[]; let i=0, j=0;
+      while(i<debtors.length && j<creditors.length){
+        const v = Math.min(debtors[i].a, creditors[j].a);
+        if(v>=1) trans.push({from:debtors[i].m, to:creditors[j].m, twd:Math.round(v), jpy:Math.round(v/rate)});
+        debtors[i].a-=v; creditors[j].a-=v;
+        if(debtors[i].a<0.5) i++; if(creditors[j].a<0.5) j++;
+      }
+      return { totalTwd: Math.round(totalTwd), trans, expenses: DATA.expenses||[] };
+    }
     function renderStandalone() {
       const totalJpy = DATA.transports.filter(x => x.active).reduce((s, x) => s + (Number(x.priceNum)||0), 0);
       const totalTwd = Math.round(totalJpy * DATA.exchangeRate);
       document.getElementById('stTransportTotal').textContent = '¥' + totalJpy.toLocaleString() + ' (約 NT$' + totalTwd.toLocaleString() + ')';
+
+      const sp = calcSplit();
+      document.getElementById('stSplitTotal').textContent = 'NT$ ' + sp.totalTwd.toLocaleString();
 
       const slots = [
         ['departure','🕒 預計出門'],['breakfast','🍳 早餐'],['morning','🌅 午前'],
@@ -1768,6 +2260,30 @@
           <div class="text-right font-bold text-sm shrink-0">¥\${(Number(t.priceNum)||0).toLocaleString()}</div>
         </div>
       \`).join('');
+
+      document.getElementById('tab_split').innerHTML = \`
+        <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 space-y-2">
+          <h3 class="font-bold text-sm text-emerald-950">🎯 最簡轉帳結算清單 (Who Pays Whom)</h3>
+          \${sp.trans.map(tr => \`
+            <div class="p-3 rounded-xl bg-white border border-emerald-200 flex justify-between items-center text-xs sm:text-sm">
+              <span><strong>\${tr.from}</strong> ➔ 支付給 ➔ <strong>\${tr.to}</strong></span>
+              <strong class="text-emerald-900">NT$ \${tr.twd.toLocaleString()} (約 ¥\${tr.jpy.toLocaleString()})</strong>
+            </div>
+          \`).join('') || '<p class="text-xs text-emerald-800">目前帳目已平衡</p>'}
+        </div>
+        <div class="space-y-2">
+          \${sp.expenses.map(e => \`
+            <div class="p-3 rounded-xl border border-slate-200 bg-white flex justify-between items-center text-xs">
+              <div>
+                <span class="font-bold text-slate-900">\${e.title}</span>
+                <span class="ml-2 px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">\${e.payer} 先墊</span>
+                <p class="text-slate-500 mt-0.5">分攤：\${(e.splitAmong||[]).join('、')} \${e.note ? '｜'+e.note : ''}</p>
+              </div>
+              <strong class="text-sm">\${e.currency==='TWD'?'NT$ ':'¥'}\${(Number(e.amount)||0).toLocaleString()}</strong>
+            </div>
+          \`).join('')}
+        </div>
+      \`;
 
       document.getElementById('tab_wallet').innerHTML =
         (DATA.vouchers || []).map(v => \`
@@ -1851,8 +2367,23 @@
       const ws3 = XLSX.utils.aoa_to_sheet(s3Rows);
       XLSX.utils.book_append_sheet(wb, ws3, "住宿、交通與景點相關資訊");
 
-      XLSX.writeFile(wb, "旅遊行程制式範本_v2問路卡與光影版.xlsx");
-      showToast("已下載制式 Excel 範本 (.xlsx)！");
+      const s4Rows = [
+        ["項目名稱", "類別", "金額", "幣別(JPY/TWD)", "代墊人", "分攤成員(頓號或逗號分隔)", "備註說明"],
+        ...(appState.expenses || []).map(e => [
+          e.title,
+          e.category || "其他",
+          e.amount,
+          e.currency || "JPY",
+          e.payer || "主辦人",
+          (e.splitAmong || []).join("、"),
+          e.note || ""
+        ])
+      ];
+      const ws4 = XLSX.utils.aoa_to_sheet(s4Rows);
+      XLSX.utils.book_append_sheet(wb, ws4, "共同花費與分帳");
+
+      XLSX.writeFile(wb, "旅遊行程制式範本_含多人分帳與問路卡.xlsx");
+      showToast("已下載包含「共同花費與分帳」四分頁的制式 Excel 範本 (.xlsx)！");
     }
 
     function renderEditorModalInputs() {
@@ -2044,7 +2575,7 @@
               appState = parsed.state;
               checklistState = parsed.checklist || {};
               renderAll();
-              showToast("已成功從狀態分享碼還原行程與勾選進度！");
+              showToast("已成功從狀態分享碼還原行程、分帳與勾選進度！");
               return;
             }
           } catch (e) {
@@ -2070,6 +2601,97 @@
         } catch (err) {
           showToast("此試算表未開放公開下載，請在 Google Sheet 點選「檔案 → 下載 → .xlsx」後拖曳至上方區塊！");
         }
+      });
+
+      // Module 3 Event Listeners: Add Member, Add Expense, Copy LINE Settlement Summary
+      document.getElementById("btnAddMember").addEventListener("click", () => {
+        const inp = document.getElementById("inputNewMemberName");
+        const name = inp.value.trim();
+        if (!name) {
+          showToast("請輸入旅伴姓名或暱稱");
+          return;
+        }
+        appState.members = appState.members || ["主辦人"];
+        if (appState.members.includes(name)) {
+          showToast("此旅伴名稱已存在");
+          return;
+        }
+        appState.members.push(name);
+        inp.value = "";
+        renderAll();
+        showToast(`已新增旅伴「${name}」`);
+      });
+
+      document.getElementById("btnAddExpenseItem").addEventListener("click", () => {
+        const titleEl = document.getElementById("inputExpTitle");
+        const amtEl = document.getElementById("inputExpAmount");
+        const cat = document.getElementById("selectExpCategory").value;
+        const curr = document.getElementById("selectExpCurrency").value;
+        const payer = document.getElementById("selectExpPayer").value;
+
+        const title = titleEl.value.trim();
+        const amount = parseFloat(amtEl.value);
+        if (!title || isNaN(amount) || amount <= 0) {
+          showToast("請填寫消費項目名稱與大於 0 的金額");
+          return;
+        }
+
+        const checkedTargets = [];
+        document.querySelectorAll(".exp-split-target-chk:checked").forEach(chk => {
+          checkedTargets.push(chk.value);
+        });
+        if (checkedTargets.length === 0) {
+          showToast("請至少勾選一位分攤成員");
+          return;
+        }
+
+        appState.expenses = appState.expenses || [];
+        appState.expenses.unshift({
+          id: "exp_" + Date.now(),
+          title,
+          category: cat,
+          amount,
+          currency: curr,
+          payer,
+          splitAmong: checkedTargets,
+          note: "現場新增帳目"
+        });
+
+        titleEl.value = "";
+        amtEl.value = "";
+        renderAll();
+        showToast("已新增分帳項目並更新最簡結算金額！");
+      });
+
+      document.getElementById("btnCopySplitSummary").addEventListener("click", () => {
+        const s = computeSplitSettlement();
+        const lines = [
+          `【${appState.title}｜多人分帳最簡結算明細】`,
+          `📊 團體總支出：NT$ ${s.totalGroupTwd.toLocaleString()} (約 ¥${s.totalGroupJpy.toLocaleString()})`,
+          `👥 每人平均分攤：NT$ ${s.perPersonAvgTwd.toLocaleString()} (匯率 ${appState.exchangeRate})`,
+          `--------------------`,
+          `🎯 最簡轉帳結算建議：`
+        ];
+        if (s.transfers.length === 0) {
+          lines.push("🎉 所有成員帳目已平衡，無須轉帳！");
+        } else {
+          s.transfers.forEach(tr => {
+            lines.push(`• ${tr.from} ➔ 支付給 ${tr.to}：NT$ ${tr.twd.toLocaleString()} (約 ¥${tr.jpy.toLocaleString()})`);
+          });
+        }
+        const ta = document.createElement("textarea");
+        ta.value = lines.join("\n");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast("已複製 LINE 分帳結算明細文字，可直接貼至群組！");
+        } catch (err) {
+          showToast("複製失敗，請手動複製畫面金額");
+        }
+        document.body.removeChild(ta);
       });
 
       document.getElementById("btnShareUrlState").addEventListener("click", () => {
@@ -2098,7 +2720,7 @@
         ta.select();
         try {
           document.execCommand("copy");
-          showToast("已將整份行程與勾選狀態壓縮編碼為 #trip=... 網址並複製到剪貼簿！");
+          showToast("已將整份行程、分帳與勾選狀態壓縮編碼為 #trip=... 網址並複製到剪貼簿！");
         } catch (err) {
           showToast("已更新網址 Hash，可直接複製瀏覽器網址列分享");
         }
@@ -2204,7 +2826,7 @@
         document.getElementById("selectTheme").value = appState.theme;
         document.getElementById("importStatusTitle").textContent = "目前載入：" + appState.sourceFileName;
         renderAll();
-        showToast("已還原 11/13–11/16 日本沼津・大洗行程範例！");
+        showToast("已還原內建日本關東・靜岡四日遊範例資料！");
       });
 
       document.getElementById("inputTripTitle").addEventListener("input", (e) => {
@@ -2256,6 +2878,7 @@
           });
           document.getElementById("panelItinerary").classList.toggle("hidden", activePreviewTab !== "itinerary");
           document.getElementById("panelTransport").classList.toggle("hidden", activePreviewTab !== "transport");
+          document.getElementById("panelSplit").classList.toggle("hidden", activePreviewTab !== "split");
           document.getElementById("panelWallet").classList.toggle("hidden", activePreviewTab !== "wallet");
           document.getElementById("panelLinks").classList.toggle("hidden", activePreviewTab !== "links");
           document.getElementById("panelChecklist").classList.toggle("hidden", activePreviewTab !== "checklist");
@@ -2303,12 +2926,12 @@
         const a = document.createElement("a");
         const safeName = (appState.title || "travel_itinerary").replace(/[\\/:*?"<>|\s]+/g, "_");
         a.href = url;
-        a.download = `${safeName}_互動式行程表_v2.html`;
+        a.download = `${safeName}_互動式行程手冊.html`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast("已匯出並下載包含問路大字卡、離線憑證與光影資訊的獨立 HTML 檔！");
+        showToast("已匯出並下載包含多人分帳、問路大字卡與離線憑證的獨立 HTML 檔！");
       });
 
       document.getElementById("btnCopyHtml").addEventListener("click", () => {
@@ -2355,8 +2978,8 @@
           document.querySelectorAll(".editor-tab-btn").forEach(b => {
             const isAct = b.getAttribute("data-editor-tab") === tab;
             b.className = isAct
-              ? "editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-bold bg-white text-blue-600 border-t border-x border-slate-200"
-              : "editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900";
+              ? "editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-bold bg-white text-blue-600 border-t border-x border-slate-200 shrink-0"
+              : "editor-tab-btn px-3.5 py-2 rounded-t-lg text-xs font-medium text-slate-600 hover:text-slate-900 shrink-0";
           });
           document.getElementById("editorPanelDays").classList.toggle("hidden", tab !== "days");
           document.getElementById("editorPanelTransport").classList.toggle("hidden", tab !== "transport");
