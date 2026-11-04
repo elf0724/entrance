@@ -75,6 +75,14 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
+        <button id="btnToggleMobileViewerMode" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow transition">
+          <i data-lucide="Smartphone" class="w-4 h-4"></i>
+          <span id="txtToggleMobileViewerMode">切換「手機純瀏覽模式」</span>
+        </button>
+        <button id="btnOpenShareQrModal" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow transition">
+          <i data-lucide="QrCode" class="w-4 h-4"></i>
+          <span>產生 LINE / 手機免傳檔分享連結</span>
+        </button>
         <button id="btnShareUrlState" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-700/70 transition">
           <i data-lucide="Share2" class="w-4 h-4 text-indigo-400"></i>
           <span>複製狀態分享網址 (#Hash)</span>
@@ -95,11 +103,29 @@
     </div>
   </header>
 
+  <!-- Mobile Pure Viewer Mode Top Banner (Shown automatically when opened via #view=... link on LINE/Mobile) -->
+  <div id="mobileViewerBanner" class="hidden bg-emerald-950 text-emerald-100 border-b border-emerald-800 px-4 py-2.5">
+    <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">📱 手機隨身行程手冊模式</span>
+        <span class="text-emerald-200/90">已自動隱藏編輯面板並將此行程儲存於手機瀏覽器（無網路亦可重新整理開啟）</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnSaveToPhoneLocal" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-semibold transition">
+          📌 釘選儲存於此手機
+        </button>
+        <button id="btnExitViewerMode" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium transition">
+          ⚙️ 展開編輯與匯入面板
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Main Workspace Container -->
-  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <main id="mainWorkspaceGrid" class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
     <!-- Left Column: Data Source & Customization Controls (4 cols on desktop) -->
-    <aside class="lg:col-span-4 space-y-5">
+    <aside id="leftEditorAside" class="lg:col-span-4 space-y-5">
 
       <!-- Card 1: Data Import -->
       <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 space-y-4">
@@ -224,8 +250,8 @@
 
     </aside>
 
-    <!-- Right Column: Live Interactive HTML Preview (8 cols on desktop) -->
-    <section class="lg:col-span-8 flex flex-col">
+    <!-- Right Column: Live Interactive HTML Preview (8 cols on desktop, or 12 cols centered in Mobile Viewer Mode) -->
+    <section id="rightPreviewSection" class="lg:col-span-8 flex flex-col">
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
 
         <!-- Preview Top Bar -->
@@ -713,6 +739,77 @@
     </div>
   </div>
 
+  <!-- In-Page Modal: LINE & Mobile Share Link + QR Code Generator -->
+  <div id="shareQrModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[92vh]">
+      <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="Smartphone" class="w-5 h-5 text-amber-400"></i>
+          <h3 class="font-bold text-sm sm:text-base">LINE 群組＆手機免傳檔分享中心</h3>
+        </div>
+        <button id="btnCloseShareQrModal" type="button" class="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800">
+          <i data-lucide="X" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4 text-xs text-slate-700 custom-scrollbar">
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 space-y-1.5">
+          <p class="font-bold text-amber-950 text-xs sm:text-sm">💡 為什麼不在 LINE 直接傳 .html 檔或放 Google Drive？</p>
+          <p class="text-amber-900 leading-relaxed">
+            1. <strong>LINE 安全限制</strong>：LINE 會強制將 <code class="bg-white px-1 rounded">.html</code> 壓縮成 <code class="bg-white px-1 rounded">.zip</code>，在 iPhone / Android 內無法直接點擊執行。<br/>
+            2. <strong>手機系統沙盒限制</strong>：從 Google Drive 下載的 HTML 檔在手機上會被系統預覽器攔截 JavaScript，導致按鈕無法切換。<br/>
+            3. <strong>最佳解法（免傳檔案、免改程式碼）</strong>：直接將下方<strong>「手機純瀏覽專屬連結」</strong>貼到 LINE 群組！整份行程資料已透過 <code class="bg-white px-1 rounded">LZ-String</code> 壓縮在 <code class="bg-white px-1 rounded">#view=...</code> 網址內，不會改變您 GitHub 上的公開範本，且旅伴在 LINE 點開就是滿版互動手冊！
+          </p>
+        </div>
+
+        <!-- Option 1: Pure Mobile Viewer URL (#view=...) -->
+        <div class="bg-emerald-50/70 border-2 border-emerald-300 rounded-2xl p-4 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-extrabold text-[11px]">推薦方案 A：傳給旅伴的「手機純瀏覽模式」連結</span>
+            <span class="text-[11px] text-emerald-800 font-semibold">自動隱藏左側編輯器</span>
+          </div>
+          <p class="text-slate-600 leading-relaxed">
+            旅伴在 LINE 點擊此網址後，會直接進入<strong>手機滿版行程手冊介面</strong>，並自動將行程快取在他的手機瀏覽器中：
+          </p>
+          <div class="flex gap-1.5">
+            <input id="inputShareViewerUrl" type="text" readonly class="flex-1 text-xs font-mono rounded-xl border border-emerald-300 bg-white px-3 py-2 text-slate-700 focus:outline-none" />
+            <button id="btnCopyViewerUrl" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shrink-0 shadow-xs transition">
+              複製 LINE 連結
+            </button>
+          </div>
+        </div>
+
+        <!-- Option 2: Co-Editing URL (#trip=...) -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-bold text-slate-800">方案 B：傳給共同主辦人的「協作編輯模式」連結</span>
+            <span class="text-[11px] text-slate-500">保留完整編輯與分帳修改面板</span>
+          </div>
+          <div class="flex gap-1.5">
+            <input id="inputShareEditorUrl" type="text" readonly class="flex-1 text-xs font-mono rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-600 focus:outline-none" />
+            <button id="btnCopyEditorUrl" type="button" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white shrink-0 transition">
+              複製協作連結
+            </button>
+          </div>
+        </div>
+
+        <!-- PWA / Add to Home Screen Tip -->
+        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-3.5 space-y-1">
+          <p class="font-bold text-blue-950">📲 旅伴手機安裝小撇步（變成桌面 App 圖示）：</p>
+          <p class="text-blue-800 leading-relaxed">
+            在 LINE 點開連結後，點選右下角「<strong>以預設瀏覽器 (Safari / Chrome) 開啟</strong>」，接著點選「<strong>分享 ➔ 加入主畫面</strong>」，這份行程表就會變成手機桌面上的專屬旅遊 App 圖示，隨時秒開！
+          </p>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 bg-slate-100 border-t border-slate-200 flex items-center justify-end">
+        <button id="btnDoneShareQrModal" type="button" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800">
+          完成並關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-900 text-white text-xs font-medium shadow-xl border border-slate-700">
     <i data-lucide="Sparkles" class="w-4 h-4 text-emerald-400"></i>
@@ -1108,12 +1205,66 @@
     let currentPointSpeakItem = null;
     let activeRadarScenario = "day2_afternoon";
 
-    // Safe localStorage & URL Hash State helpers
+    let isMobileViewerMode = false;
+
+    function setMobileViewerMode(enable) {
+      isMobileViewerMode = !!enable;
+      const aside = document.getElementById("leftEditorAside");
+      const rightSec = document.getElementById("rightPreviewSection");
+      const banner = document.getElementById("mobileViewerBanner");
+      const btnTxt = document.getElementById("txtToggleMobileViewerMode");
+      const topHeader = document.querySelector("header");
+
+      if (isMobileViewerMode) {
+        if (aside) aside.classList.add("hidden");
+        if (rightSec) {
+          rightSec.classList.remove("lg:col-span-8");
+          rightSec.classList.add("lg:col-span-12", "max-w-4xl", "mx-auto", "w-full");
+        }
+        if (banner) banner.classList.remove("hidden");
+        if (btnTxt) btnTxt.textContent = "返回「完整編輯器模式」";
+        if (topHeader) topHeader.classList.add("hidden");
+      } else {
+        if (aside) aside.classList.remove("hidden");
+        if (rightSec) {
+          rightSec.classList.remove("lg:col-span-12", "max-w-4xl", "mx-auto", "w-full");
+          rightSec.classList.add("lg:col-span-8");
+        }
+        if (banner) banner.classList.add("hidden");
+        if (btnTxt) btnTxt.textContent = "切換「手機純瀏覽模式」";
+        if (topHeader) topHeader.classList.remove("hidden");
+      }
+    }
+
+    function buildCompressedShareUrls() {
+      const baseUrl = window.location.href.split("#")[0].split("?")[0];
+      if (typeof LZString === "undefined") {
+        return { viewerUrl: baseUrl, editorUrl: baseUrl };
+      }
+      const slimState = JSON.parse(JSON.stringify(appState));
+      (slimState.vouchers || []).forEach(v => {
+        if (v.imageData && v.imageData.length > 4000) {
+          v.imageData = "";
+        }
+      });
+      const payload = JSON.stringify({ state: slimState, checklist: checklistState });
+      const compressed = LZString.compressToEncodedURIComponent(payload);
+      return {
+        viewerUrl: `${baseUrl}#view=${compressed}`,
+        editorUrl: `${baseUrl}#trip=${compressed}`,
+        compressed
+      };
+    }
+
+    // Safe localStorage & URL Hash State helpers (Supports both #view=... Mobile Viewer Mode and #trip=... Editor Mode)
     function loadSavedState() {
       try {
         const hash = window.location.hash || "";
-        if (hash.startsWith("#trip=") && typeof LZString !== "undefined") {
-          const compressed = hash.replace("#trip=", "");
+        const params = new URLSearchParams(window.location.search || "");
+        const isViewHash = hash.startsWith("#view=");
+        const isTripHash = hash.startsWith("#trip=");
+        if ((isViewHash || isTripHash) && typeof LZString !== "undefined") {
+          const compressed = isViewHash ? hash.replace("#view=", "") : hash.replace("#trip=", "");
           const jsonStr = LZString.decompressFromEncodedURIComponent(compressed);
           if (jsonStr) {
             const parsed = JSON.parse(jsonStr);
@@ -1125,10 +1276,29 @@
               if (!appState.expenses) appState.expenses = [];
               if (!appState.planMode) appState.planMode = "both";
               checklistState = parsed.checklist || {};
-              showToast("已從分享網址 (#trip=...) 載入最新行程、分帳與檢核狀態！");
+              try {
+                localStorage.setItem("saved_custom_trip_state_v3", JSON.stringify({ state: appState, checklist: checklistState }));
+              } catch (err) {}
+              if (isViewHash || params.get("mode") === "view") {
+                setMobileViewerMode(true);
+                showToast("📱 已開啟「手機純瀏覽手冊模式」並自動快取行程至本機！");
+              } else {
+                showToast("已從分享網址 (#trip=...) 載入最新行程、分帳與檢核狀態！");
+              }
               return;
             }
           }
+        }
+        if (params.get("mode") === "view") {
+          const cachedTrip = localStorage.getItem("saved_custom_trip_state_v3");
+          if (cachedTrip) {
+            const parsed = JSON.parse(cachedTrip);
+            if (parsed && parsed.state) {
+              appState = parsed.state;
+              checklistState = parsed.checklist || {};
+            }
+          }
+          setMobileViewerMode(true);
         }
       } catch (e) {}
 
@@ -2540,14 +2710,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>${escapeHtml(appState.title)} - 互動式旅遊手冊</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"><\/script>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; }
+    /* Critical Offline Fallback CSS so mobile browsers work even without internet */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.5; }
     .theme-indigo { --brand-bg: #1e3a5f; --brand-bg-light: #ebf2f7; }
     .theme-sakura { --brand-bg: #831843; --brand-bg-light: #fdf2f8; }
     .theme-matcha { --brand-bg: #14532d; --brand-bg-light: #f0fdf4; }
     .theme-slate  { --brand-bg: #0f172a; --brand-bg-light: #f1f5f9; }
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .grid { display: grid; }
+    .justify-between { justify-content: space-between; }
+    .items-center { align-items: center; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .border { border: 1px solid #e2e8f0; }
+    .bg-white { background-color: #ffffff; }
+    .text-white { color: #ffffff; }
+    .font-bold { font-weight: 700; }
+    .whitespace-pre-line { white-space: pre-line; }
+    button { cursor: pointer; font-family: inherit; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen theme-${escapeHtml(appState.theme)}">
@@ -3001,9 +3193,9 @@
           showToast("請先輸入 Google Sheet 網址或 #trip=... 狀態分享碼");
           return;
         }
-        if (rawInput.includes("#trip=") && typeof LZString !== "undefined") {
+        if ((rawInput.includes("#trip=") || rawInput.includes("#view=")) && typeof LZString !== "undefined") {
           try {
-            const encoded = rawInput.split("#trip=")[1];
+            const encoded = rawInput.includes("#view=") ? rawInput.split("#view=")[1] : rawInput.split("#trip=")[1];
             const jsonStr = LZString.decompressFromEncodedURIComponent(encoded);
             const parsed = JSON.parse(jsonStr);
             if (parsed && parsed.state) {
@@ -3200,6 +3392,69 @@
           showToast("複製失敗，請手動複製畫面金額");
         }
         document.body.removeChild(ta);
+      });
+
+      // Toggle Mobile Pure Viewer Mode button
+      document.getElementById("btnToggleMobileViewerMode").addEventListener("click", () => {
+        setMobileViewerMode(!isMobileViewerMode);
+        showToast(isMobileViewerMode ? "📱 已切換為「手機純瀏覽手冊模式」" : "⚙️ 已返回「完整編輯器模式」");
+      });
+
+      document.getElementById("btnExitViewerMode").addEventListener("click", () => {
+        setMobileViewerMode(false);
+        showToast("⚙️ 已展開左側編輯與匯入面板");
+      });
+
+      document.getElementById("btnSaveToPhoneLocal").addEventListener("click", () => {
+        try {
+          localStorage.setItem("saved_custom_trip_state_v3", JSON.stringify({ state: appState, checklist: checklistState }));
+          const urls = buildCompressedShareUrls();
+          window.history.replaceState(null, "", "#view=" + urls.compressed);
+          showToast("📌 已將此行程釘選儲存於手機瀏覽器！現在可直接將此網頁「加入主畫面」當成 App 使用！");
+        } catch (e) {
+          showToast("已更新網址狀態，可直接將此網頁加入書籤或主畫面！");
+        }
+      });
+
+      // Share QR & LINE Link Modal listeners
+      const shareQrModal = document.getElementById("shareQrModal");
+      const closeShareQrModal = () => {
+        shareQrModal.classList.add("hidden");
+        shareQrModal.classList.remove("flex");
+      };
+      document.getElementById("btnOpenShareQrModal").addEventListener("click", () => {
+        const urls = buildCompressedShareUrls();
+        document.getElementById("inputShareViewerUrl").value = urls.viewerUrl;
+        document.getElementById("inputShareEditorUrl").value = urls.editorUrl;
+        shareQrModal.classList.remove("hidden");
+        shareQrModal.classList.add("flex");
+        if (window.lucide) window.lucide.createIcons();
+      });
+      document.getElementById("btnCloseShareQrModal").addEventListener("click", closeShareQrModal);
+      document.getElementById("btnDoneShareQrModal").addEventListener("click", closeShareQrModal);
+
+      document.getElementById("btnCopyViewerUrl").addEventListener("click", () => {
+        const inp = document.getElementById("inputShareViewerUrl");
+        inp.select();
+        try {
+          document.execCommand("copy");
+          window.history.replaceState(null, "", "#view=" + buildCompressedShareUrls().compressed);
+          showToast("✅ 已複製「手機純瀏覽模式連結 (#view=...)」！直接貼到 LINE 群組，旅伴點開就是滿版手冊！");
+        } catch (e) {
+          showToast("請長按網址框複製連結");
+        }
+      });
+
+      document.getElementById("btnCopyEditorUrl").addEventListener("click", () => {
+        const inp = document.getElementById("inputShareEditorUrl");
+        inp.select();
+        try {
+          document.execCommand("copy");
+          window.history.replaceState(null, "", "#trip=" + buildCompressedShareUrls().compressed);
+          showToast("✅ 已複製「協作編輯模式連結 (#trip=...)」！");
+        } catch (e) {
+          showToast("請長按網址框複製連結");
+        }
       });
 
       document.getElementById("btnShareUrlState").addEventListener("click", () => {
