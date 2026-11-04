@@ -109,7 +109,7 @@
             <span>步驟 1：匯入行程表資料</span>
           </h2>
           <button id="btnResetDemo" type="button" class="text-xs text-blue-600 hover:text-blue-800 font-medium underline">
-            還原 11月沼津・大洗範例
+            還原預設公開範例
           </button>
         </div>
 
@@ -143,7 +143,7 @@
         <div id="importStatusBox" class="rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2.5 flex items-start gap-2.5">
           <i data-lucide="CheckCircle2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
           <div class="text-xs">
-            <p id="importStatusTitle" class="font-semibold text-emerald-900">目前載入：日本關東・靜岡四日遊範例.xlsx</p>
+            <p id="importStatusTitle" class="font-semibold text-emerald-900">目前載入：日本東京・鎌倉・箱根四日遊公開範例.xlsx</p>
             <p id="importStatusMeta" class="text-emerald-700 text-[11px] mt-0.5">共 4 天行程(含備案與地圖)・12 筆交通・6 筆分帳・12 張問路卡</p>
           </div>
         </div>
@@ -159,12 +159,12 @@
         <div class="space-y-2.5">
           <div>
             <label for="inputTripTitle" class="block text-xs font-medium text-slate-600 mb-1">行程網頁主標題</label>
-            <input id="inputTripTitle" type="text" value="2026 日本沼津・大洗四日遊" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <input id="inputTripTitle" type="text" value="日本東京・鎌倉・箱根經典四日遊（公開示範範本）" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           <div>
             <label for="inputTripSubtitle" class="block text-xs font-medium text-slate-600 mb-1">副標題 / 日期與目的地說明</label>
-            <input id="inputTripSubtitle" type="text" value="2026/11/13 (五) – 11/16 (一)｜東京平和島・靜岡沼津・茨城水戶＆大洗鮟鱇魚祭" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <input id="inputTripSubtitle" type="text" value="Day 1 – Day 4 (週五至週一)｜東京淺草晴空塔・鎌倉江之島・箱根蘆之湖溫泉之旅" class="w-full text-xs rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           <div class="grid grid-cols-2 gap-2.5">
@@ -244,8 +244,8 @@
               <span id="weatherStatusBtnText">更新 Open-Meteo 氣象光影</span>
             </button>
             <select id="selectNumazuOption" class="text-xs rounded-lg border border-slate-300 px-2 py-1 bg-white text-slate-700 font-medium">
-              <option value="bike" selected>交通方案 A：騎腳踏車 (¥1,920)</option>
-              <option value="bus">交通方案 B：搭公車三段 (¥2,340)</option>
+              <option value="bike" selected>交通方案 A：小田急浪漫特快直達 (¥2,470)</option>
+              <option value="bus">交通方案 B：JR 東海道線轉乘 (¥1,890)</option>
               <option value="both">兩者皆列出計入</option>
             </select>
           </div>
@@ -262,8 +262,8 @@
                   <i data-lucide="Plane" class="w-3.5 h-3.5"></i>
                   <span>Interactive Travel Companion v3.0</span>
                 </div>
-                <h2 id="previewTitle" class="text-xl sm:text-2xl font-bold tracking-tight">2026 日本沼津・大洗四日遊</h2>
-                <p id="previewSubtitle" class="text-xs sm:text-sm text-white/80">2026/11/13 (五) – 11/16 (一)｜東京平和島・靜岡沼津・茨城水戶＆大洗鮟鱇魚祭</p>
+                <h2 id="previewTitle" class="text-xl sm:text-2xl font-bold tracking-tight">日本東京・鎌倉・箱根經典四日遊（公開示範範本）</h2>
+                <p id="previewSubtitle" class="text-xs sm:text-sm text-white/80">Day 1 – Day 4 (週五至週一)｜東京淺草晴空塔・鎌倉江之島・箱根蘆之湖溫泉之旅</p>
               </div>
 
               <!-- Quick Search Box inside Preview -->
@@ -280,7 +280,7 @@
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
                 <p class="text-[11px] text-white/75">行程總天數</p>
                 <p id="kpiDays" class="text-lg font-bold mt-0.5">4 天 3 夜</p>
-                <p id="kpiDateSpan" class="text-[11px] text-white/70 mt-0.5">11/13(五) – 11/16(一)</p>
+                <p id="kpiDateSpan" class="text-[11px] text-white/70 mt-0.5">Day 1(五) – Day 4(一)</p>
               </div>
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15">
                 <p class="text-[11px] text-white/75">預估交通車資合計</p>
@@ -344,11 +344,11 @@
                   <div class="flex items-center gap-2">
                     <label for="selectSimTime" class="text-[11px] text-slate-400">旅途情境時間預覽：</label>
                     <select id="selectSimTime" class="text-xs rounded-lg bg-slate-800 text-amber-300 border border-slate-700 px-2.5 py-1 font-medium focus:outline-none">
-                      <option value="day2_morning">Day 2 (11/14 07:45) 品川轉新幹線＆寄行李</option>
-                      <option value="day2_afternoon" selected>Day 2 (11/14 13:50) 沼津返程往三島・水戶</option>
-                      <option value="day3_morning">Day 3 (11/15 09:05) 水戶搭大洗鹿島線往祭典</option>
-                      <option value="day3_afternoon">Day 3 (11/15 16:15) 大洗磯前神社夕陽與返程</option>
-                      <option value="day4_dawn">Day 4 (11/16 02:55) 平和島凌晨接駁往羽田機場</option>
+                      <option value="day2_morning">Day 2 (08:30) 新宿站寄行李＆搭車往鎌倉</option>
+                      <option value="day2_afternoon" selected>Day 2 (14:10) 鎌倉高校前・江之電轉乘</option>
+                      <option value="day3_morning">Day 3 (09:15) 小田原轉乘箱根登山電車</option>
+                      <option value="day3_afternoon">Day 3 (16:15) 蘆之湖水上鳥居夕陽與返程</option>
+                      <option value="day4_dawn">Day 4 (14:30) 上野搭乘 Skyliner 往成田機場</option>
                     </select>
                   </div>
                 </div>
@@ -453,7 +453,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
                   <div class="sm:col-span-4">
                     <label for="inputExpTitle" class="block text-[11px] text-slate-500 mb-1">消費項目名稱</label>
-                    <input id="inputExpTitle" type="text" placeholder="例如：水戶炸豬排晚餐、伴手禮合購" class="w-full text-xs rounded-lg border border-slate-300 px-2.5 py-2" />
+                    <input id="inputExpTitle" type="text" placeholder="例如：淺草壽喜燒晚餐、伴手禮合購" class="w-full text-xs rounded-lg border border-slate-300 px-2.5 py-2" />
                   </div>
                   <div class="sm:col-span-2">
                     <label for="selectExpCategory" class="block text-[11px] text-slate-500 mb-1">類別</label>
@@ -603,9 +603,9 @@
         <!-- Giant Japanese Destination Title -->
         <div class="py-3 px-2 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">目的地 / 設施日文名稱</p>
-          <h2 id="psTargetJp" class="text-2xl sm:text-4xl font-black text-slate-900 leading-tight break-words">天然温泉 平和島</h2>
-          <p id="psTargetZh" class="text-sm font-semibold text-blue-600">平和島溫泉</p>
-          <p id="psTargetAddress" class="text-xs sm:text-sm text-slate-600 bg-white py-2 px-3 rounded-xl border border-slate-200 inline-block mt-2">📍 東京都大田区平和島1-1-1 BIG FUN平和島 2F</p>
+          <h2 id="psTargetJp" class="text-2xl sm:text-4xl font-black text-slate-900 leading-tight break-words">浅草寺 雷門（あさくさでら）</h2>
+          <p id="psTargetZh" class="text-sm font-semibold text-blue-600">淺草寺 雷門</p>
+          <p id="psTargetAddress" class="text-xs sm:text-sm text-slate-600 bg-white py-2 px-3 rounded-xl border border-slate-200 inline-block mt-2">📍 東京都台東区浅草2-3-1（銀座線・浅草駅徒歩5分）</p>
         </div>
 
         <!-- Optional Booking Code or Embedded QR Image -->
@@ -724,88 +724,74 @@
     // Built-in Japanese & Google Maps Dictionary for Common Japanese Places
     // =========================================================================
     const JP_PLACE_DICT = {
-      "平和島溫泉": {
-        jpName: "天然温泉 平和島",
-        address: "東京都大田区平和島1-1-1 BIG FUN平和島 2F",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=天然温泉平和島",
-        backupPlan: "若接駁車客滿，可改搭京急巴士至「京急平和島駅」或計程車前往羽田機場",
+      "上野三井花園飯店": {
+        jpName: "三井ガーデンホテル上野",
+        address: "東京都台東区東上野3-19-7 (JR上野駅浅草口徒歩2分)",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=三井ガーデンホテル上野",
+        backupPlan: "若遇雨天可由東京 Metro 上野站 1 號出口連通道步行1分鐘直達飯店",
         phraseType: "checkin"
       },
-      "天然溫泉 香梅之湯 多美迎水戸": {
-        jpName: "天然温泉 香梅の湯 ドーミーイン水戸",
-        address: "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩約12分)",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=ドーミーイン水戸",
-        backupPlan: "若步行遇雨，可於 JR 水戶站北口搭乘路線巴士至「南町二丁目」站下車即達",
+      "箱根湯本富士屋飯店": {
+        jpName: "箱根湯本 富士屋ホテル",
+        address: "神奈川県足柄下郡箱根町湯本256-1 (箱根湯本駅徒歩3分)",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=湯本富士屋ホテル",
+        backupPlan: "若攜帶大型行李，可於箱根湯本站使用「箱根行李託運服務」直送旅館",
         phraseType: "checkin"
       },
-      "多美迎水戸": {
-        jpName: "天然温泉 香梅の湯 ドーミーイン水戸",
-        address: "茨城県水戸市南町2丁目6-7",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=ドーミーイン水戸",
-        backupPlan: "可於水戶站北口搭公車至南町二丁目",
-        phraseType: "checkin"
-      },
-      "平和島溫泉接駁車": {
-        jpName: "天然温泉平和島 送迎バス乗り場",
-        address: "京急平和島駅 / JR大森駅東口 6番乗場 / 羽田空港第3ターミナル",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=BIG+FUN平和島",
-        backupPlan: "備案：由 JR 大森站東口或京急平和島站轉乘路線巴士",
-        phraseType: "go"
-      },
-      "京濱急行電鐵（京急）": {
-        jpName: "京急本線 平和島駅 → 品川駅",
-        address: "東京都大田区大森北六丁目（京急平和島駅）",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=京急平和島駅",
-        backupPlan: "若品川站置物櫃全滿，改將大型行李攜至 JR 三島站南口寄放",
+      "京成電鐵 Skyliner": {
+        jpName: "京成スカイライナー（成田空港 ↔ 京成上野駅）",
+        address: "京成上野駅 / 成田空港駅 スカイライナー券売機",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=京成上野駅",
+        backupPlan: "備案：若 Skyliner 班次客滿，可改搭 ACCESS 特快或 JR 成田特快 (N'EX)",
         phraseType: "ticket"
       },
-      "JR東日本訂票系統": {
-        jpName: "JR常磐線特急 ひたち・ときわ（品川↔水戸）",
-        address: "JR品川駅 / JR水戸駅 指定席券売機",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=JR品川駅",
-        backupPlan: "若錯過 15:45 班次，可改搭下一班 16:15 ときわ號特急往水戶",
+      "JR東日本 湘南新宿線": {
+        jpName: "JR湘南新宿ライン（新宿駅 ↔ 鎌倉駅・藤沢駅）",
+        address: "JR新宿駅 1・2番線ホーム",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=JR鎌倉駅",
+        backupPlan: "若遇湘南新宿線延誤，可改由東京站搭乘 JR 橫須賀線直達鎌倉站",
         phraseType: "ticket"
       },
-      "JR東海訂票系統": {
-        jpName: "東海道新幹線 こだま・ひかり（品川↔三島）",
-        address: "JR品川駅 新幹線乗換口 / JR三島駅",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=JR三島駅",
-        backupPlan: "自由席班次密集，每 30 分鐘皆有 こだま 號停靠三島站",
+      "江之島電鐵（江之電）": {
+        jpName: "江ノ島電鉄（鎌倉駅 ↔ 江ノ島駅 ↔ 藤沢駅）",
+        address: "江ノ電 鎌倉駅 西口のりば（一日乗車券「のりおりくん」）",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=江ノ島電鉄鎌倉駅",
+        backupPlan: "若江之電人潮擁擠，可改搭湘南單軌電車（大船↔湘南江之島）體驗懸掛式列車",
         phraseType: "ticket"
       },
-      "鹿島臨海鐵道": {
-        jpName: "鹿島臨海鉄道 大洗鹿島線（水戸駅 ↔ 大洗駅）",
-        address: "JR水戸駅 8番線ホーム（大洗鹿島線のりば）",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗駅",
-        backupPlan: "若大洗站售票機排隊過長，可於水戶站先買妥來回紙本車票，或改搭茨城交通巴士 50 號線",
+      "小田急浪漫特快": {
+        jpName: "小田急ロマンスカー（新宿駅 ↔ 箱根湯本駅）",
+        address: "小田急線 新宿駅 西口地上ホーム 特急券売機",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=小田急新宿駅",
+        backupPlan: "備案：若浪漫特快指定席售罄，可持箱根周遊券改搭小田急急行列車至小田原轉乘",
         phraseType: "ticket"
       },
-      "沼津港大型展望水門「びゅうお」": {
-        jpName: "沼津港大型展望水門「びゅうお」",
-        address: "静岡県沼津市本字千本1905-27（沼津港）",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=沼津港大型展望水門びゅうお",
-        backupPlan: "若遇強風休館，改參觀隔壁「沼津港深海水族館」與港邊海鮮商店街",
+      "淺草寺 雷門": {
+        jpName: "浅草寺 雷門・仲見世通り",
+        address: "東京都台東区浅草2-3-1",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=浅草寺雷門",
+        backupPlan: "雨天備案：改逛新仲見世通有頂棚商店街與東京晴空塔 Solamachi 室內商場",
         phraseType: "go"
       },
-      "沼津市觀光網站": {
-        jpName: "三の浦総合案内所（内浦エリア）",
-        address: "静岡県沼津市内浦長浜83-104",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=三の浦総合案内所",
-        backupPlan: "雨天備案：放棄租借單車，於沼津站南口 8 號乘車處搭乘東海巴士前往長濱/三之浦",
+      "東京晴空塔 (Tokyo Skytree)": {
+        jpName: "東京スカイツリー・東京ソラマチ",
+        address: "東京都墨田区押上1-1-2",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=東京スカイツリー",
+        backupPlan: "若高空強風展望台暫停開放，改參觀晴空塔 5F 墨田水族館與 7F 天象儀館",
         phraseType: "go"
       },
-      "大洗秋まつり 商工感謝祭＆大洗あんこう祭": {
-        jpName: "大洗あんこう祭 会場（大洗マリンタワー前芝生広場）",
-        address: "茨城県東茨城郡大洗町港中央10（大洗駅徒歩約14分）",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗マリンタワー",
-        backupPlan: "雨天備案：改逛室內商場 OARAI Seaside Station、大洗海洋塔展望台與海生館",
+      "鎌倉鶴岡八幡宮＆小町通": {
+        jpName: "鶴岡八幡宮・鎌倉小町通り",
+        address: "神奈川県鎌倉市雪ノ下2-1-31",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=鶴岡八幡宮",
+        backupPlan: "雨天備案：改參觀鎌倉國寶館、北鎌倉圓覺寺或江之島新江之島水族館",
         phraseType: "go"
       },
-      "大洗磯前神社": {
-        jpName: "大洗磯前神社・神磯の鳥居",
-        address: "茨城県東茨城郡大洗町磯浜町6890",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗磯前神社",
-        backupPlan: "若步行體力不足，可由活動會場搭乘大洗循環巴士「海遊號」前往大洗磯前神社前下車",
+      "箱根神社（蘆之湖水上鳥居）": {
+        jpName: "箱根神社・平和の鳥居（芦ノ湖）",
+        address: "神奈川県足柄下郡箱根町元箱根80-1",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=箱根神社",
+        backupPlan: "雨天／起霧備案：若蘆之湖海賊船停駛，改搭箱根登山巴士前往「雕刻之森美術館」或「箱根玻璃之森」",
         phraseType: "go"
       }
     };
@@ -831,128 +817,128 @@
 
     const RADAR_SCENARIOS = {
       day2_morning: {
-        badge: "Day 2・11/14 (六) 07:45",
-        currentSlot: "京急平和島站 ➔ JR 品川站寄放行李並轉乘東海道新幹線",
-        nextTrain: "08:04（備選 08:34）東海道新幹線 品川 ➔ 三島",
-        countdown: "距離發車還有 19 分鐘",
-        planBHint: "🔀 備案提醒：若 JR 品川站投幣置物櫃已滿，請直接搭上新幹線改於「JR 三島站」南口寄放行李",
-        mapQuery: "JR品川駅 新幹線のりば",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=JR品川駅"
+        badge: "Day 2・週六 08:30",
+        currentSlot: "上野飯店出發 ➔ JR 新宿站轉乘湘南新宿線前往古都鎌倉",
+        nextTrain: "08:52 JR 湘南新宿線 快速 新宿 ➔ 鎌倉（09:49 抵達）",
+        countdown: "距離發車還有 22 分鐘",
+        planBHint: "🔀 備案提醒：若湘南新宿線班次延誤，可改搭山手線至東京站轉乘 JR 橫須賀線直達鎌倉",
+        mapQuery: "JR新宿駅 湘南新宿ライン",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=JR新宿駅"
       },
       day2_afternoon: {
-        badge: "Day 2・11/14 (六) 13:50",
-        currentSlot: "靜岡沼津港 / 內浦巡禮返程 ➔ 準備前往 JR 沼津站搭車",
-        nextTrain: "14:11 JR 東海道本線 沼津 ➔ 三島（轉 14:27 新幹線往品川・15:45 往水戶）",
-        countdown: "距離發車還有 21 分鐘",
-        planBHint: "🔀 備案提醒：晚餐若「日式炸豬排 Cook Fan」候位過久，備案改吃水戶站周邊「薩利亞 (Saizeriya)」",
-        mapQuery: "JR沼津駅",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=JR沼津駅"
+        badge: "Day 2・週六 14:10",
+        currentSlot: "鎌倉小町通散步結束 ➔ 準備前往江之電鎌倉站搭乘復古路面電車",
+        nextTrain: "14:24 江之島電鐵 鎌倉 ➔ 鎌倉高校前・江之島",
+        countdown: "距離發車還有 14 分鐘",
+        planBHint: "🔀 備案提醒：若海邊風雨較大，備案改前往室內「新江之島水族館」參觀海豚秀與深海展區",
+        mapQuery: "江ノ島電鉄 鎌倉駅",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=江ノ島電鉄鎌倉駅"
       },
       day3_morning: {
-        badge: "Day 3・11/15 (日) 09:05",
-        currentSlot: "水戶飯店退房寄行李 ➔ 前往 JR 水戶站 8 號月台搭大洗鹿島線",
-        nextTrain: "09:24 鹿島臨海鐵道 水戶 ➔ 大洗（09:38 抵達）",
-        countdown: "距離發車還有 19 分鐘",
-        planBHint: "⚠️ 重要票務：大洗鹿島線不支援 Suica 西瓜卡，請出示線上票或購買紙本票！雨天備案改逛 OARAI Seaside Station 室內商場",
-        mapQuery: "水戸駅 大洗鹿島線",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=JR水戸駅"
+        badge: "Day 3・週日 09:15",
+        currentSlot: "新宿站西口小田急月台 ➔ 搭乘浪漫特快前往箱根湯本溫泉",
+        nextTrain: "09:30 小田急浪漫特快 はこね號 新宿 ➔ 箱根湯本（10:54 抵達）",
+        countdown: "距離發車還有 15 分鐘",
+        planBHint: "⚠️ 票務提醒：搭乘浪漫特快需同時持有「乘車券（或箱根周遊券）」與「特急指定席券」！",
+        mapQuery: "小田急新宿駅 ロマンスカーのりば",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=小田急新宿駅"
       },
       day3_afternoon: {
-        badge: "Day 3・11/15 (日) 16:15",
-        currentSlot: "大洗磯前神社「神磯の鳥居」夕陽拍攝 ➔ 步行返回大洗車站",
-        nextTrain: "16:44 大洗 ➔ 水戶（領取行李後轉搭 17:53 常磐線特急往大森）",
-        countdown: "距離發車還有 29 分鐘（日落 16:33 黃金時刻進行中）",
-        planBHint: "🔀 備案提醒：抵達 JR 大森站後，晚餐可於東口選擇「壽司郎」或「蘭州拉麵」，再搭免費接駁車回平和島溫泉",
-        mapQuery: "大洗磯前神社 神磯の鳥居",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗磯前神社"
+        badge: "Day 3・週日 16:15",
+        currentSlot: "箱根神社「平和の鳥居」湖畔拍攝 ➔ 元箱根港搭巴士返回箱根湯本溫泉飯店",
+        nextTrain: "16:35 箱根登山巴士 R 路線 元箱根港 ➔ 箱根湯本站",
+        countdown: "距離發車還有 20 分鐘（蘆之湖日落黃金時刻進行中）",
+        planBHint: "🔀 備案提醒：若快速巴士客滿，可改搭 H 路線經小涌谷返回箱根湯本溫泉街享用會席料理",
+        mapQuery: "箱根神社 平和の鳥居",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=箱根神社"
       },
       day4_dawn: {
-        badge: "Day 4・11/16 (一) 02:55",
-        currentSlot: "平和島溫泉退房集合 ➔ 搭乘凌晨接駁巴士前往羽田機場第三航廈",
-        nextTrain: "03:10 平和島溫泉深夜早朝接駁巴士（預計 03:30 抵達羽田 T3）",
-        countdown: "距離發車還有 15 分鐘",
-        planBHint: "🔀 備案提醒：抵達羽田機場後可先於 1F 24小時 LAWSON 購買早餐，入關後亦有 7-11 自動販賣機與餐飲",
-        mapQuery: "羽田空港第3ターミナル",
-        mapUrl: "https://www.google.com/maps/search/?api=1&query=羽田空港第3ターミナル"
+        badge: "Day 4・週一 14:30",
+        currentSlot: "上野阿美橫丁採買伴手禮結束 ➔ 回飯店領取行李前往京成上野站",
+        nextTrain: "15:00 京成電鐵 Skyliner 京成上野 ➔ 成田機場第1・第2航廈（15:41 抵達）",
+        countdown: "距離發車還有 30 分鐘",
+        planBHint: "🔀 備案提醒：若京成線發生運行調整，可立即改由 JR 東京站或品川站轉乘 JR 成田特快 (N'EX)",
+        mapQuery: "京成上野駅",
+        mapUrl: "https://www.google.com/maps/search/?api=1&query=京成上野駅"
       }
     };
 
     // =========================================================================
-    // Default Public Demo Dataset (Includes Modules 1, 2, 3, 4, 5)
+    // Default Public Demo Dataset (100% Generic Public Sample - No Personal Data)
     // =========================================================================
     const DEFAULT_TRIP_DATA = {
-      title: "2026 日本沼津・大洗四日遊",
-      subtitle: "2026/11/13 (五) – 11/16 (一)｜東京平和島・靜岡沼津・茨城水戶＆大洗鮟鱇魚祭",
+      title: "日本東京・鎌倉・箱根經典四日遊（公開示範範本）",
+      subtitle: "Day 1 – Day 4 (週五至週一)｜東京淺草晴空塔・鎌倉江之島・箱根蘆之湖溫泉之旅",
       exchangeRate: 0.215,
       theme: "indigo",
       numazuOption: "bike",
       planMode: "both",
-      sourceFileName: "日本關東・靜岡四日遊範例.xlsx",
+      sourceFileName: "日本東京・鎌倉・箱根四日遊公開範例.xlsx",
       members: ["主辦人", "旅伴 A", "旅伴 B"],
       expenses: [
         {
           id: "exp_1",
-          title: "天然溫泉 多美迎水戶（住宿代墊 3人房費）",
+          title: "上野三井花園飯店（市區連泊 2 晚 3 人房費代墊）",
           category: "住宿",
-          amount: 46170,
+          amount: 45000,
           currency: "JPY",
           payer: "主辦人",
           splitMode: "equal",
           splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
           splitDetails: {},
-          note: "每人 ¥15,390 × 3 人（依人數均分）"
+          note: "每人 ¥15,000 × 3 人（依人數均分）"
         },
         {
           id: "exp_2",
-          title: "平和島溫泉住宿（首晚＋末晚 3人合計）",
+          title: "箱根湯本富士屋溫泉飯店（一泊二食 3 人合計）",
           category: "住宿",
-          amount: 30000,
+          amount: 54000,
           currency: "JPY",
           payer: "旅伴 A",
           splitMode: "equal",
           splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
           splitDetails: {},
-          note: "一晚 1人 ¥5,000 × 2 晚 × 3 人（依人數均分）"
+          note: "每人 ¥18,000 × 3 人（含溫泉會席晚餐與早餐）"
         },
         {
           id: "exp_3",
-          title: "JR 常磐線特急（品川→水戶、水戶→大森 指定席）",
+          title: "小田急箱根周遊券＋浪漫特快指定席（3 人份）",
           category: "交通",
-          amount: 24000,
+          amount: 25500,
           currency: "JPY",
           payer: "主辦人",
           splitMode: "equal",
           splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
           splitDetails: {},
-          note: "えきねっと 預先劃位（每人來回 ¥8,000 × 3 人）"
+          note: "線上預購每人 ¥8,500 × 3 人"
         },
         {
           id: "exp_4",
-          title: "水戶日式炸豬排 Cook Fan 聚餐（示範：自訂個別金額）",
+          title: "淺草百年老店和牛壽喜燒晚餐（示範：自訂個別金額）",
           category: "餐飲",
-          amount: 7800,
+          amount: 13500,
           currency: "JPY",
           payer: "旅伴 B",
           splitMode: "exact",
           splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
-          splitDetails: { "主辦人": 3200, "旅伴 A": 2300, "旅伴 B": 2300 },
-          note: "主辦人點戰車特上套餐 ¥3,200、旅伴 A/B 各 ¥2,300"
+          splitDetails: { "主辦人": 5500, "旅伴 A": 4000, "旅伴 B": 4000 },
+          note: "主辦人點特選黑毛和牛套餐 ¥5,500、旅伴 A/B 點標準套餐各 ¥4,000"
         },
         {
           id: "exp_5",
-          title: "沼津港深海魚伴手禮＆零食合購（示範：依份數比例 2:1:1）",
+          title: "東京晴空塔伴手禮＆鎌倉鳩サブレー合購（示範：份數比例 2:1:1）",
           category: "門票/購物",
-          amount: 3200,
+          amount: 6400,
           currency: "JPY",
           payer: "旅伴 A",
           splitMode: "shares",
           splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
           splitDetails: { "主辦人": 2, "旅伴 A": 1, "旅伴 B": 1 },
-          note: "主辦人帶 2 份盒裝伴手禮，旅伴 A、B 各 1 份（按 2:1:1 比例分攤）"
+          note: "主辦人認購 2 份禮盒，旅伴 A、B 各 1 份（按 2:1:1 比例分攤）"
         },
         {
           id: "exp_6",
-          title: "桃園機場送機計程車資",
+          title: "出發日機場接送專車共乘車資",
           category: "交通",
           amount: 1200,
           currency: "TWD",
@@ -960,154 +946,152 @@
           splitMode: "equal",
           splitAmong: ["主辦人", "旅伴 A", "旅伴 B"],
           splitDetails: {},
-          note: "出發前往桃園機場第一航廈共乘"
+          note: "市區前往桃園機場共乘計程車"
         }
       ],
       days: [
         {
-          date: "11/13(五)",
-          isoDate: "2026-11-13",
-          city: "東京羽田・平和島",
-          lat: 35.579,
-          lon: 139.738,
-          sunrise: "06:14",
-          sunset: "16:37",
-          goldenHour: "15:55–16:45",
-          weatherDesc: "晴時多雲｜11°C – 18°C｜降雨 10%",
-          photoTip: "深夜抵達羽田機場三航廈，可拍攝江戶小路與展望台夜景",
-          departure: "自行前往機場",
-          breakfast: "自行處理",
-          morning: "-",
-          morningPlanB: "-",
-          lunch: "-",
-          afternoon: "20:55 桃園機場 (一航站)\n00:50 羽田機場 (三航站)",
-          afternoonPlanB: "若班機延誤超過 01:30，改搭計程車直達平和島溫泉（夜間加成約 ¥3,200）",
-          dinner: "入關後的頂呱呱或路上買東西",
-          dinnerPlanB: "抵達羽田機場三航廈後於 24 小時吉野家或 LAWSON 購買宵夜",
-          hotel: "平和島溫泉",
-          mapUrl: "https://www.google.com/maps/search/?api=1&query=天然温泉平和島"
+          date: "Day 1 (五)",
+          isoDate: "2026-05-01",
+          city: "東京成田・上野・淺草",
+          lat: 35.714,
+          lon: 139.796,
+          sunrise: "05:50",
+          sunset: "17:45",
+          goldenHour: "17:00–17:50",
+          weatherDesc: "晴時多雲｜15°C – 22°C｜降雨 10%",
+          photoTip: "傍晚可於隅田川步道拍攝東京晴空塔點燈與淺草寺雷門夜色",
+          departure: "06:30 抵達桃園機場辦理登機",
+          breakfast: "機上餐點",
+          morning: "09:00 桃園機場起飛 ➔ 13:15 抵達成田國際機場\n搭乘京成電鐵 Skyliner 直達京成上野站（車程約 41 分鐘），先至飯店寄放行李。",
+          morningPlanB: "【航班／交通備案】若 Skyliner 班次剛開走，可改搭京成 ACCESS 特快直通淺草站，或搭乘 JR 成田特快 (N'EX)。",
+          lunch: "上野站周邊拉麵或とんかつ名店",
+          afternoon: "15:30 搭乘銀座線前往「淺草寺 雷門・仲見世通」散步參拜\n17:30 步行或搭東武晴空塔線前往「東京晴空塔 (Tokyo Skytree)」350m 天望甲板看夜景。",
+          afternoonPlanB: "【雨天／強風備案】若戶外下雨或強風導致晴空塔展望台視線不佳，改逛晴空街道 Solamachi 室內商場與 5F 墨田水族館。",
+          dinner: "淺草百年老店和牛壽喜燒（或晴空塔 6F 利久牛舌）",
+          dinnerPlanB: "【餐廳備案】若壽喜燒名店候位超過 40 分鐘，改至晴空塔 Solamachi 6F/7F 主題餐廳樓層用餐。",
+          hotel: "上野三井花園飯店",
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=浅草寺雷門"
         },
         {
-          date: "11/14(六)",
-          isoDate: "2026-11-14",
-          city: "靜岡沼津 → 茨城水戶",
-          lat: 35.096,
-          lon: 138.863,
-          sunrise: "06:19",
-          sunset: "16:43",
-          goldenHour: "06:00–06:50 / 16:00–16:50",
-          weatherDesc: "晴朗微風｜10°C – 17°C｜降雨 10%（適合單車巡禮）",
-          photoTip: "上午內浦灣與三之浦順光可拍駿河灣富士山景；14:11 返程前留意沼津港光線",
-          departure: "上午 7:40 或 7:55",
-          breakfast: "7:00～7:30\n平和島溫泉設施早餐",
-          morning: "1. 走路或搭公車到京急平和島站。\n2. 從京急平和島站坐到品川站，並在JR品川站寄放行李。\n3. 轉新幹線坐到三島站，再轉在來線到沼津。\n4. 到沼津後，騎腳踏車前往三之浦觀光中心。",
-          morningPlanB: "【雨天／滿櫃備案】1. 若品川站無空置物櫃，改將行李帶至 JR 三島站寄放。\n2. 若沼津下雨不適合騎單車，改採「交通方案 B」於沼津站南口搭乘東海巴士前往三之浦觀光中心與沼津港（三段公車共 ¥2,340）。",
-          lunch: "到水戶吃（或沼津港輕食）",
-          afternoon: "下午 2點11分 要從沼津坐車回三島\n下午 2點27分 從三島站出發到品川\n下午 3點45分 從品川到水戶約 5點8分\n車站走到飯店約 10-12分，\n下午 6點 走到車站南口，搭公車去吃飯",
-          afternoonPlanB: "【轉乘備案】若錯過 14:11 沼津返程班次，可改搭 14:36 往三島轉乘新幹線，並於品川改搭 16:15 常磐線特急往水戶。",
-          dinner: "日式炸豬排餐廳 Cook Fan\n吃完泡溫泉休息",
-          dinnerPlanB: "【餐廳備案】若 Cook Fan 排隊候位過長或客滿，備案改吃水戶車站周邊「薩利亞 (Saizeriya)」或車站大樓餐廳。",
-          hotel: "天然溫泉 香梅之湯 多美迎水戸",
-          mapUrl: "https://www.google.com/maps/search/?api=1&query=三の浦総合案内所"
+          date: "Day 2 (六)",
+          isoDate: "2026-05-02",
+          city: "古都鎌倉・江之島海岸",
+          lat: 35.319,
+          lon: 139.546,
+          sunrise: "05:52",
+          sunset: "17:46",
+          goldenHour: "05:40–06:30 / 17:00–17:50",
+          weatherDesc: "晴朗海風｜14°C – 21°C｜降雨 10%（適合海岸散步）",
+          photoTip: "下午於鎌倉高校前與七里濱海岸順光拍攝湘南海岸線與江之島夕陽",
+          departure: "上午 08:15 飯店大廳集合出發",
+          breakfast: "07:00–08:00 飯店自助早餐",
+          morning: "1. 由上野搭乘山手線至新宿或東京站，轉乘 JR 湘南新宿線／橫須賀線直達「JR 鎌倉站」。\n2. 漫步鎌倉小町通美食街，參拜「鶴岡八幡宮」。\n3. 轉搭江之電前往「長谷寺」與「鎌倉大佛（高德院）」。",
+          morningPlanB: "【雨天／擁擠備案】若小町通與戶外飄雨，改參觀鶴岡八幡宮境內「鎌倉文華館 鶴岡博物館」及長谷站室內古民家咖啡廳。",
+          lunch: "鎌倉小町通或江之島吻仔魚丼 (しらす丼)",
+          afternoon: "1. 購買江之電一日乘車券，途經「鎌倉高校前」平交道拍照。\n2. 抵達「江之島站」，步行跨海大橋登上江之島參拜江島神社、展望燈塔 Sea Candle 看夕陽。\n3. 傍晚由藤澤站搭 JR 返回東京市區。",
+          afternoonPlanB: "【雨天／海風備案】若海邊風浪較大，改參觀片瀨江之島站旁室內「新江之島水族館」，回程可體驗懸掛式「湘南單軌電車」至大船站轉 JR。",
+          dinner: "新宿東口居酒屋或燒肉聚餐",
+          dinnerPlanB: "【餐廳備案】若新宿餐廳客滿，改回上野站旁阿美橫丁商店街或百貨美食街用餐。",
+          hotel: "上野三井花園飯店",
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=鶴岡八幡宮"
         },
         {
-          date: "11/15(日)",
-          isoDate: "2026-11-15",
-          city: "茨城大洗町 → 東京大森",
-          lat: 36.313,
-          lon: 140.575,
-          sunrise: "06:15",
-          sunset: "16:33",
-          goldenHour: "05:50–06:45 / 15:50–16:40",
-          weatherDesc: "晴時多雲｜8°C – 16°C｜海風稍涼建議防風外套",
-          photoTip: "下午前往大洗磯前神社剛好迎接 15:50–16:33 夕陽斜射「神磯の鳥居」浪花黃金時刻！",
-          departure: "上午 9:00 前往水戶站搭車",
-          breakfast: "06:30–08:00\n旅館早餐",
-          morning: "大洗鹿島線不支援現場支付的電子票證(包含 APPLE PAY 綁西瓜卡)，但有提供線上買票和現場紙本車票。\n預計 9點38分 抵達大洗。\n先走約 12-14分鐘(950m) 到活動會場逛一下，再到隔壁的 OARAI Seaside Station 逛(10點開店，走路約5分鐘)。\n12點 到活動舞台。",
-          morningPlanB: "【雨天／擁擠備案】若祭典戶外廣場風雨較大，改以 OARAI Seaside Station 室內商場、大洗海洋塔 (Marine Tower) 室內觀景台與大洗海鮮市場室內區為主。",
-          lunch: "大洗的活動會場吃",
-          afternoon: "預計下午走到大洗磯前神社後，走回大洗車站\n逛到 4點多 搭車回水戶的飯店拿行李\n預計搭乘 5點53分 的車到大森站",
-          afternoonPlanB: "【體力／交通備案】若步行距離較遠，可搭乘大洗町循環巴士「海遊號」往返大洗磯前神社與大洗車站；回程若提早拿完行李可改搭 17:27 特急班次。",
-          dinner: "大森站附近找吃的\n壽司郎？蘭州拉麵？",
-          dinnerPlanB: "【晚餐備案】JR 大森站東口「壽司郎 大森店」或「中國蘭州牛肉麵」，若超過 20:30 則於平和島溫泉館內餐廳用餐。",
-          hotel: "平和島溫泉",
-          mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗磯前神社"
+          date: "Day 3 (日)",
+          isoDate: "2026-05-03",
+          city: "箱根大涌谷・蘆之湖溫泉",
+          lat: 35.204,
+          lon: 139.026,
+          sunrise: "05:54",
+          sunset: "17:48",
+          goldenHour: "05:40–06:30 / 16:55–17:45",
+          weatherDesc: "晴時多雲｜10°C – 18°C｜山區微涼建議薄外套",
+          photoTip: "下午搭乘蘆之湖海賊船與箱根神社「平和の鳥居」湖畔逆光剪影最佳！",
+          departure: "上午 08:30 退房（大件行李可寄放上野或託運）",
+          breakfast: "07:15–08:15 飯店早餐或車站咖啡廳",
+          morning: "1. 前往小田急新宿站，搭乘 09:30「小田急浪漫特快」直達箱根湯本站。\n2. 換乘箱根登山電車與登山纜車前往「大涌谷」，品嚐名物黑玉子並眺望富士山景。",
+          morningPlanB: "【交通方案 B／濃霧備案】1. 若未買到浪漫特快指定席，可改由東京／品川搭 JR 東海道線至小田原站轉箱根登山電車。\n2. 若大涌谷因風大纜車停駛，改參觀強羅「雕刻之森美術館」或「箱根玻璃之森美術館」。",
+          lunch: "大涌谷景觀餐廳咖哩飯或桃源台港湖景餐廳",
+          afternoon: "1. 由桃源台港搭乘「箱根海賊觀光船」橫渡蘆之湖至元箱根港。\n2. 步行參拜「箱根神社」與湖上「平和の鳥居」。\n3. 16:35 搭乘箱根登山巴士返回箱根湯本溫泉飯店辦理入住。",
+          afternoonPlanB: "【海賊船停駛備案】若蘆之湖風浪較大觀光船停航，可憑箱根周遊券直接改搭「箱根登山巴士」由桃源台前往元箱根港與箱根湯本。",
+          dinner: "溫泉旅館內享用季節會席料理＆露天風呂泡湯",
+          dinnerPlanB: "【加購備案】泡湯後可於箱根湯本溫泉街購買溫泉饅頭、箱根布丁與地酒回房小酌。",
+          hotel: "箱根湯本富士屋飯店",
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=箱根神社"
         },
         {
-          date: "11/16(一)",
-          isoDate: "2026-11-16",
-          city: "東京羽田 → 桃園機場",
-          lat: 35.549,
-          lon: 139.779,
-          sunrise: "06:17",
-          sunset: "16:35",
-          goldenHour: "05:55–06:45",
-          weatherDesc: "晴朗｜11°C – 17°C｜凌晨接駁留意保暖",
-          photoTip: "凌晨 03:10 接駁巴士前往羽田第3航廈，入關後可補拍航廈晨光",
-          departure: "上午 3:00 準備搭 3:10 的接駁車",
-          breakfast: "預計 3點半 到機場，可以先在外面的 LAWSON（羅森）買吃的，入關後還有 7-11 或回台灣吃",
-          morning: "20:55 桃園機場 (一航站)\n00:50 羽田機場 (三航站) 凌晨返程航班",
-          morningPlanB: "若免稅店尚未營業，可於候機室自動販賣機或機上享用餐點，返抵桃園機場後搭乘機場捷運返家。",
-          lunch: "-",
-          afternoon: "-",
-          afternoonPlanB: "-",
-          dinner: "-",
+          date: "Day 4 (一)",
+          isoDate: "2026-05-04",
+          city: "箱根湯本 → 上野 → 成田機場",
+          lat: 35.713,
+          lon: 139.777,
+          sunrise: "05:51",
+          sunset: "17:45",
+          goldenHour: "16:50–17:45",
+          weatherDesc: "晴朗舒適｜14°C – 21°C｜返程日注意預留機場交通時間",
+          photoTip: "上午可於箱根湯本早川溪谷木橋補拍溫泉街晨光",
+          departure: "上午 09:30 辦理退房前往車站",
+          breakfast: "07:30–08:45 溫泉旅館和洋百匯早餐",
+          morning: "1. 漫步箱根湯本溫泉商店街採買魚板、箱根寄木細工伴手禮。\n2. 搭乘 10:35 小田急浪漫特快返回新宿，轉乘山手線至上野。",
+          morningPlanB: "【雨天／提早返程備案】若想增加東京市區購物時間，可提早搭乘 09:30 班次返回東京，直接前往上野多慶屋或東京車站一番街。",
+          lunch: "上野阿美橫丁海鮮丼或宇奈とと鰻魚飯",
+          afternoon: "13:30 上野阿美橫丁藥妝與零食最後衝刺採買\n15:00 於京成上野站搭乘「京成 Skyliner」前往成田國際機場（15:41 抵達）\n18:10 班機起飛返抵溫暖的家。",
+          afternoonPlanB: "【機場交通備案】若京成電鐵路線臨時調整，可改由東京站搭乘 JR 成田特快 (N'EX) 或搭乘利木津巴士直達成田機場航廈。",
+          dinner: "成田機場免稅商店街餐廳或機上餐點",
           dinnerPlanB: "-",
           hotel: "溫暖的家",
-          mapUrl: "https://www.google.com/maps/search/?api=1&query=羽田空港第3ターミナル"
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=京成上野駅"
         }
       ],
       transports: [
-        { id: "t1", type: "公車", planType: "主案", route: "平和島溫泉到京急平和島車站", jpRoute: "天然温泉平和島 → 京急平和島駅", priceText: "100", priceNum: 100, dep: "07:30 / 08:00 / 08:40", arr: "07:40 / 08:10 / 08:50", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/天然温泉平和島/京急平和島駅/" },
-        { id: "t2", type: "鐵路", planType: "主案", route: "京急平和島站到品川站(在這裡轉新幹線)", jpRoute: "京急平和島駅 → 品川駅（新幹線乗換・コインロッカー）", priceText: "180", priceNum: 180, dep: "07:48 / 08:13 / 08:53", arr: "07:56 / 08:22 / 09:01", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/京急平和島駅/品川駅/" },
-        { id: "t3", type: "新幹線", planType: "主案", route: "JR品川到JR三島", jpRoute: "東海道新幹線：JR品川駅 → JR三島駅", priceText: "4070", priceNum: 4070, dep: "08:04 / 08:34", arr: "08:50 / 09:20", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/品川駅/三島駅/" },
-        { id: "t4", type: "鐵路", planType: "主案", route: "JR三島到JR沼津", jpRoute: "JR東海道本線：三島駅 → 沼津駅", priceText: "含於區間票", priceNum: 0, dep: "09:01 / 09:05 / 09:21 / 09:36", arr: "09:06 / 09:10 / 09:26 / 09:41", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/三島駅/沼津駅/" },
-        { id: "t5", type: "A腳踏車", planType: "方案A(主案)", route: "沼津到三之浦旅遊服務中心，再騎回沼津", jpRoute: "沼津駅レンタサイクル ↔ 三の浦総合案内所", priceText: "每15分鐘120，12小時內2500 (預計4小時=1920)", priceNum: 1920, dep: "較自由，預計騎4小時", arr: "彈性往返", onsite: true, prebook: false, active: true, optionTag: "bike", mapUrl: "https://www.google.com/maps/dir/沼津駅/三の浦総合案内所/" },
-        { id: "t6", type: "B公車", planType: "方案B(備案)", route: "沼津 → 三之浦旅遊服務中心 → 沼津港 → 沼津", jpRoute: "東海バス：沼津駅 → 長浜・三の浦総合案内所 → 沼津港", priceText: "1090 + 980 + 270 (共 2340)", priceNum: 2340, dep: "一小時一班", arr: "依公車時刻表", onsite: true, prebook: false, active: false, optionTag: "bus", mapUrl: "https://www.google.com/maps/dir/沼津駅/沼津港/" },
-        { id: "t7", type: "鐵路", planType: "主案", route: "JR沼津到JR三島", jpRoute: "JR東海道本線：沼津駅 (14:11発) → 三島駅", priceText: "4070", priceNum: 4070, dep: "14:11", arr: "14:17", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/沼津駅/三島駅/" },
-        { id: "t8", type: "新幹線", planType: "主案", route: "JR三島到JR品川", jpRoute: "東海道新幹線：三島駅 (14:27発) → 品川駅", priceText: "併計於上段", priceNum: 0, dep: "14:27", arr: "15:11", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/三島駅/品川駅/" },
-        { id: "t9", type: "鐵路-常陸線、常磐線(ひたち、ときわ)", planType: "主案", route: "JR品川到JR水戶", jpRoute: "JR常磐線特急 ひたち・ときわ：品川駅 (15:45発) → 水戸駅", priceText: "4000", priceNum: 4000, dep: "15:45", arr: "17:08", onsite: false, prebook: true, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/品川駅/水戸駅/" },
-        { id: "t10", type: "鐵路 (大洗鹿島線)", planType: "主案", route: "JR水戶與大洗來回", jpRoute: "鹿島臨海鉄道 大洗鹿島線：水戸駅 ↔ 大洗駅（往復紙切符）", priceText: "840", priceNum: 840, dep: "去程：09:24或更早 / 回程：16:44或更早", arr: "去程：09:38 / 回程：17:01", onsite: false, prebook: true, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/水戸駅/大洗駅/" },
-        { id: "t11", type: "鐵路", planType: "主案", route: "JR水戶到JR大森", jpRoute: "JR常磐線特急：水戸駅 (17:27/17:53発) → 品川乗換 → JR大森駅", priceText: "4000", priceNum: 4000, dep: "17:27、17:53", arr: "19:07、19:32", onsite: false, prebook: true, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/水戸駅/大森駅/" },
-        { id: "t12", type: "公車", planType: "主案", route: "JR大森站到平和島溫泉", jpRoute: "JR大森駅東口 送迎バス → 天然温泉平和島", priceText: "免費", priceNum: 0, dep: "到時再看", arr: "-", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/大森駅/天然温泉平和島/" }
+        { id: "t1", type: "機場鐵路", planType: "主案", route: "成田機場到京成上野站 (京成 Skyliner)", jpRoute: "京成スカイライナー：成田空港駅 → 京成上野駅", priceText: "2580", priceNum: 2580, dep: "14:00 / 14:20 / 14:40", arr: "14:41 / 15:01 / 15:21", onsite: false, prebook: true, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/成田空港/京成上野駅/" },
+        { id: "t2", type: "地鐵", planType: "主案", route: "上野站到淺草站・晴空塔 (東京 Metro 銀座線)", jpRoute: "東京メトロ銀座線：上野駅 ↔ 浅草駅 ↔ 押上駅", priceText: "380", priceNum: 380, dep: "每 3-5 分鐘一班", arr: "車程約 6 分鐘", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/上野駅/浅草駅/" },
+        { id: "t3", type: "JR鐵路", planType: "主案", route: "JR新宿站到JR鎌倉站 (湘南新宿線來回)", jpRoute: "JR湘南新宿ライン：新宿駅 ↔ 鎌倉駅", priceText: "1900", priceNum: 1900, dep: "08:52 / 09:20", arr: "09:49 / 10:18", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/新宿駅/鎌倉駅/" },
+        { id: "t4", type: "路面電車", planType: "主案", route: "鎌倉 ↔ 鎌倉高校前 ↔ 江之島 (江之電一日券)", jpRoute: "江ノ島電鉄 1日乗車券「のりおりくん」", priceText: "800", priceNum: 800, dep: "每 14 分鐘一班", arr: "自由上下車", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/鎌倉駅/江ノ島駅/" },
+        { id: "t5", type: "A浪漫特快", planType: "方案A(主案)", route: "小田急新宿站 ↔ 箱根湯本站 (浪漫特快直達)", jpRoute: "小田急ロマンスカー：新宿駅 ↔ 箱根湯本駅", priceText: "特快加購票來回 2470", priceNum: 2470, dep: "去程 09:30 / 回程 10:35", arr: "去程 10:54 / 回程 12:05", onsite: false, prebook: true, active: true, optionTag: "bike", mapUrl: "https://www.google.com/maps/dir/新宿駅/箱根湯本駅/" },
+        { id: "t6", type: "B東海道線", planType: "方案B(備案)", route: "JR東京/品川 ↔ 小田原站轉箱根登山電車", jpRoute: "JR東海道本線：品川駅 ↔ 小田原駅 → 箱根湯本駅", priceText: "單程 945 × 2 (共 1890)", priceNum: 1890, dep: "每 15 分鐘一班", arr: "車程約 75 分鐘", onsite: true, prebook: false, active: false, optionTag: "bus", mapUrl: "https://www.google.com/maps/dir/品川駅/小田原駅/" },
+        { id: "t7", type: "周遊券", planType: "主案", route: "箱根周遊券 2 日券 (含纜車・海賊船・登山巴士)", jpRoute: "箱根フリーパス 2日間（新宿発）", priceText: "6100", priceNum: 6100, dep: "兩日內無限搭乘", arr: "涵蓋 8 種交通工具", onsite: false, prebook: true, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/箱根湯本駅/元箱根港/" },
+        { id: "t8", type: "登山電車", planType: "主案", route: "箱根湯本站 ↔ 強羅站 (含於周遊券)", jpRoute: "箱根登山電車：箱根湯本駅 ↔ 強羅駅", priceText: "含於周遊券", priceNum: 0, dep: "每 20 分鐘一班", arr: "車程約 40 分鐘", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/箱根湯本駅/強羅駅/" },
+        { id: "t9", type: "空中纜車", planType: "主案", route: "早雲山 ↔ 大涌谷 ↔ 桃源台港 (含於周遊券)", jpRoute: "箱根ロープウェイ：早雲山駅 ↔ 大涌谷駅 ↔ 桃源台駅", priceText: "含於周遊券", priceNum: 0, dep: "隨到隨搭", arr: "全程約 24 分鐘", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/大涌谷駅/桃源台駅/" },
+        { id: "t10", type: "觀光船", planType: "主案", route: "蘆之湖海賊觀光船：桃源台港 ➔ 元箱根港", jpRoute: "箱根海賊船：桃源台港 → 元箱根港（芦ノ湖）", priceText: "含於周遊券", priceNum: 0, dep: "14:10 / 14:50 / 15:30", arr: "14:35 / 15:15 / 15:55", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/桃源台港/元箱根港/" },
+        { id: "t11", type: "登山巴士", planType: "主案", route: "元箱根港(箱根神社) ➔ 箱根湯本站", jpRoute: "箱根登山バス R路線：元箱根港 → 箱根湯本駅", priceText: "含於周遊券", priceNum: 0, dep: "16:15 / 16:35 / 17:00", arr: "16:47 / 17:07 / 17:32", onsite: true, prebook: false, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/元箱根港/箱根湯本駅/" },
+        { id: "t12", type: "機場鐵路", planType: "主案", route: "京成上野站到成田機場 (京成 Skyliner 返程)", jpRoute: "京成スカイライナー：京成上野駅 (15:00発) → 成田空港駅", priceText: "2580", priceNum: 2580, dep: "15:00", arr: "15:41", onsite: false, prebook: true, active: true, optionTag: "", mapUrl: "https://www.google.com/maps/dir/京成上野駅/成田空港/" }
       ],
       links: [
-        { category: "住宿", name: "平和島溫泉", jpName: "天然温泉 平和島", address: "東京都大田区平和島1-1-1 BIG FUN平和島 2F", url: "https://www.heiwajima-onsen.jp/bus/", mapUrl: "https://www.google.com/maps/search/?api=1&query=天然温泉平和島", backupPlan: "若接駁巴士滿座，可改搭京急巴士至京急平和島站", note: "一晚1人5000日圓(可付現或刷信用卡，附早餐，但要7點才有)", phraseType: "checkin" },
-        { category: "住宿", name: "天然溫泉 香梅之湯 多美迎水戸", jpName: "天然温泉 香梅の湯 ドーミーイン水戸", address: "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩12分)", url: "https://dormy-hotels.com/dormyinn/hotels/mito/breakfast/", mapUrl: "https://www.google.com/maps/search/?api=1&query=ドーミーイン水戸", backupPlan: "遇雨可於水戶站北口搭巴士至「南町二丁目」下車", note: "一晚1人15390日圓(已預先付款，可列入分帳計算)", phraseType: "checkin" },
-        { category: "交通", name: "平和島溫泉接駁車", jpName: "天然温泉平和島 深夜早朝送迎バス", address: "BIG FUN平和島 1F バス乗場 ↔ 羽田空港第3ターミナル", url: "https://www.big-fun.jp/access/", mapUrl: "https://www.google.com/maps/search/?api=1&query=BIG+FUN平和島", backupPlan: "備案：由 JR 大森站東口 6 號站牌搭車", note: "平和島 BIG FUN 接駁巴士時刻與乘車處資訊（11/16 03:10 搭車）", phraseType: "go" },
-        { category: "交通", name: "京濱急行電鐵（京急）", jpName: "京急本線 平和島駅 → 品川駅", address: "東京都大田区大森北6-13-1", url: "https://www.keikyu.co.jp/ride/kakueki/schedule.html", mapUrl: "https://www.google.com/maps/search/?api=1&query=京急平和島駅", backupPlan: "品川站滿櫃時改於三島站寄放行李", note: "京急平和島站 ↔ 品川站 各站停車時刻表", phraseType: "ticket" },
-        { category: "交通", name: "JR東日本訂票系統 (えきねっと)", jpName: "JR常磐線特急 ひたち・ときわ 指定席", address: "JR品川駅・JR水戸駅 みどりの窓口 / 指定席券売機", url: "https://www.eki-net.com/zh-CHT/jreast-train-reservation/Top/Index", mapUrl: "https://www.google.com/maps/search/?api=1&query=JR品川駅", backupPlan: "若錯過 15:45 特急，可改搭 16:15 班次往水戶", note: "常磐線特急 ひたち/ときわ（品川↔水戶）預先訂票", phraseType: "ticket" },
-        { category: "交通", name: "JR東海訂票系統", jpName: "東海道新幹線（品川駅 ↔ 三島駅）", address: "JR品川駅 新幹線きっぷうりば", url: "https://railway.jr-central.co.jp/", mapUrl: "https://www.google.com/maps/search/?api=1&query=JR三島駅", backupPlan: "自由席每半小時一班 こだま 號", note: "東海道新幹線（品川↔三島）班次查詢與預約", phraseType: "ticket" },
-        { category: "交通", name: "鹿島臨海鐵道（時刻表）", jpName: "鹿島臨海鉄道 大洗鹿島線（水戸駅 ↔ 大洗駅）", address: "JR水戸駅 8番線 大洗鹿島線のりば", url: "https://www.rintetsu.co.jp/timetable", mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗駅", backupPlan: "備案：水戶站北口 3 號站牌搭乘茨城交通巴士 50 號線往大洗", note: "大洗鹿島線不支援 Suica，可先查時刻並購買線上或紙本票", phraseType: "ticket" },
-        { category: "景點", name: "沼津港大型展望水門「びゅうお」", jpName: "沼津港大型展望水門 びゅうお", address: "静岡県沼津市本字千本1905-27", url: "https://numazukanko.jp/spot/10020", mapUrl: "https://www.google.com/maps/search/?api=1&query=沼津港大型展望水門びゅうお", backupPlan: "雨天備案：沼津港深海水族館（步行 2 分鐘）", note: "沼津港知名展望水門景點介紹", phraseType: "go" },
-        { category: "景點", name: "沼津市觀光網站 (LoveLive! 巡禮路線)", jpName: "三の浦総合案内所（内浦エリア）", address: "静岡県沼津市内浦長浜83-104", url: "https://numazukanko.jp/feature/lovelive-course3/page1", mapUrl: "https://www.google.com/maps/search/?api=1&query=三の浦総合案内所", backupPlan: "雨天備案：由沼津站南口搭乘東海巴士直達長濱站", note: "內浦・三之浦觀光中心聖地巡禮指南", phraseType: "go" },
-        { category: "景點", name: "大洗秋まつり 商工感謝祭＆大洗あんこう祭", jpName: "大洗あんこう祭 会場（大洗マリンタワー前広場）", address: "茨城県東茨城郡大洗町港中央10", url: "https://www.tripia.app/zh/events/01a01e91-76d4-7dd4-9307-b0ea197ef536", mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗マリンタワー", backupPlan: "雨天備案：OARAI Seaside Station 室內購物與美食街", note: "11/15 大洗鮟鱇魚祭活動會場與 12:00 舞台資訊", phraseType: "go" },
-        { category: "景點", name: "大洗磯前神社", jpName: "大洗磯前神社（神磯の鳥居）", address: "茨城県東茨城郡大洗町磯浜町6890", url: "https://www.tripia.app/zh/events/01a01e91-76d4-7dd4-9307-b0ea197ef536", mapUrl: "https://www.google.com/maps/search/?api=1&query=大洗磯前神社", backupPlan: "體力備案：搭乘大洗海遊號巴士至大洗磯前神社前下車", note: "大洗知名神社與神磯鳥居，預計 11/15 下午步行前往", phraseType: "go" },
-        { category: "景點", name: "水戶日式炸豬排餐廳 Cook Fan", jpName: "とんかつレストラン クックファン (Cook Fan)", address: "茨城県水戸市酒門町3322-1（水戸駅南口よりバス）", url: "https://cookfan.com/", mapUrl: "https://www.google.com/maps/search/?api=1&query=クックファン水戸", backupPlan: "餐廳備案：水戶車站南口 OPA 百貨內「薩利亞 (Saizeriya)」", note: "11/14 晚餐名店（少女與戰車聖地炸豬排，備案：薩利亞）", phraseType: "go" }
+        { category: "住宿", name: "上野三井花園飯店 (Mitsui Garden Hotel Ueno)", jpName: "三井ガーデンホテル上野", address: "東京都台東区東上野3-19-7 (JR上野駅徒歩2分)", url: "https://www.gardenhotels.co.jp/ueno/", mapUrl: "https://www.google.com/maps/search/?api=1&query=三井ガーデンホテル上野", backupPlan: "雨天可走東京 Metro 上野站 1 號出口地下通道，出站 1 分鐘即達", note: "Day 1–2 市區住宿範例（鄰近京成上野站與阿美橫丁）", phraseType: "checkin" },
+        { category: "住宿", name: "箱根湯本富士屋飯店 (Yumoto Fujiya Hotel)", jpName: "箱根湯本 富士屋ホテル", address: "神奈川県足柄下郡箱根町湯本256-1 (箱根湯本駅徒歩3分)", url: "https://www.yumotofujiya.jp/", mapUrl: "https://www.google.com/maps/search/?api=1&query=湯本富士屋ホテル", backupPlan: "可於箱根湯本站月台使用「箱根行李託運服務」先寄送行李至飯店", note: "Day 3 溫泉住宿範例（一泊二食，附露天溫泉大浴場）", phraseType: "checkin" },
+        { category: "交通", name: "京成電鐵 Skyliner（機場快線時刻與預約）", jpName: "京成スカイライナー（成田空港 ↔ 京成上野）", address: "京成上野駅 / 成田空港駅 ライナー券売機", url: "https://www.keisei.co.jp/keisei/tetudou/skyliner/tc/", mapUrl: "https://www.google.com/maps/search/?api=1&query=京成上野駅", backupPlan: "備案：若班次調整可改搭 JR 成田特快 (N'EX) 或機場利木津巴士", note: "成田機場往返東京上野最快 41 分鐘，全車對號座", phraseType: "ticket" },
+        { category: "交通", name: "JR 東日本網路訂票系統 (えきねっと)", jpName: "JR東日本 湘南新宿ライン・成田エクスプレス", address: "JR新宿駅・JR上野駅 みどりの窓口 / 指定席券売機", url: "https://www.eki-net.com/zh-CHT/jreast-train-reservation/Top/Index", mapUrl: "https://www.google.com/maps/search/?api=1&query=JR新宿駅", backupPlan: "鎌倉路線可直接使用 Suica / PASMO IC 卡感應進站", note: "查詢 JR 東日本列車時刻與指定席預約", phraseType: "ticket" },
+        { category: "交通", name: "江之島電鐵（江之電一日乘車券資訊）", jpName: "江ノ島電鉄 1日乗車券「のりおりくん」", address: "江ノ電 鎌倉駅・藤沢駅 自動券売機", url: "https://www.enoden.co.jp/tc/", mapUrl: "https://www.google.com/maps/search/?api=1&query=江ノ島電鉄鎌倉駅", backupPlan: "備案：可由大船站改搭「湘南單軌電車」前往湘南江之島站", note: "一日內無限次上下江之電各站，享有沿線設施折扣", phraseType: "ticket" },
+        { category: "交通", name: "小田急電鐵（箱根周遊券＆浪漫特快預約）", jpName: "小田急ロマンスカー・箱根フリーパス", address: "小田急線 新宿駅西口 小田急旅行サービスセンター", url: "https://www.odakyu.jp/tc/", mapUrl: "https://www.google.com/maps/search/?api=1&query=小田急新宿駅", backupPlan: "若浪漫特快滿席，可持箱根周遊券搭乘小田急急行列車至小田原轉乘", note: "包含箱根登山電車、空中纜車、蘆之湖海賊船與登山巴士", phraseType: "ticket" },
+        { category: "景點", name: "淺草寺 雷門＆仲見世通商店街", jpName: "浅草寺 雷門・仲見世通り", address: "東京都台東区浅草2-3-1", url: "https://www.senso-ji.jp/", mapUrl: "https://www.google.com/maps/search/?api=1&query=浅草寺雷門", backupPlan: "雨天備案：改逛有遮雨棚的「新仲見世通」與東京晴空塔室內商場", note: "東京經典地標，建議搭配晴空塔安排半日遊", phraseType: "go" },
+        { category: "景點", name: "東京晴空塔 (Tokyo Skytree) 官方網站", jpName: "東京スカイツリー 天望デッキ", address: "東京都墨田区押上1-1-2", url: "https://www.tokyo-skytree.jp/tw/", mapUrl: "https://www.google.com/maps/search/?api=1&query=東京スカイツリー", backupPlan: "雨天備案：晴空塔 5F「墨田水族館」與「コニカミノルタ天象儀館」", note: "可預先購買天望甲板 (350m) 與天望回廊 (450m) 門票", phraseType: "go" },
+        { category: "景點", name: "鎌倉鶴岡八幡宮＆江之島觀光指南", jpName: "鶴岡八幡宮・江の島シーキャンドル", address: "神奈川県鎌倉市雪ノ下2-1-31", url: "https://www.trip-kamakura.com/", mapUrl: "https://www.google.com/maps/search/?api=1&query=鶴岡八幡宮", backupPlan: "雨天備案：參觀片瀨海岸「新江之島水族館」室內海豚表演與水母廳", note: "古都鎌倉歷史神社與湘南海岸經典巡禮路線", phraseType: "go" },
+        { category: "景點", name: "箱根導航 (Hakone Navi) 纜車與海賊船運行狀態", jpName: "箱根ロープウェイ（大涌谷）・箱根海賊船（芦ノ湖）", address: "神奈川県足柄下郡箱根町元箱根80-1（箱根神社）", url: "https://www.hakonenavi.jp/international/tw/", mapUrl: "https://www.google.com/maps/search/?api=1&query=箱根神社", backupPlan: "雨天／停駛備案：改搭登山巴士參觀「箱根雕刻之森美術館」或「岡田美術館」", note: "出發前可即時查詢大涌谷纜車與蘆之湖海賊船是否因風速調整運行", phraseType: "go" }
       ],
       vouchers: [
         {
           id: "v_default_1",
-          title: "鹿島臨海鐵道（水戶↔大洗）購票提醒＆紙本票憑證",
-          code: "⚠️ 不支援 Suica / Apple Pay 西瓜卡",
-          jpTarget: "鹿島臨海鉄道 大洗鹿島線（水戸↔大洗 往復 ¥840）",
-          note: "請於水戶站 8 號月台入口或售票機購買來回紙本票，或出示線上購票畫面",
+          title: "京成電鐵 Skyliner 機場快線兌換憑證 (範例)",
+          code: "SKY-DEMO-202688",
+          jpTarget: "京成スカイライナー 引換証（成田空港 ↔ 京成上野）",
+          note: "抵達成田機場後，請於 Skyliner 售票櫃檯或自動售票機掃描 QR 劃位領票",
           imageData: ""
         },
         {
           id: "v_default_2",
-          title: "多美迎水戶 (Dormy Inn Mito) 住宿預約",
-          code: "11/14 入住 1 晚（¥15,390/人 已預付）",
-          jpTarget: "天然温泉 香梅の湯 ドーミーイン水戸",
-          note: "06:30–08:00 享用旅館早餐；11/15 下午 16:40 回飯店領取寄放行李",
+          title: "箱根湯本富士屋飯店 訂房確認單 (範例)",
+          code: "BOOKING-DEMO-9012（一泊二食已預付）",
+          jpTarget: "箱根湯本 富士屋ホテル 宿泊予約確認書",
+          note: "15:00 後辦理入住；晚餐時段 18:30 於本館餐廳享用會席料理",
           imageData: ""
         },
         {
           id: "v_default_3",
-          title: "JR 常磐線特急 (ひたち/ときわ) 劃位憑證",
-          code: "11/14 15:45 品川→水戶｜11/15 17:53 水戶→大森",
-          jpTarget: "JR東日本 えきねっと (Eki-net) 指定席",
-          note: "預先於 JR 東日本訂票系統劃位，可點擊左側「上傳車票/QR圖片」綁定截圖",
+          title: "小田急箱根周遊券＆浪漫特快電子票 (範例)",
+          code: "ODAKYU-PASS-3055",
+          jpTarget: "小田急ロマンスカー特急券＆箱根フリーパス",
+          note: "可點擊左側「上傳車票 / QR 圖片內嵌」將您自己的電子票截圖綁定至此處離線出示",
           imageData: ""
         }
       ]
@@ -1524,8 +1508,8 @@
       items.push(
         {
           id: "rem_1",
-          title: "【鹿島臨海鐵道提醒】準備大洗鹿島線車票（不支援 Suica / Apple Pay 西瓜卡）",
-          detail: "水戶往返大洗需使用線上購票或現場購買紙本車票（可開「問路大字卡」出示給站務員）"
+          title: "【交通票券提醒】確認 IC 交通卡 (Suica / PASMO) 儲值與周遊券兌換",
+          detail: "部分地方私鐵或特快列車需另購指定席券或一日券（可開「問路大字卡」出示給站務員）"
         },
         {
           id: "rem_2",
@@ -1553,10 +1537,10 @@
       let parsedMembers = [];
 
       const dayGeoDefaults = [
-        { city: "東京羽田・平和島", lat: 35.579, lon: 139.738, sunrise: "06:14", sunset: "16:37", goldenHour: "15:55–16:45", weatherDesc: "晴時多雲｜11°C – 18°C｜降雨 10%", photoTip: "深夜抵達羽田第三航廈，適合拍攝江戶小路與觀景台" },
-        { city: "靜岡沼津 → 茨城水戶", lat: 35.096, lon: 138.863, sunrise: "06:19", sunset: "16:43", goldenHour: "06:00–06:50 / 16:00–16:50", weatherDesc: "晴朗微風｜10°C – 17°C｜適合單車巡禮", photoTip: "上午內浦灣與三之浦順光可拍駿河灣海景；14:11 返程前留意沼津港光影" },
-        { city: "茨城大洗町 → 東京大森", lat: 36.313, lon: 140.575, sunrise: "06:15", sunset: "16:33", goldenHour: "05:50–06:45 / 15:50–16:40", weatherDesc: "晴時多雲｜8°C – 16°C｜海風稍涼", photoTip: "下午前往大洗磯前神社剛好迎接 15:50–16:33 夕陽斜射「神磯の鳥居」黃金時刻" },
-        { city: "東京羽田 → 桃園機場", lat: 35.549, lon: 139.779, sunrise: "06:17", sunset: "16:35", goldenHour: "05:55–06:45", weatherDesc: "晴朗｜11°C – 17°C｜凌晨接駁留意保暖", photoTip: "凌晨 03:10 接駁巴士前往羽田第3航廈" }
+        { city: "東京市區・淺草・上野", lat: 35.714, lon: 139.796, sunrise: "05:50", sunset: "17:45", goldenHour: "17:00–17:50", weatherDesc: "晴時多雲｜15°C – 22°C｜降雨 10%", photoTip: "傍晚可於隅田川步道或展望台拍攝夕陽與城市點燈" },
+        { city: "古都鎌倉・江之島海岸", lat: 35.319, lon: 139.546, sunrise: "05:52", sunset: "17:46", goldenHour: "05:40–06:30 / 17:00–17:50", weatherDesc: "晴朗微風｜14°C – 21°C｜適合海岸散步", photoTip: "下午於海岸線順光拍攝海景與夕陽黃金時刻" },
+        { city: "箱根大涌谷・蘆之湖溫泉", lat: 35.204, lon: 139.026, sunrise: "05:54", sunset: "17:48", goldenHour: "05:40–06:30 / 16:55–17:45", weatherDesc: "晴時多雲｜10°C – 18°C｜山區微涼", photoTip: "下午前往湖畔鳥居剛好迎接日落斜射黃金時刻" },
+        { city: "東京市區 → 國際機場返程", lat: 35.713, lon: 139.777, sunrise: "05:51", sunset: "17:45", goldenHour: "16:50–17:45", weatherDesc: "晴朗舒適｜14°C – 21°C｜留意機場快線發車時間", photoTip: "上午可補拍老街晨光，下午預留充裕時間前往機場" }
       ];
 
       // 1. Sheet 1: 行程計畫
@@ -1642,8 +1626,9 @@
             const m = dayObj.dinner.match(/[（(]備案[:：]?([^)）]+)[)）]/);
             if (m) dayObj.dinnerPlanB = "備案餐廳：" + m[1];
           }
-          if (dayObj.morningPlanB === "-" && dayObj.morning.includes("沒空置物櫃的話")) {
-            dayObj.morningPlanB = "若品川站無空置物櫃，改至 JR 三島站寄放；若沼津遇雨改搭東海巴士前往三之浦";
+          if (dayObj.morningPlanB === "-" && dayObj.morning.includes("備案")) {
+            const m = dayObj.morning.match(/[（(]備案[:：]?([^)）]+)[)）]/);
+            if (m) dayObj.morningPlanB = "備案行程：" + m[1];
           }
           if (!dayObj.mapUrl || dayObj.mapUrl === "-") {
             dayObj.mapUrl = buildAutoMapUrl(dayObj.hotel !== "-" ? dayObj.hotel : dayObj.city);
@@ -1687,7 +1672,7 @@
             optionTag = "bike";
             planType = customPlanType || "方案A(主案)";
             active = appState.numazuOption !== "bus";
-          } else if (type.startsWith("B") || (type.includes("公車") && route.includes("三之浦")) || planType.includes("備案") || planType.includes("方案B")) {
+          } else if (type.startsWith("B") || planType.includes("備案") || planType.includes("方案B")) {
             optionTag = "bus";
             planType = customPlanType || "方案B(備案)";
             active = appState.numazuOption === "bus" || appState.numazuOption === "both";
@@ -1762,8 +1747,8 @@
             let resolvedUrl = col1;
             if (cellObj && cellObj.l && cellObj.l.Target) {
               resolvedUrl = cellObj.l.Target;
-            } else if (!resolvedUrl.startsWith("http") && col0.includes("鹿島臨海")) {
-              resolvedUrl = "https://www.rintetsu.co.jp/timetable";
+            } else if (!resolvedUrl.startsWith("http")) {
+              resolvedUrl = buildAutoMapUrl(col0);
             }
             const jpMeta = resolveJpInfo(col0, "", "", "", "");
             newLinks.push({
@@ -3349,7 +3334,7 @@
         document.getElementById("selectTheme").value = appState.theme;
         document.getElementById("importStatusTitle").textContent = "目前載入：" + appState.sourceFileName;
         renderAll();
-        showToast("已還原內建日本關東・靜岡四日遊範例資料！");
+        showToast("已還原內建「東京・鎌倉・箱根四日遊」公開示範資料！");
       });
 
       document.getElementById("inputTripTitle").addEventListener("input", (e) => {
