@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>日本大洗四日遊 - 互動式旅遊手冊</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>
+    /* Critical Offline Fallback CSS so mobile browsers work even without internet */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.5; }
+    .theme-indigo { --brand-bg: #1e3a5f; --brand-bg-light: #ebf2f7; }
+    .theme-sakura { --brand-bg: #831843; --brand-bg-light: #fdf2f8; }
+    .theme-matcha { --brand-bg: #14532d; --brand-bg-light: #f0fdf4; }
+    .theme-slate  { --brand-bg: #0f172a; --brand-bg-light: #f1f5f9; }
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .grid { display: grid; }
+    .justify-between { justify-content: space-between; }
+    .items-center { align-items: center; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-6 { padding: 1.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .border { border: 1px solid #e2e8f0; }
+    .bg-white { background-color: #ffffff; }
+    .text-white { color: #ffffff; }
+    .font-bold { font-weight: 700; }
+    .whitespace-pre-line { white-space: pre-line; }
+    button { cursor: pointer; font-family: inherit; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen theme-indigo">
+  <div class="max-w-4xl mx-auto my-0 sm:my-6 bg-white sm:rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+    <header style="background-color: var(--brand-bg);" class="text-white p-6">
+      <p class="text-xs uppercase tracking-wider text-white/75 font-semibold">Interactive Travel Companion v3.0</p>
+      <h1 class="text-2xl font-bold mt-1">日本大洗四日遊</h1>
+      <p class="text-xs sm:text-sm text-white/85 mt-1">大洗秋祭●少女與戰車</p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
+        <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+          <p class="text-xs text-white/75">行程天數</p>
+          <p class="text-lg font-bold">4 天 3 夜</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+          <p class="text-xs text-white/75">預估交通總額</p>
+          <p id="stTransportTotal" class="text-lg font-bold">¥0</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/15 col-span-2 sm:col-span-1">
+          <p class="text-xs text-white/75">團體分帳累計</p>
+          <p id="stSplitTotal" class="text-lg font-bold">NT$ 0</p>
+        </div>
+      </div>
+    </header>
+    <nav class="flex border-b border-slate-200 bg-slate-50 px-4 overflow-x-auto">
+      <button onclick="switchTab('days')" id="tabBtn_days" class="px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-blue-600 text-blue-600 shrink-0">📅 每日行程＆備案</button>
+      <button onclick="switchTab('transport')" id="tabBtn_transport" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🚄 交通＆路線導航</button>
+      <button onclick="switchTab('split')" id="tabBtn_split" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">💰 多人分帳結算</button>
+      <button onclick="switchTab('wallet')" id="tabBtn_wallet" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🪪 問路大字卡＆憑證夾</button>
+      <button onclick="switchTab('links')" id="tabBtn_links" class="px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0">🏨 官網＆地圖連結</button>
+    </nav>
+    <main class="p-4 sm:p-6">
+      <div id="tab_days" class="space-y-4"></div>
+      <div id="tab_transport" class="hidden space-y-3"></div>
+      <div id="tab_split" class="hidden space-y-4"></div>
+      <div id="tab_wallet" class="hidden space-y-4"></div>
+      <div id="tab_links" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </main>
+  </div>
+
+  <div id="stModal" class="fixed inset-0 bg-slate-950/90 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 text-center space-y-4 border-4 border-amber-400">
+      <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold">指差し会話・日本現場問路大字卡</span>
+      <p id="stPhrase" class="text-lg font-bold text-slate-800 bg-amber-50 p-3 rounded-xl border border-amber-200">すみません、ここへ行きたいです。</p>
+      <h2 id="stJpName" class="text-3xl sm:text-4xl font-black text-slate-900 leading-tight"></h2>
+      <p id="stZhName" class="text-sm font-bold text-blue-600"></p>
+      <p id="stAddr" class="text-xs sm:text-sm text-slate-600 bg-slate-100 p-2.5 rounded-xl"></p>
+      <img id="stImg" src="" class="hidden max-h-60 mx-auto rounded-xl border" />
+      <button onclick="document.getElementById('stModal').classList.add('hidden');document.getElementById('stModal').classList.remove('flex');" class="w-full py-2.5 rounded-xl font-bold bg-slate-900 text-white">關閉字卡</button>
+    </div>
+  </div>
+
+  <script>
+    const DATA = {
+  "title": "日本大洗四日遊",
+  "subtitle": "大洗秋祭●少女與戰車",
+  "exchangeRate": 0.215,
+  "theme": "indigo",
+  "numazuOption": "bike",
+  "planMode": "both",
+  "sourceFileName": "GoogleSheet_1wZCBc.xlsx",
+  "members": [
+    "主辦人",
+    "旅伴 A",
+    "旅伴 B"
+  ],
+  "expenses": [
+    {
+      "id": "exp_xls_1",
+      "title": "天然溫泉 多美迎水戶（住宿代墊 3人房費）",
+      "category": "住宿",
+      "amount": 46170,
+      "currency": "JPY",
+      "payer": "主辦人",
+      "splitMode": "equal",
+      "splitAmong": [
+        "主辦人",
+        "旅伴 A",
+        "旅伴 B"
+      ],
+      "splitDetails": {},
+      "note": "每人 ¥15,390 × 3 人（依人數均分）"
+    },
+    {
+      "id": "exp_xls_3",
+      "title": "JR 常磐線特急（品川→水戶、水戶→大森 指定席）",
+      "category": "交通",
+      "amount": 24000,
+      "currency": "JPY",
+      "payer": "主辦人",
+      "splitMode": "equal",
+      "splitAmong": [
+        "主辦人",
+        "旅伴 A",
+        "旅伴 B"
+      ],
+      "splitDetails": {},
+      "note": "えきねっと 預先劃位（每人來回 ¥8,000 × 3 人）"
+    },
+    {
+      "id": "exp_xls_4",
+      "title": "水戶日式炸豬排 Cook Fan 聚餐（示範：自訂個別金額）",
+      "category": "餐飲",
+      "amount": 7800,
+      "currency": "JPY",
+      "payer": "旅伴 B",
+      "splitMode": "exact",
+      "splitAmong": [
+        "主辦人",
+        "旅伴 A",
+        "旅伴 B"
+      ],
+      "splitDetails": {
+        "主辦人": 3200,
+        "旅伴 A": 2300,
+        "旅伴 B": 2300
+      },
+      "note": "主辦人點戰車特上套餐 ¥3,200、旅伴 A/B 各 ¥2,300"
+    },
+    {
+      "id": "exp_xls_5",
+      "title": "沼津港深海魚伴手禮＆零食合購（示範：依份數比例 2:1:1）",
+      "category": "門票/購物",
+      "amount": 3200,
+      "currency": "JPY",
+      "payer": "旅伴 A",
+      "splitMode": "shares",
+      "splitAmong": [
+        "主辦人",
+        "旅伴 A",
+        "旅伴 B"
+      ],
+      "splitDetails": {
+        "主辦人": 2,
+        "旅伴 A": 1,
+        "旅伴 B": 1
+      },
+      "note": "主辦人帶 2 份盒裝伴手禮，旅伴 A、B 各 1 份（按 2:1:1 比例分攤）"
+    },
+    {
+      "id": "exp_xls_6",
+      "title": "桃園機場送機計程車資",
+      "category": "交通",
+      "amount": 1200,
+      "currency": "TWD",
+      "payer": "旅伴 B",
+      "splitMode": "equal",
+      "splitAmong": [
+        "主辦人",
+        "旅伴 A",
+        "旅伴 B"
+      ],
+      "splitDetails": {},
+      "note": "出發前往桃園機場第一航廈共乘"
+    }
+  ],
+  "days": [
+    {
+      "date": "11/13(五)",
+      "city": "東京羽田・平和島",
+      "lat": 35.714,
+      "lon": 139.796,
+      "sunrise": "05:50",
+      "sunset": "17:45",
+      "goldenHour": "17:00–17:50",
+      "weatherDesc": "晴時多雲｜15°C – 22°C｜降雨 10%",
+      "photoTip": "深夜抵達羽田機場三航廈，可拍攝江戶小路與展望台夜景",
+      "departure": "自行前往機場",
+      "breakfast": "自行處理",
+      "morning": "-",
+      "morningPlanB": "-",
+      "lunch": "-",
+      "afternoon": "20:55 桃園機場 (一航站)\n00:50 羽田機場 (三航站)",
+      "afternoonPlanB": "若班機延誤超過 01:30，改搭計程車直達平和島溫泉（夜間加成約 ¥3,200）",
+      "dinner": "入關後的頂呱呱或路上買東西",
+      "dinnerPlanB": "抵達羽田機場三航廈後於 24 小時吉野家或 LAWSON 購買宵夜",
+      "hotel": "平和島溫泉",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=天然温泉平和島"
+    },
+    {
+      "date": "11/14(六)",
+      "city": "靜岡沼津 → 茨城水戶",
+      "lat": 35.319,
+      "lon": 139.546,
+      "sunrise": "05:52",
+      "sunset": "17:46",
+      "goldenHour": "05:40–06:30 / 17:00–17:50",
+      "weatherDesc": "晴朗微風｜14°C – 21°C｜適合海岸散步",
+      "photoTip": "水戶偕樂園或千波湖可拍照",
+      "departure": "上午 7:40 或 7:55",
+      "breakfast": "7:00～7:30\n平和島溫泉設施早餐",
+      "morning": "1. 走路或搭公車到京急平和島站。\n2. 從京急平和島站坐到品川站，並在JR品川站寄放行李。\n3.華仁獨自前往沼津，預計搭乘9:34從品川出發的回聲號。\n4.預計搭乘13:15的常盤線",
+      "morningPlanB": "-",
+      "lunch": "中午各自解決",
+      "afternoon": "偕樂園",
+      "afternoonPlanB": "-",
+      "dinner": "日式炸豬排餐廳 Cook Fan\n吃完泡溫泉休息",
+      "dinnerPlanB": "【餐廳備案】若 Cook Fan 排隊候位過長或客滿，備案改吃水戶車站周邊「薩利亞 (Saizeriya)」或車站大樓餐廳。",
+      "hotel": "天然溫泉 香梅之湯 多美迎水戸",
+      "mapUrl": "https://ibaraki-kairakuen.jp/tw/language/route/a/"
+    },
+    {
+      "date": "11/15(日)",
+      "city": "茨城大洗町 → 東京大森",
+      "lat": 35.204,
+      "lon": 139.026,
+      "sunrise": "05:54",
+      "sunset": "17:48",
+      "goldenHour": "05:40–06:30 / 16:55–17:45",
+      "weatherDesc": "晴時多雲｜10°C – 18°C｜山區微涼",
+      "photoTip": "下午前往大洗磯前神社剛好迎接 15:50–16:33 夕陽斜射「神磯の鳥居」浪花黃金時刻！",
+      "departure": "上午 9:00 前往水戶站搭車",
+      "breakfast": "06:30–08:00\n旅館早餐",
+      "morning": "大洗鹿島線不支援現場支付的電子票證(包含 APPLE PAY 綁西瓜卡)，要現場買紙本車票。\n預計 9點38分 抵達大洗。\n先走約 12-14分鐘(950m) 到活動會場逛一下，再到隔壁的 OARAI Seaside Station 逛(10點開店，走路約5分鐘)。\n12點 到活動舞台。",
+      "morningPlanB": "【雨天／擁擠備案】若祭典戶外廣場風雨較大，改以 OARAI Seaside Station 室內商場、大洗海洋塔 (Marine Tower) 室內觀景台與大洗海鮮市場室內區為主。",
+      "lunch": "大洗的活動會場吃",
+      "afternoon": "預計下午走到大洗磯前神社後，走回大洗車站\n逛到 4點多 搭車回水戶的飯店拿行李\n預計搭乘 5點53分 的車到大森站",
+      "afternoonPlanB": "【體力／交通備案】若步行距離較遠，可搭乘大洗町循環巴士「海遊號」往返大洗磯前神社與大洗車站；回程若提早拿完行李可改搭 17:27 特急班次。",
+      "dinner": "大森站附近找吃的\n壽司郎？蘭州拉麵？",
+      "dinnerPlanB": "【晚餐備案】JR 大森站東口「壽司郎 大森店」或「中國蘭州牛肉麵」，若超過 20:30 則於平和島溫泉館內餐廳或附近餐廳用餐。",
+      "hotel": "平和島溫泉",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=大洗磯前神社"
+    },
+    {
+      "date": "11/16(一)",
+      "city": "東京羽田 → 桃園機場",
+      "lat": 35.713,
+      "lon": 139.777,
+      "sunrise": "05:51",
+      "sunset": "17:45",
+      "goldenHour": "16:50–17:45",
+      "weatherDesc": "晴朗舒適｜14°C – 21°C｜留意機場快線發車時間",
+      "photoTip": "凌晨 03:10 接駁巴士前往羽田第3航廈，入關後可補拍航廈晨光",
+      "departure": "上午 3:00 準備搭 3:10 的接駁車",
+      "breakfast": "預計 3點半 到機場，可以先在外面的 LAWSON（羅森）買吃的，入關後還有 7-11 或回台灣吃",
+      "morning": "-",
+      "morningPlanB": "若免稅店尚未營業，可於候機室自動販賣機或機上享用餐點，返抵桃園機場後搭乘機場捷運返家。",
+      "lunch": "-",
+      "afternoon": "-",
+      "afternoonPlanB": "-",
+      "dinner": "-",
+      "dinnerPlanB": "-",
+      "hotel": "溫暖的家",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=羽田空港第3ターミナル"
+    }
+  ],
+  "transports": [
+    {
+      "id": "tr_1",
+      "type": "公車",
+      "planType": "主案",
+      "route": "平和島溫泉到京急平和島車站",
+      "jpRoute": "平和島溫泉到京急平和島車站",
+      "priceText": "100",
+      "priceNum": 100,
+      "dep": "07:30 / 08:00 / 08:40",
+      "arr": "07:40 / 08:10 / 08:50",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/天然温泉平和島/京急平和島駅/"
+    },
+    {
+      "id": "tr_2",
+      "type": "鐵路",
+      "planType": "主案",
+      "route": "京急平和島站到品川站(在這裡轉新幹線)",
+      "jpRoute": "京急平和島站到品川站(在這裡轉新幹線)",
+      "priceText": "180",
+      "priceNum": 180,
+      "dep": "07:48 / 08:13 / 08:53",
+      "arr": "07:56 / 08:22 / 09:01",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/京急平和島駅/品川駅/"
+    },
+    {
+      "id": "tr_3",
+      "type": "新幹線",
+      "planType": "主案",
+      "route": "JR品川到JR三島",
+      "jpRoute": "JR品川到JR三島",
+      "priceText": "4070",
+      "priceNum": 4070,
+      "dep": "08:04 / 08:34",
+      "arr": "08:50 / 09:20",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/品川駅/三島駅/"
+    },
+    {
+      "id": "tr_4",
+      "type": "鐵路",
+      "planType": "主案",
+      "route": "JR三島到JR沼津",
+      "jpRoute": "JR三島到JR沼津",
+      "priceText": "含於區間票",
+      "priceNum": 0,
+      "dep": "09:01 / 09:05 / 09:21 / 09:36",
+      "arr": "09:06 / 09:10 / 09:26 / 09:41",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/三島駅/沼津駅/"
+    },
+    {
+      "id": "tr_5",
+      "type": "A腳踏車",
+      "planType": "方案A(主案)",
+      "route": "沼津到三之浦旅遊服務中心，再騎回沼津",
+      "jpRoute": "沼津到三之浦旅遊服務中心，再騎回沼津",
+      "priceText": "1920",
+      "priceNum": 1920,
+      "dep": "較自由，預計騎4小時",
+      "arr": "彈性往返",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "bike",
+      "mapUrl": "https://www.google.com/maps/dir/沼津駅/三の浦総合案内所/"
+    },
+    {
+      "id": "tr_6",
+      "type": "B公車",
+      "planType": "方案B(備案)",
+      "route": "沼津 → 三之浦旅遊服務中心 → 沼津港 → 沼津",
+      "jpRoute": "沼津 → 三之浦旅遊服務中心 → 沼津港 → 沼津",
+      "priceText": "2340",
+      "priceNum": 2340,
+      "dep": "一小時一班",
+      "arr": "依公車時刻表",
+      "onsite": true,
+      "prebook": false,
+      "active": false,
+      "optionTag": "bus",
+      "mapUrl": "https://www.google.com/maps/dir/沼津駅/沼津港/"
+    },
+    {
+      "id": "tr_7",
+      "type": "鐵路",
+      "planType": "主案",
+      "route": "JR沼津到JR三島",
+      "jpRoute": "JR沼津到JR三島",
+      "priceText": "4070",
+      "priceNum": 4070,
+      "dep": "14:11",
+      "arr": "14:17",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/沼津駅/三島駅/"
+    },
+    {
+      "id": "tr_8",
+      "type": "新幹線",
+      "planType": "主案",
+      "route": "JR三島到JR品川",
+      "jpRoute": "JR三島到JR品川",
+      "priceText": "併計於上段",
+      "priceNum": 0,
+      "dep": "14:27",
+      "arr": "15:11",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/三島駅/品川駅/"
+    },
+    {
+      "id": "tr_9",
+      "type": "鐵路-常陸線、常磐線(ひたち、ときわ)",
+      "planType": "主案",
+      "route": "JR品川到JR水戶",
+      "jpRoute": "JR品川到JR水戶",
+      "priceText": "4000",
+      "priceNum": 4000,
+      "dep": "15:45",
+      "arr": "17:08",
+      "onsite": false,
+      "prebook": true,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/品川駅/水戸駅/"
+    },
+    {
+      "id": "tr_10",
+      "type": "鐵路 (大洗鹿島線)",
+      "planType": "主案",
+      "route": "JR水戶與大洗來回",
+      "jpRoute": "JR水戶與大洗來回",
+      "priceText": "840",
+      "priceNum": 840,
+      "dep": "去程：09:24或更早 / 回程：16:44或更早",
+      "arr": "去程：09:38 / 回程：17:01",
+      "onsite": false,
+      "prebook": true,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/水戸駅/大洗駅/"
+    },
+    {
+      "id": "tr_11",
+      "type": "鐵路",
+      "planType": "主案",
+      "route": "JR水戶到JR大森",
+      "jpRoute": "JR水戶到JR大森",
+      "priceText": "4000",
+      "priceNum": 4000,
+      "dep": "17:27、17:53",
+      "arr": "19:07、19:32",
+      "onsite": false,
+      "prebook": true,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/水戸駅/大森駅/"
+    },
+    {
+      "id": "tr_12",
+      "type": "公車",
+      "planType": "主案",
+      "route": "JR大森站到平和島溫泉",
+      "jpRoute": "JR大森站到平和島溫泉",
+      "priceText": "免費",
+      "priceNum": 0,
+      "dep": "到時再看",
+      "arr": "-",
+      "onsite": true,
+      "prebook": false,
+      "active": true,
+      "optionTag": "",
+      "mapUrl": "https://www.google.com/maps/dir/大森駅/天然温泉平和島/"
+    }
+  ],
+  "links": [
+    {
+      "category": "住宿",
+      "name": "平和島溫泉",
+      "jpName": "天然温泉 平和島",
+      "address": "東京都大田区平和島1-1-1 BIG FUN平和島 2F",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=天然温泉平和島",
+      "backupPlan": "若接駁巴士滿座，可改搭京急巴士至京急平和島站",
+      "phraseType": "checkin",
+      "url": "https://www.heiwajima-onsen.jp/bus/",
+      "note": "一晚1人5000日圓(可付現或刷信用卡，附早餐，但要7點才有)"
+    },
+    {
+      "category": "住宿",
+      "name": "天然溫泉 香梅之湯 多美迎水戸",
+      "jpName": "天然温泉 香梅の湯 ドーミーイン水戸",
+      "address": "茨城県水戸市南町2丁目6-7 (JR水戸駅北口徒歩12分)",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=ドーミーイン水戸",
+      "backupPlan": "遇雨可於水戶站北口搭巴士至「南町二丁目」下車",
+      "phraseType": "checkin",
+      "url": "https://dormy-hotels.com/dormyinn/hotels/mito/breakfast/",
+      "note": "一晚1人15390日圓(已預先付款，可列入分帳計算)"
+    },
+    {
+      "category": "交通",
+      "name": "平和島溫泉接駁車",
+      "jpName": "天然温泉平和島 深夜早朝送迎バス",
+      "address": "BIG FUN平和島 1F バス乗場 ↔ 羽田空港第3ターミナル",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=BIG+FUN平和島",
+      "backupPlan": "備案：由 JR 大森站東口 6 號站牌搭車",
+      "phraseType": "ticket",
+      "url": "https://www.big-fun.jp/access/",
+      "note": "平和島 BIG FUN 接駁巴士時刻與乘車處資訊（11/16 03:10 搭車）"
+    },
+    {
+      "category": "交通",
+      "name": "京濱急行電鐵（京急）",
+      "jpName": "京急本線 平和島駅 → 品川駅",
+      "address": "東京都大田区大森北6-13-1",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=京急平和島駅",
+      "backupPlan": "品川站滿櫃時改於三島站寄放行李",
+      "phraseType": "ticket",
+      "url": "https://www.keikyu.co.jp/ride/kakueki/schedule.html",
+      "note": "京急平和島站 ↔ 品川站 各站停車時刻表"
+    },
+    {
+      "category": "交通",
+      "name": "JR東日本訂票系統 (えきねっと)",
+      "jpName": "JR常磐線特急 ひたち・ときわ 指定席",
+      "address": "JR品川駅・JR水戸駅 みどりの窓口 / 指定席券売機",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=JR品川駅",
+      "backupPlan": "若錯過 15:45 特急，可改搭 16:15 班次往水戶",
+      "phraseType": "ticket",
+      "url": "https://www.eki-net.com/zh-CHT/jreast-train-reservation/Top/Index",
+      "note": "常磐線特急 ひたち/ときわ（品川↔水戶）預先訂票"
+    },
+    {
+      "category": "交通",
+      "name": "JR東海訂票系統",
+      "jpName": "東海道新幹線（品川駅 ↔ 三島駅）",
+      "address": "JR品川駅 新幹線きっぷうりば",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=JR三島駅",
+      "backupPlan": "自由席每半小時一班 こだま 號",
+      "phraseType": "ticket",
+      "url": "https://railway.jr-central.co.jp/",
+      "note": "東海道新幹線（品川↔三島）班次查詢與預約"
+    },
+    {
+      "category": "交通",
+      "name": "鹿島臨海鐵道（時刻表）",
+      "jpName": "鹿島臨海鉄道 大洗鹿島線（水戸駅 ↔ 大洗駅）",
+      "address": "JR水戸駅 8番線 大洗鹿島線のりば",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=大洗駅",
+      "backupPlan": "備案：水戶站北口 3 號站牌搭乘茨城交通巴士 50 號線往大洗",
+      "phraseType": "ticket",
+      "url": "https://www.rintetsu.co.jp/timetable",
+      "note": "大洗鹿島線不支援 Suica，可先查時刻並購買線上或紙本票"
+    },
+    {
+      "category": "景點",
+      "name": "沼津港大型展望水門「びゅうお」",
+      "jpName": "沼津港大型展望水門 びゅうお",
+      "address": "静岡県沼津市本字千本1905-27",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=沼津港大型展望水門びゅうお",
+      "backupPlan": "雨天備案：沼津港深海水族館（步行 2 分鐘）",
+      "phraseType": "go",
+      "url": "https://numazukanko.jp/spot/10020",
+      "note": "沼津港知名展望水門景點介紹"
+    },
+    {
+      "category": "景點",
+      "name": "沼津市觀光網站 (LoveLive! 巡禮路線)",
+      "jpName": "三の浦総合案内所（内浦エリア）",
+      "address": "静岡県沼津市内浦長浜83-104",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=三の浦総合案内所",
+      "backupPlan": "雨天備案：由沼津站南口搭乘東海巴士直達長濱站",
+      "phraseType": "go",
+      "url": "https://numazukanko.jp/feature/lovelive-course3/page1",
+      "note": "內浦・三之浦觀光中心聖地巡禮指南"
+    },
+    {
+      "category": "景點",
+      "name": "大洗秋まつり 商工感謝祭＆大洗あんこう祭",
+      "jpName": "大洗あんこう祭 会場（大洗マリンタワー前広場）",
+      "address": "茨城県東茨城郡大洗町港中央10",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=大洗マリンタワー",
+      "backupPlan": "雨天備案：OARAI Seaside Station 室內購物與美食街",
+      "phraseType": "go",
+      "url": "https://www.tripia.app/zh/events/01a01e91-76d4-7dd4-9307-b0ea197ef536",
+      "note": "11/15 大洗鮟鱇魚祭活動會場與 12:00 舞台資訊"
+    },
+    {
+      "category": "景點",
+      "name": "大洗磯前神社",
+      "jpName": "大洗磯前神社（神磯の鳥居）",
+      "address": "茨城県東茨城郡大洗町磯浜町6890",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=大洗磯前神社",
+      "backupPlan": "體力備案：搭乘大洗海遊號巴士至大洗磯前神社前下車",
+      "phraseType": "go",
+      "url": "https://www.tripia.app/zh/events/01a01e91-76d4-7dd4-9307-b0ea197ef536",
+      "note": "大洗知名神社與神磯鳥居，預計 11/15 下午步行前往"
+    },
+    {
+      "category": "景點",
+      "name": "水戶日式炸豬排餐廳 Cook Fan",
+      "jpName": "とんかつレストラン クックファン (Cook Fan)",
+      "address": "茨城県水戸市酒門町3322-1（水戸駅南口よりバス）",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=クックファン水戸",
+      "backupPlan": "餐廳備案：水戶車站南口 OPA 百貨內「薩利亞 (Saizeriya)」",
+      "phraseType": "go",
+      "url": "https://cookfan.com/",
+      "note": "11/14 晚餐名店（少女與戰車聖地炸豬排，備案：薩利亞）"
+    }
+  ],
+  "vouchers": [
+    {
+      "id": "v_default_1",
+      "title": "京成電鐵 Skyliner 機場快線兌換憑證 (範例)",
+      "code": "SKY-DEMO-202688",
+      "jpTarget": "京成スカイライナー 引換証（成田空港 ↔ 京成上野）",
+      "note": "抵達成田機場後，請於 Skyliner 售票櫃檯或自動售票機掃描 QR 劃位領票",
+      "imageData": ""
+    },
+    {
+      "id": "v_default_2",
+      "title": "箱根湯本富士屋飯店 訂房確認單 (範例)",
+      "code": "BOOKING-DEMO-9012（一泊二食已預付）",
+      "jpTarget": "箱根湯本 富士屋ホテル 宿泊予約確認書",
+      "note": "15:00 後辦理入住；晚餐時段 18:30 於本館餐廳享用會席料理",
+      "imageData": ""
+    },
+    {
+      "id": "v_default_3",
+      "title": "小田急箱根周遊券＆浪漫特快電子票 (範例)",
+      "code": "ODAKYU-PASS-3055",
+      "jpTarget": "小田急ロマンスカー特急券＆箱根フリーパス",
+      "note": "可點擊左側「上傳車票 / QR 圖片內嵌」將您自己的電子票截圖綁定至此處離線出示",
+      "imageData": ""
+    }
+  ]
+};
+    const SPLIT_RES = {"totalGroupTwd":18652,"totalGroupJpy":86751,"perPersonAvgTwd":6217,"balances":[{"member":"主辦人","paidTwd":15087,"shareTwd":6461,"netTwd":8625.699999999999},{"member":"旅伴 A","paidTwd":688,"shareTwd":6095,"netTwd":-5407.35},{"member":"旅伴 B","paidTwd":2877,"shareTwd":6095,"netTwd":-3218.3500000000004}],"transfers":[{"from":"旅伴 A","to":"主辦人","twd":5407,"jpy":25150},{"from":"旅伴 B","to":"主辦人","twd":3218,"jpy":14969}]};
+    function switchTab(t) {
+      ['days','transport','split','wallet','links'].forEach(k => {
+        document.getElementById('tab_' + k).classList.toggle('hidden', k !== t);
+        const btn = document.getElementById('tabBtn_' + k);
+        btn.className = k === t
+          ? 'px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-blue-600 text-blue-600 shrink-0'
+          : 'px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-600 shrink-0';
+      });
+    }
+    function showCard(jp, zh, addr, img) {
+      document.getElementById('stJpName').textContent = jp;
+      document.getElementById('stZhName').textContent = zh;
+      document.getElementById('stAddr').textContent = addr || '';
+      const im = document.getElementById('stImg');
+      if (img) { im.src = img; im.classList.remove('hidden'); } else { im.classList.add('hidden'); }
+      const m = document.getElementById('stModal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+    function renderStandalone() {
+      const totalJpy = DATA.transports.filter(x => x.active).reduce((s, x) => s + (Number(x.priceNum)||0), 0);
+      const totalTwd = Math.round(totalJpy * DATA.exchangeRate);
+      document.getElementById('stTransportTotal').textContent = '¥' + totalJpy.toLocaleString() + ' (約 NT$' + totalTwd.toLocaleString() + ')';
+      document.getElementById('stSplitTotal').textContent = 'NT$ ' + SPLIT_RES.totalGroupTwd.toLocaleString();
+
+      const slots = [
+        ['departure','','🕒 預計出門'],['breakfast','','🍳 早餐'],['morning','morningPlanB','🌅 午前'],
+        ['lunch','','🍱 中餐'],['afternoon','afternoonPlanB','🌇 午後'],['dinner','dinnerPlanB','🍽️ 晚餐'],['hotel','','🏨 住宿']
+      ];
+      document.getElementById('tab_days').innerHTML = DATA.days.map((d, i) => `
+        <div class="border border-slate-200 rounded-xl overflow-hidden">
+          <div style="background-color: var(--brand-bg-light);" class="px-4 py-2.5 font-bold text-sm flex flex-wrap justify-between items-center gap-2">
+            <span>Day ${i+1}・${d.date} (${d.city || ''})</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-600">住宿：${d.hotel || '-'}</span>
+              ${d.mapUrl ? `<a href="${d.mapUrl}" target="_blank" class="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs">🗺️ Google Maps</a>` : ''}
+            </div>
+          </div>
+          <div class="bg-amber-50/70 px-4 py-2 text-xs border-b border-slate-200 flex flex-wrap justify-between gap-2">
+            <span>🌤️ ${d.weatherDesc || ''}</span>
+            <span class="font-bold text-amber-900">🌅 日出 ${d.sunrise || '06:15'} ｜ 🌇 日落 ${d.sunset || '16:38'} (Golden Hour ${d.goldenHour || ''})</span>
+          </div>
+          <div class="p-4 space-y-2">
+            ${slots.filter(s => (d[s[0]] && d[s[0]] !== '-') || (s[1] && d[s[1]] && d[s[1]] !== '-')).map(s => `
+              <div class="text-xs sm:text-sm bg-slate-50 p-2.5 rounded-lg border border-slate-100 space-y-1">
+                <strong class="text-slate-700 block">${s[2]}</strong>
+                <div class="whitespace-pre-line text-slate-800">${d[s[0]] || '-'}</div>
+                ${(s[1] && d[s[1]] && d[s[1]] !== '-') ? `<div class="p-2 rounded bg-amber-50 border border-amber-200 text-amber-950 text-xs"><strong>🔀 備案行程 (Plan B)：</strong>${d[s[1]]}</div>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('tab_transport').innerHTML = DATA.transports.map(t => `
+        <div class="p-3.5 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-2 bg-white">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-slate-800 text-white text-xs font-bold rounded">${t.type}</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-slate-100">${t.planType || '主案'}</span>
+              <strong class="text-xs sm:text-sm">${t.route}</strong>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">出發：${t.dep} ｜ 抵達：${t.arr} ｜ 說明：${t.priceText}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            ${t.mapUrl ? `<a href="${t.mapUrl}" target="_blank" class="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-bold">🗺️ 導航</a>` : ''}
+            <span class="font-bold text-sm">¥${(Number(t.priceNum)||0).toLocaleString()}</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('tab_split').innerHTML = `
+        <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 space-y-2">
+          <h3 class="font-bold text-sm text-emerald-950">🎯 最簡轉帳結算清單 (Who Pays Whom)</h3>
+          ${SPLIT_RES.transfers.map(tr => `
+            <div class="p-3 rounded-xl bg-white border border-emerald-200 flex justify-between items-center text-xs sm:text-sm">
+              <span><strong>${tr.from}</strong> ➔ 支付給 ➔ <strong>${tr.to}</strong></span>
+              <strong class="text-emerald-900">NT$ ${tr.twd.toLocaleString()} (約 ¥${tr.jpy.toLocaleString()})</strong>
+            </div>
+          `).join('') || '<p class="text-xs text-emerald-800">目前帳目已平衡</p>'}
+        </div>
+      `;
+
+      document.getElementById('tab_wallet').innerHTML =
+        (DATA.vouchers || []).map(v => `
+          <div class="p-4 rounded-xl border-2 border-amber-300 bg-amber-50/40 flex justify-between items-center gap-3">
+            <div>
+              <span class="text-xs font-bold text-amber-900">🎫 離線憑證</span>
+              <h4 class="font-bold text-sm mt-0.5">${v.title}</h4>
+              <p class="text-xs font-mono font-bold text-blue-700 mt-1">${v.code}</p>
+              <p class="text-xs text-slate-600 mt-0.5">${v.note || ''}</p>
+            </div>
+            <button onclick="showCard('${(v.jpTarget||v.title).replace(/'/g,'')}','${v.title.replace(/'/g,'')}','${(v.code+' '+v.note).replace(/'/g,'')}','${v.imageData||''}')" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white shrink-0">全螢幕出示</button>
+          </div>
+        `).join('') +
+        DATA.links.map(lk => `
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-white flex justify-between items-center gap-3">
+            <div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100">${lk.category}</span>
+              <h4 class="font-extrabold text-base mt-1">${lk.jpName || lk.name}</h4>
+              <p class="text-xs text-slate-500">${lk.name} ｜ ${lk.address || ''}</p>
+            </div>
+            <button onclick="showCard('${(lk.jpName||lk.name).replace(/'/g,'')}','${lk.name.replace(/'/g,'')}','${(lk.address||lk.note||'').replace(/'/g,'')}','')" class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 shrink-0">🗣️ 問路大字卡</button>
+          </div>
+        `).join('');
+
+      document.getElementById('tab_links').innerHTML = DATA.links.map(lk => `
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">${lk.category}</span>
+          <h4 class="font-bold text-sm text-slate-900">${lk.name}</h4>
+          <p class="text-xs text-slate-600">${lk.note || ''}</p>
+          ${lk.backupPlan ? `<p class="text-xs text-amber-900 bg-amber-50 p-2 rounded">🔀 備案：${lk.backupPlan}</p>` : ''}
+          <div class="flex justify-between pt-1">
+            ${lk.mapUrl ? `<a href="${lk.mapUrl}" target="_blank" class="text-xs font-bold text-emerald-700">🗺️ Google Maps</a>` : ''}
+            <a href="${lk.url}" target="_blank" class="text-xs font-bold text-blue-600">🌐 開啟官網</a>
+          </div>
+        </div>
+      `).join('');
+    }
+    renderStandalone();
+  </script>
+</body>
+</html>
