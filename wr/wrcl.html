@@ -665,15 +665,35 @@ function haversine(lat1, lon1, lat2, lon2) {
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
+function detectFetchEnv() {
+  let online = null, inFrame = false;
+  try { if (typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean') online = navigator.onLine; } catch (e) {  }
+  try { inFrame = window.self !== window.top; } catch (e) { inFrame = true; }
+  return { online, inFrame };
+}
+
+function networkErrorMessage(label, rawMsg, env) {
+  const head = `${label ? label + '：' : ''}無法連線（${rawMsg}）。`;
+  const e = env || {};
+  if (e.online === false) {
+    return head + '裝置目前沒有網路連線，請確認網路後再試一次。';
+  }
+  if (e.inFrame) {
+    return head + '若你是在聊天室內的檔案預覽視窗中測試，該預覽通常會封鎖對外連線；' +
+      '請把此 HTML 檔案存到電腦後，直接用瀏覽器開啟（雙擊檔案，或拖進瀏覽器分頁）再試一次。';
+  }
+  return head + '瀏覽器沒有收到伺服器的任何回應，常見原因：' +
+    '① 所在網路（例如機關或公司網路）的防火牆擋下了這個網站；' +
+    '② 瀏覽器的追蹤保護或廣告阻擋外掛擋下了請求；' +
+    '③ 對方服務暫時中斷。' +
+    '可改用手機行動網路開啟本頁比對，或稍後再試。';
+}
+
 async function safeFetch(url, label, options) {
   try {
     return await fetch(url, options);
   } catch (e) {
-    throw new Error(
-      `${label ? label + '：' : ''}無法連線（${e.message}）。` +
-      `若你是在聊天室內的檔案預覽視窗中測試，該預覽通常會封鎖對外連線；` +
-      `請把此 HTML 檔案存到電腦後，直接用瀏覽器開啟（雙擊檔案，或拖進 Chrome 分頁）再試一次。`
-    );
+    throw new Error(networkErrorMessage(label, e.message, detectFetchEnv()));
   }
 }
 
@@ -1231,6 +1251,28 @@ function computeHourlySeries(om, cwaElements, loc, dateVal, diurnalRange, surfac
   return series;
 }
 
+function peakInWindow(om, cwaElements, loc, sunDate, slot, diurnalRange, surfaceAlt) {
+  const [a, b] = slot === 'sunrise' ? [-120, 60] : [-60, 120];
+  const start = new Date(sunDate.getTime() + a * 60000);
+  const end = new Date(sunDate.getTime() + b * 60000);
+  const first = new Date(start); first.setMinutes(0, 0, 0);
+  if (first < start) first.setHours(first.getHours() + 1);
+  const all = [];
+  for (let t = new Date(first); t <= end; t = new Date(t.getTime() + 3600000)) {
+    const r = scoreAtHour(om, cwaElements, loc, t, diurnalRange, surfaceAlt);
+    if (r) all.push(r);
+  }
+  if (!all.length) return null;
+
+  let best = all[0];
+  const dist = r => Math.abs(r.targetDate.getTime() - sunDate.getTime());
+  for (const r of all) {
+    const p = r.scores[0].total, q = best.scores[0].total;
+    if (p > q || (p === q && dist(r) < dist(best))) best = r;
+  }
+  return { best, hour: best.targetDate.getHours(), all };
+}
+
 async function runPrediction() {
   const dateVal = document.getElementById('dateInput').value;
   const customLoc = document.getElementById('customLoc').value.trim();
@@ -1334,13 +1376,13 @@ async function runPrediction() {
       for (const slot of timeSlots) {
         const sunIso = slot === 'sunrise' ? om.daily.sunrise[dayIdx] : om.daily.sunset[dayIdx];
         const sunDate = new Date(sunIso);
-        const targetDate = new Date(sunDate.getTime() + (slot === 'sunrise' ? -60 : 60) * 60000);
-
-        const s = scoreAtHour(om, cwaElements, loc, targetDate, diurnalRange, surfaceAlt);
-        if (!s) continue;
+        const pk = peakInWindow(om, cwaElements, loc, sunDate, slot, diurnalRange, surfaceAlt);
+        if (!pk) continue;
+        const s = pk.best;
+        const winLabel = slot === 'sunrise' ? '日出前後' : '日落前後';
 
         results.push({
-          location: locName, timeLabel: `${fmtDate(s.targetDate)} ${timeLabel[slot]}（約${pad2(s.targetDate.getHours())}:00）`,
+          location: locName, timeLabel: `${fmtDate(s.targetDate)} ${winLabel}（峰值約${pad2(pk.hour)}:00）`,
           probability: s.scores[0].total, dominantType: s.scores[0].type,
           cloudSea: s.cloudSea, advectionFog: s.advectionFog, radiationFog: s.radiationFog, altitude: s.alt,
           rh: s.rh, windSpeed: s.windSpeed, dewSpread: s.dewSpread, diurnalRange, precipProb: s.precipProb,
